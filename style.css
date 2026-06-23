@@ -1,0 +1,345 @@
+/* Root Variables & Token Overrides */
+:root {
+  /* Mediterranean Dark Mode (Deep Sea & Terracotta Sun) */
+  --stitch-bg-dark: #070D19; /* Deep maritime obsidian */
+  --stitch-bg-midnight: #0F1A2D; /* Maritime navy panels */
+  --stitch-text-platinum: #E6ECF5; /* Alabaster blue-white text */
+  --stitch-text-muted: #8E9BB0; /* Soft sea-mist grey */
+  --stitch-accent-gold: #E5C158; /* Warm sandy gold */
+  --stitch-accent-mint: #2EEA92; /* Seafoam vibrant green */
+  --stitch-alert-red: #E64A19; /* Deep terracotta red */
+  --stitch-alert-orange: #F57C00; /* Warm citrus orange */
+  
+  --stitch-border-glass: rgba(230, 236, 245, 0.08);
+  --stitch-border-glass-hover: rgba(230, 236, 245, 0.16);
+  --stitch-bg-sidebar: rgba(7, 13, 25, 0.95);
+  --stitch-bg-glass: rgba(15, 26, 45, 0.65);
+  
+  --stitch-scrollbar-track: rgba(7, 13, 25, 0.4);
+  --stitch-scrollbar-thumb: rgba(230, 236, 245, 0.15);
+  --stitch-card-hover-border: rgba(229, 193, 88, 0.4);
+  
+  --stitch-transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --stitch-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Mode Overrides */
+html:not(.dark) {
+  /* Mediterranean Light Mode (Muted Warm Stone) */
+  --stitch-bg-dark: #E3DDD3; /* Dusty warm Mediterranean stone plaster */
+  --stitch-bg-midnight: #D4CDC0; /* Soft warm desaturated stone panel background */
+  --stitch-text-platinum: #0A1128; /* Deep maritime navy text */
+  --stitch-text-muted: #555D6B; /* Muted stone grey text */
+  --stitch-accent-gold: #B58E2E; /* Desaturated Roman gold accent */
+  --stitch-accent-mint: #1E6B3B; /* Tuscan cypress green */
+  --stitch-alert-red: #B03A0B; /* Classic terracotta clay red */
+  --stitch-alert-orange: #C26A05; /* Mediterranean citrus orange */
+  
+  --stitch-border-glass: rgba(10, 17, 40, 0.08);
+  --stitch-border-glass-hover: rgba(10, 17, 40, 0.16);
+  --stitch-bg-sidebar: rgba(212, 205, 192, 0.98); /* Muted warm stone sidebar background */
+  --stitch-bg-glass: rgba(212, 205, 192, 0.75); /* Warm desaturated stone card background */
+  
+  --stitch-scrollbar-track: rgba(10, 17, 40, 0.05);
+  --stitch-scrollbar-thumb: rgba(10, 17, 40, 0.15);
+  --stitch-card-hover-border: rgba(181, 142, 46, 0.4);
+}
+
+/* Base resets & fonts */
+body {
+  background-color: var(--stitch-bg-dark);
+  font-family: 'Hanken Grotesk', sans-serif;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Luxury Background Aura */
+body::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: -10%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.02) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Glassmorphic Panels */
+.glass-panel {
+  background-color: var(--stitch-bg-glass);
+  border: 1px solid var(--stitch-border-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 0px !important; /* Strictly Sharp (0) as per Black Diamond Elite guidelines */
+  transition: var(--stitch-transition-smooth);
+}
+
+html:not(.dark) .glass-panel {
+  box-shadow: 0 16px 36px 0 rgba(10, 17, 40, 0.12), 0 4px 10px 0 rgba(10, 17, 40, 0.06);
+}
+
+.glass-panel:hover {
+  border-color: var(--stitch-border-glass-hover);
+}
+
+/* Page Loader Fade In */
+.fade-in-load {
+  opacity: 0;
+  animation: fadeInEffect 0.9s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes fadeInEffect {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--stitch-scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--stitch-scrollbar-thumb);
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--stitch-accent-gold);
+}
+
+/* Interactive Sidebar Toggles */
+.nav-link {
+  transition: var(--stitch-transition-smooth);
+  border-radius: 0px !important;
+}
+
+/* Mobile Sidebar Drawer Slide-In Mechanics */
+#stitch-sidebar.open {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  #stitch-sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: var(--stitch-bg-sidebar);
+    backdrop-filter: blur(24px);
+    transition: var(--stitch-transition-smooth);
+  }
+  
+  #stitch-sidebar.open {
+    transform: translateX(0);
+    display: flex !important;
+  }
+}
+
+/* Subtle pulse for active trackers */
+@keyframes activePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(57, 255, 20, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(57, 255, 20, 0);
+  }
+}
+
+.shadow-mint-pulse {
+  animation: activePulse 2s infinite;
+}
+
+/* Theme-Aware Hover Borders for room cards */
+.hover-border-theme:hover {
+  border-color: var(--stitch-card-hover-border) !important;
+}
+
+/* Theme-Aware Virtual Bank Slip Preview */
+.receipt-advice {
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(227, 232, 236, 0.1);
+  transition: var(--stitch-transition-smooth);
+}
+html:not(.dark) .receipt-advice {
+  background-color: rgba(15, 20, 23, 0.03);
+  border: 1px solid rgba(15, 20, 23, 0.08);
+}
+
+/* Premium Sidebar Privacy & Operations Toggles */
+.privacy-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--stitch-bg-glass);
+  border: 1px solid var(--stitch-border-glass);
+  padding: 10px 14px;
+  font-family: 'Geist', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--stitch-text-platinum);
+  transition: var(--stitch-transition-smooth);
+}
+
+.privacy-toggle {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.privacy-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(227, 232, 236, 0.15);
+  transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+html:not(.dark) .toggle-slider {
+  background-color: rgba(15, 20, 23, 0.12);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--stitch-text-muted);
+  transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.privacy-toggle input:checked + .toggle-slider {
+  background-color: var(--stitch-accent-gold);
+}
+
+.privacy-toggle input:checked + .toggle-slider:before {
+  transform: translateX(14px);
+  background-color: var(--stitch-bg-dark);
+}
+
+/* Banner Backdrop Image Gradients & Dramatic Shadows */
+.banner-backdrop-gradient {
+  background: linear-gradient(to right, rgba(7, 13, 25, 0.95) 15%, rgba(7, 13, 25, 0.6) 50%, rgba(7, 13, 25, 0.95) 85%);
+}
+
+html:not(.dark) .banner-backdrop-gradient {
+  background: linear-gradient(to right, rgba(250, 246, 238, 0.95) 15%, rgba(250, 246, 238, 0.5) 50%, rgba(250, 246, 238, 0.95) 85%);
+}
+
+/* Make Serif fonts pop with text-shadow */
+.font-pop-shadow {
+  text-shadow: 0 2px 8px rgba(7, 13, 25, 0.3);
+}
+html:not(.dark) .font-pop-shadow {
+  text-shadow: 0 1px 4px rgba(10, 17, 40, 0.1);
+}
+
+/* Dynamic Operational Control Panel Glass adjustment */
+.control-panel-deck {
+  background-color: var(--stitch-bg-glass);
+  border: 1px solid var(--stitch-border-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Custom Mediterranean styling details */
+.med-card-highlight {
+  position: relative;
+}
+.med-card-highlight::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--stitch-accent-gold);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Premium Segmented Toggle UI */
+.segmented-control-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.segmented-control-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.segmented-control-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--stitch-text-muted);
+  transition: var(--stitch-transition-smooth);
+}
+
+.segmented-control-option input[type="radio"]:checked + span {
+  background-color: var(--stitch-accent-gold);
+  color: var(--stitch-bg-dark) !important;
+}

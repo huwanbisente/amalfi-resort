@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Amalfi Resort - Hub Control Panel</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "var(--stitch-bg-midnight)",
+            "on-error": "#690005",
+            "secondary-fixed-dim": "var(--stitch-text-muted)",
+            "on-surface": "var(--stitch-text-platinum)",
+            "surface": "var(--stitch-bg-sidebar)",
+            "outline": "var(--stitch-border-glass)",
+            "background": "var(--stitch-bg-dark)",
+            "on-surface-variant": "var(--stitch-text-muted)",
+            "primary": "var(--stitch-text-platinum)",
+            "surface-dim": "var(--stitch-bg-dark)",
+            "surface-variant": "var(--stitch-border-glass)",
+            "surface-tint": "var(--stitch-accent-gold)",
+            "surface-container-high": "var(--stitch-bg-midnight)",
+            "primary-container": "var(--stitch-bg-dark)",
+            "on-secondary-container": "var(--stitch-text-muted)",
+            "error-container": "#93000a",
+            "inverse-on-surface": "var(--stitch-text-platinum)",
+            "on-primary": "var(--stitch-bg-dark)",
+            "on-primary-container": "var(--stitch-text-muted)",
+            "surface-bright": "var(--stitch-bg-midnight)",
+            "tertiary": "var(--stitch-accent-gold)",
+            "secondary-container": "var(--stitch-border-glass)",
+            "tertiary-container": "var(--stitch-bg-midnight)",
+            "on-background": "var(--stitch-text-platinum)",
+            "secondary": "var(--stitch-text-muted)",
+            "mint-active": "var(--stitch-accent-mint)",
+            "alert-red": "var(--stitch-alert-red)",
+            "alert-orange": "var(--stitch-alert-orange)",
+            "dark-obsidian": "#0B0C10"
+          },
+          "borderRadius": {
+            "DEFAULT": "0px",
+            "lg": "0px",
+            "xl": "0px",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-sm": "8px",
+            "stack-lg": "64px",
+            "margin-mobile": "20px",
+            "gutter": "24px",
+            "unit": "4px",
+            "stack-md": "24px",
+            "margin-desktop": "80px"
+          },
+          "fontFamily": {
+            "headline-sm": ["Playfair Display"],
+            "body-md": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "display-lg": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "mono-data": ["Geist"],
+            "label-caps": ["Geist"],
+            "display-lg-mobile": ["Playfair Display"]
+          },
+          "fontSize": {
+            "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+            "mono-data": ["14px", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "600" }],
+            "display-lg-mobile": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="antialiased h-screen flex flex-col font-body-md text-body-md overflow-hidden bg-primary-container text-on-surface">
+
+  <!-- Top Banner Header Section -->
+  <header id="ops-banner-header" class="relative w-full h-28 flex items-center justify-between px-gutter border-b border-secondary/15 shrink-0 z-50">
+    <!-- High fidelity backdrop image wrapper -->
+    <div class="absolute inset-0 z-0">
+      <img src="amalfi_backdrop.png" alt="Resort Vista" class="w-full h-full object-cover">
+      <div class="absolute inset-0 banner-backdrop-gradient z-10"></div>
+    </div>
+    
+    <!-- Left Side: Logo and Resort Title -->
+    <div class="relative z-20 flex items-center gap-4">
+      <button class="text-on-surface md:hidden flex items-center justify-center focus:outline-none mr-2" id="sidebar-hamburger" aria-label="Toggle Menu">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <div class="w-12 h-12 md:w-16 md:h-16 select-none flex items-center justify-center">
+        <img src="amalfi_logo.png" alt="Amalfi Logo" class="w-full h-full object-contain" style="mix-blend-mode: screen; filter: brightness(1.3) contrast(1.1) drop-shadow(0 4px 8px rgba(0,0,0,0.6));">
+      </div>
+      <div class="flex flex-col">
+        <h1 class="font-pop-shadow font-display-lg text-xl md:text-3xl text-on-surface font-semibold tracking-wide leading-tight">Amalfi Resort</h1>
+        <span class="font-pop-shadow font-label-caps text-[9px] md:text-xs text-tertiary tracking-widest leading-none mt-0.5">Zambales Operations Portal</span>
+      </div>
+    </div>
+
+    <!-- Right Side: Status, Time/Date, Toggle -->
+    <div class="relative z-20 flex items-center gap-4">
+      <!-- Time & Date Clock Display -->
+      <div class="hidden md:flex flex-col items-end text-right font-mono-data text-xs text-on-surface font-pop-shadow" id="banner-clock-area">
+        <span id="banner-clock-time" class="font-bold text-sm tracking-wider">--:--:-- --</span>
+        <span id="banner-clock-date" class="text-[10px] text-on-surface-variant tracking-wide mt-0.5">---, --- --, ----</span>
+      </div>
+
+      <!-- Privacy Toggle ("Obscure Balances") -->
+      <div class="flex items-center gap-2 bg-surface-container/60 border border-outline px-3 py-1.5 font-pop-shadow">
+        <span class="font-label-caps text-[10px] text-on-surface-variant font-bold tracking-wide select-none">Obscure Balances</span>
+        <label class="privacy-toggle">
+          <input type="checkbox" id="global-privacy-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- System Active Status -->
+      <div class="flex items-center gap-2 bg-surface-container/60 border border-outline px-3 py-1.5 font-pop-shadow">
+        <span class="w-2 h-2 bg-mint-active shadow-mint-pulse rounded-full"></span>
+        <span class="font-label-caps text-[10px] tracking-wider text-on-surface">Live Desk</span>
+      </div>
+
+      <!-- Theme Switcher Button -->
+      <button id="theme-toggle-btn" class="flex items-center justify-center p-2 bg-surface-container/60 border border-outline hover:border-tertiary text-on-surface-variant hover:text-tertiary transition-colors focus:outline-none" aria-label="Toggle Theme">
+        <span class="material-symbols-outlined text-lg" id="theme-toggle-icon">light_mode</span>
+        <span class="hidden" id="theme-toggle-text">Light Mode</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Below Banner Page Frame -->
+  <div class="flex flex-1 w-full h-[calc(100vh-112px)] overflow-hidden">
+    
+    <!-- Operator Left Navigation Sidebar (Breeze Control Style) -->
+    <nav id="stitch-sidebar" class="hidden md:flex flex-col h-full w-64 border-r border-secondary/15 bg-surface dark:bg-surface py-6 shrink-0 overflow-y-auto z-40">
+
+      
+      <div class="flex-grow flex flex-col gap-6 overflow-y-auto pr-2">
+        <!-- Section 1: Overview -->
+        <div>
+          <div class="font-label-caps text-[10px] text-tertiary px-4 mb-2 tracking-widest uppercase opacity-75">Hub Overview</div>
+          <ul class="flex flex-col gap-1">
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-tertiary font-bold border-l-2 border-tertiary pl-4 scale-[0.99] transition-all" href="#" data-view="overview">
+                <span class="material-symbols-outlined text-lg">analytics</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Admin Summary</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 2: Booking Desk -->
+        <div>
+          <div class="font-label-caps text-[10px] text-on-surface-variant px-4 mb-2 tracking-widest uppercase opacity-55">Booking Desk</div>
+          <ul class="flex flex-col gap-1">
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="verifications">
+                <span class="material-symbols-outlined text-lg">task_alt</span>
+                <span class="font-label-caps text-label-caps text-[11px] flex items-center justify-between w-full pr-4">
+                  <span>Verifications</span>
+                  <span class="w-4 h-4 bg-alert-orange text-dark-obsidian text-[9px] font-bold rounded-full flex items-center justify-center" id="badge-verifications-count">1</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="ledger">
+                <span class="material-symbols-outlined text-lg">payments</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Central Ledger</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 3: Units Operations -->
+        <div>
+          <div class="font-label-caps text-[10px] text-on-surface-variant px-4 mb-2 tracking-widest uppercase opacity-55">Operations</div>
+          <ul class="flex flex-col gap-1">
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="assignments">
+                <span class="material-symbols-outlined text-lg">grid_view</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Sanctuary Map</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="special">
+                <span class="material-symbols-outlined text-lg">event_note</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Special Bookings</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="maintenance">
+                <span class="material-symbols-outlined text-lg">build_circle</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Maintenance Hub</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 4: Analytics -->
+        <div>
+          <div class="font-label-caps text-[10px] text-on-surface-variant px-4 mb-2 tracking-widest uppercase opacity-55">Analytics</div>
+          <ul class="flex flex-col gap-1">
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="analytics">
+                <span class="material-symbols-outlined text-lg">query_stats</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Performance</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Section 5: Management Hub -->
+        <div>
+          <div class="font-label-caps text-[10px] text-on-surface-variant px-4 mb-2 tracking-widest uppercase opacity-55">Management Hub</div>
+          <ul class="flex flex-col gap-1">
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="knowledge">
+                <span class="material-symbols-outlined text-lg">import_contacts</span>
+                <span class="font-label-caps text-label-caps text-[11px]">Knowledge Monitor</span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="chatbot">
+                <span class="material-symbols-outlined text-lg">smart_toy</span>
+                <span class="font-label-caps text-label-caps text-[11px] flex items-center justify-between w-full pr-4">
+                  <span>Chatbot Monitor</span>
+                  <span class="w-1.5 h-1.5 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link flex items-center gap-3.5 py-2.5 text-on-surface-variant font-label-caps pl-4 hover:text-primary transition-colors duration-300" href="#" data-view="copilot">
+                <span class="material-symbols-outlined text-lg">psychology</span>
+                <span class="font-label-caps text-label-caps text-[11px] flex items-center justify-between w-full pr-4">
+                  <span>AI Operations Copilot</span>
+                  <span class="w-1.5 h-1.5 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </nav>
+    
+    <!-- Main Content Canvas -->
+    <main class="flex-grow flex flex-col min-w-0 h-full overflow-y-auto">
+      
+      <!-- Content Window Wrapper -->
+      <div id="stitch-content-area" class="p-margin-mobile md:p-margin-desktop flex-1 flex flex-col gap-6 max-w-[1440px] mx-auto w-full fade-in-load">
+        
+        <!-- View Title and Header Info -->
+        <section class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-secondary/15 pb-4 gap-4">
+          <div>
+            <span class="font-label-caps text-label-caps text-tertiary text-[10px] tracking-widest" id="ops-breadcrumbs">AMALFI RESORT / HUB OVERVIEW</span>
+            <h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mt-1" id="ops-view-title">Admin Summary</h2>
+          </div>
+          
+          <!-- Dynamic Page-Specific Control Panel -->
+          <div id="ops-view-control-panel" class="hidden items-center gap-3 w-full lg:w-auto">
+            <!-- Dynamic Filter Dropdown 1 -->
+            <div id="filter-select-1-wrapper" class="relative flex items-center shrink-0 w-full sm:w-auto">
+              <select id="global-filter-select" class="bg-surface border border-secondary/20 px-3 py-1.5 text-xs text-on-surface font-semibold focus:border-tertiary focus:ring-0 w-full sm:w-auto" style="border-radius: 0;">
+                <!-- Dynamically populated in app.js based on active view tab -->
+              </select>
+            </div>
+            
+            <!-- Dynamic Filter Dropdown 2 -->
+            <div id="filter-select-2-wrapper" class="relative hidden items-center shrink-0 w-full sm:w-auto">
+              <select id="global-filter-select-2" class="bg-surface border border-secondary/20 px-3 py-1.5 text-xs text-on-surface font-semibold focus:border-tertiary focus:ring-0 w-full sm:w-auto" style="border-radius: 0;">
+                <!-- Dynamically populated in app.js based on active view tab -->
+              </select>
+            </div>
+            
+            <!-- Context-sensitive Search Input -->
+            <div class="relative flex items-center w-full sm:w-auto">
+              <span class="material-symbols-outlined absolute left-2.5 text-on-surface-variant text-base select-none">search</span>
+              <input type="text" id="global-search-input" placeholder="Search..." class="bg-primary-container border border-secondary/20 pl-8 pr-3 py-1.5 text-xs text-on-surface w-full sm:w-44 lg:w-52 focus:border-tertiary focus:ring-0" style="border-radius: 0;">
+            </div>
+          </div>
+        </section>
+
+      <!-- VIEW 1: ADMIN SUMMARY (OVERVIEW HUB) -->
+      <div id="view-overview" class="view-panel flex flex-col gap-6">
+        
+        <!-- Live Status Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="glass-panel p-stack-md flex flex-col justify-between h-[120px]">
+            <span class="font-label-caps text-on-surface-variant text-[11px]">Occupancy Rate</span>
+            <span class="font-display-lg-mobile text-on-surface font-semibold" id="overview-occupancy-rate">33%</span>
+            <span class="text-[11px] text-on-surface-variant border-t border-secondary/10 pt-1.5" id="overview-occupancy-fraction">2 of 6 Suites Active</span>
+          </div>
+          <div class="glass-panel p-stack-md flex flex-col justify-between h-[120px]">
+            <span class="font-label-caps text-on-surface-variant text-[11px]">Receivables Folio</span>
+            <div class="flex items-baseline gap-1">
+              <span class="font-mono-data text-tertiary text-xs">₱</span>
+              <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable" id="overview-receivables-val">312,850.00</span>
+            </div>
+            <span class="text-[11px] text-on-surface-variant border-t border-secondary/10 pt-1.5" id="overview-receivables-subtitle">YTD Gross Pacing</span>
+          </div>
+          <div class="glass-panel p-stack-md flex flex-col justify-between h-[120px]">
+            <span class="font-label-caps text-on-surface-variant text-[11px]">Pending Verification</span>
+            <span class="font-display-lg-mobile text-alert-orange font-semibold" id="overview-badge-verification">1</span>
+            <span class="text-[11px] text-on-surface-variant border-t border-secondary/10 pt-1.5">Bank Wire Slip Inspection</span>
+          </div>
+          <div class="glass-panel p-stack-md flex flex-col justify-between h-[120px]">
+            <span class="font-label-caps text-on-surface-variant text-[11px]">Active Service holds</span>
+            <span class="font-display-lg-mobile text-alert-red font-semibold" id="overview-badge-tickets">1</span>
+            <span class="text-[11px] text-on-surface-variant border-t border-secondary/10 pt-1.5" id="overview-holds-subtitle">Villa 4 Maintenance</span>
+          </div>
+        </div>
+
+        <!-- Resort Control Deck -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Column 1: Daily Routine Task Tracker -->
+          <div class="glass-panel p-stack-md lg:col-span-8 flex flex-col gap-4">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2 flex items-center justify-between">
+              <span>Daily Routine Task Tracker</span>
+              <span class="text-xs text-on-surface-variant font-normal normal-case font-mono-data" id="task-tracker-progress">0 of 5 Completed</span>
+            </h3>
+            <div class="flex flex-col gap-3" id="daily-tasks-container">
+              <!-- Task Item 1 -->
+              <label class="flex items-start gap-3 bg-surface/50 border border-secondary/10 p-3 hover:border-tertiary/35 transition-all cursor-pointer select-none">
+                <input type="checkbox" class="daily-task-checkbox mt-1 accent-tertiary" data-task-index="0">
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold task-text text-on-surface font-pop-shadow">Morning Yacht Briefing &amp; Crew Clearance</span>
+                  <p class="text-xs text-on-surface-variant mt-0.5">Confirm weather reports, fuel status, and safety logs for active charters.</p>
+                </div>
+              </label>
+              <!-- Task Item 2 -->
+              <label class="flex items-start gap-3 bg-surface/50 border border-secondary/10 p-3 hover:border-tertiary/35 transition-all cursor-pointer select-none">
+                <input type="checkbox" class="daily-task-checkbox mt-1 accent-tertiary" data-task-index="1">
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold task-text text-on-surface font-pop-shadow">Verify Overnight Cash &amp; Bank Wire Deposit Slips</span>
+                  <p class="text-xs text-on-surface-variant mt-0.5">Review incoming wire receipts and clear pending reservation folios.</p>
+                </div>
+              </label>
+              <!-- Task Item 3 -->
+              <label class="flex items-start gap-3 bg-surface/50 border border-secondary/10 p-3 hover:border-tertiary/35 transition-all cursor-pointer select-none">
+                <input type="checkbox" class="daily-task-checkbox mt-1 accent-tertiary" data-task-index="2">
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold task-text text-on-surface font-pop-shadow">Villa Maintenance &amp; Cleaning Inspections</span>
+                  <p class="text-xs text-on-surface-variant mt-0.5">Check completed repair tickets and ensure check-out rooms are guest-ready.</p>
+                </div>
+              </label>
+              <!-- Task Item 4 -->
+              <label class="flex items-start gap-3 bg-surface/50 border border-secondary/10 p-3 hover:border-tertiary/35 transition-all cursor-pointer select-none">
+                <input type="checkbox" class="daily-task-checkbox mt-1 accent-tertiary" data-task-index="3">
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold task-text text-on-surface font-pop-shadow">Beverage &amp; Culinary Sommelier Review</span>
+                  <p class="text-xs text-on-surface-variant mt-0.5">Stock premium wine selections and confirm menus with private dining chefs.</p>
+                </div>
+              </label>
+              <!-- Task Item 5 -->
+              <label class="flex items-start gap-3 bg-surface/50 border border-secondary/10 p-3 hover:border-tertiary/35 transition-all cursor-pointer select-none">
+                <input type="checkbox" class="daily-task-checkbox mt-1 accent-tertiary" data-task-index="4">
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold task-text text-on-surface font-pop-shadow">Sync Concierge Chatbot &amp; Digital Keys</span>
+                  <p class="text-xs text-on-surface-variant mt-0.5">Push active room codes to guests and review operator monitoring feed.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Column 2: Quick Command Center -->
+          <div class="glass-panel p-stack-md lg:col-span-4 flex flex-col gap-4">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2">Quick Controls</h3>
+            
+            <div class="flex flex-col gap-4">
+              <!-- Privacy mode control card -->
+              <div class="border border-secondary/10 bg-surface/30 p-3 flex flex-col gap-2">
+                <span class="font-label-caps text-on-surface-variant text-[10px] tracking-wider font-bold">Ledger Obscurity</span>
+                <div class="flex justify-between items-center mt-1">
+                  <span class="text-xs text-on-surface">Financial Privacy Mode</span>
+                  <div class="privacy-toggle">
+                    <input type="checkbox" id="overview-privacy-switch">
+                    <span class="toggle-slider"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex flex-col gap-2">
+                <button class="w-full py-2.5 bg-tertiary text-dark-obsidian hover:bg-white hover:text-dark-obsidian text-xs font-label-caps font-bold transition-all flex items-center justify-center gap-2" id="btn-overview-csv-export">
+                  <span class="material-symbols-outlined text-sm">download</span> Export Operations CSV
+                </button>
+                <button class="w-full py-2.5 border border-secondary/20 hover:border-tertiary text-xs font-label-caps text-on-surface hover:text-tertiary hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" id="btn-overview-dispatch-maintenance">
+                  <span class="material-symbols-outlined text-sm">construction</span> Dispatch Maintenance Hold
+                </button>
+              </div>
+
+              <!-- Quick Page Navs -->
+              <div class="border-t border-secondary/15 pt-3 flex flex-col gap-2">
+                <span class="font-label-caps text-on-surface-variant text-[10px] tracking-wider font-bold">Module Quick Jump</span>
+                <div class="grid grid-cols-2 gap-2 mt-1">
+                  <button class="py-2 border border-secondary/15 text-xs text-on-surface hover:border-tertiary hover:bg-surface-variant/20 transition-all font-semibold" onclick="switchToTab('verifications')">Deposits</button>
+                  <button class="py-2 border border-secondary/15 text-xs text-on-surface hover:border-tertiary hover:bg-surface-variant/20 transition-all font-semibold" onclick="switchToTab('assignments')">Rooms Map</button>
+                  <button class="py-2 border border-secondary/15 text-xs text-on-surface hover:border-tertiary hover:bg-surface-variant/20 transition-all font-semibold" onclick="switchToTab('analytics')">Performance</button>
+                  <button class="py-2 border border-secondary/15 text-xs text-on-surface hover:border-tertiary hover:bg-surface-variant/20 transition-all font-semibold" onclick="switchToTab('ledger')">Central Ledger</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resort Live Feed & Operations Room -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Column 1: Operational Alerts Room -->
+          <div class="glass-panel p-stack-md lg:col-span-7 flex flex-col gap-4">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2">Operational Alerts Room</h3>
+            <div class="flex flex-col gap-3" id="overview-alerts-list">
+              <div class="flex items-center justify-between bg-surface/50 border border-alert-orange/20 p-3 hover:border-alert-orange/60 transition-all cursor-pointer" onclick="switchToTab('verifications')">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-alert-orange">receipt_long</span>
+                  <div>
+                    <h5 class="text-sm font-semibold">Unverified bank deposit slip</h5>
+                    <p class="text-xs text-on-surface-variant mt-0.5">Lord Marcus Harrington - Deposit payment for Villa 6 (₱42,100.00)</p>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-on-surface-variant text-sm">arrow_forward_ios</span>
+              </div>
+              <div class="flex items-center justify-between bg-surface/50 border border-alert-red/20 p-3 hover:border-alert-red/60 transition-all cursor-pointer" onclick="switchToTab('assignments')">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-alert-red">home_work</span>
+                  <div>
+                    <h5 class="text-sm font-semibold">Villa 4 Out of Order (AC Fan Failure)</h5>
+                    <p class="text-xs text-on-surface-variant mt-0.5">Under maintenance supervision. Completion scheduled by today 17:00.</p>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-on-surface-variant text-sm">arrow_forward_ios</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Quick Roster & Operations View -->
+          <div class="glass-panel p-stack-md lg:col-span-5 flex flex-col gap-4">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2">Today's Roster Flow</h3>
+            <div class="flex flex-col gap-3">
+              <div class="border border-secondary/10 bg-surface/30 p-3 flex flex-col gap-2">
+                <span class="font-label-caps text-on-surface-variant text-[10px] tracking-wider font-bold">Arriving Today (June 20)</span>
+                <div class="flex flex-col gap-1.5 mt-1" id="overview-arrivals-list">
+                  <!-- Dynamically populated in app.js -->
+                </div>
+              </div>
+
+              <div class="border border-secondary/10 bg-surface/30 p-3 flex flex-col gap-2">
+                <span class="font-label-caps text-on-surface-variant text-[10px] tracking-wider font-bold">Departing Today (June 20)</span>
+                <div class="flex flex-col gap-1.5 mt-1" id="overview-departures-list">
+                  <!-- Dynamically populated in app.js -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW 2: RECEIPT VERIFICATIONS PANEL -->
+      <div id="view-verifications" class="view-panel hidden flex flex-col gap-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <!-- Pending List (5 cols) -->
+          <div class="glass-panel p-stack-md col-span-1 md:col-span-5 flex flex-col">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2 mb-4">Pending Deposits</h3>
+            <div class="flex flex-col gap-3" id="verifications-list">
+              <!-- Item 1 (Harrington) -->
+              <div class="bg-surface border-l-2 border-alert-orange p-3 flex flex-col gap-2 cursor-pointer transition-all hover:bg-surface-variant/20 active-verification-card" data-ref="harrington" onclick="selectVerification('harrington')">
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-semibold">Lord Harrington</span>
+                  <span class="font-mono-data text-xs text-tertiary">₱42,100.00</span>
+                </div>
+                <div class="flex justify-between text-xs text-on-surface-variant">
+                  <span>Villa 6 (Booking Hold)</span>
+                  <span class="font-mono-data">Ref: #SLIP-8849</span>
+                </div>
+              </div>
+              <!-- Approved items (static example) -->
+              <div class="bg-surface/30 opacity-60 border-l-2 border-mint-active p-3 flex flex-col gap-2 cursor-not-allowed">
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-semibold">Sophia Loren</span>
+                  <span class="font-mono-data text-xs text-on-surface-variant">₱31,075.00</span>
+                </div>
+                <div class="flex justify-between text-xs text-on-surface-variant">
+                  <span>Villa 1 (Deposit 50%)</span>
+                  <span class="text-mint-active flex items-center gap-1 font-label-caps text-[9px]"><span class="material-symbols-outlined text-[10px]">check_circle</span> Approved</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Inspection Area (7 cols) -->
+          <div class="glass-panel p-stack-md col-span-1 md:col-span-7 flex flex-col gap-4" id="verification-inspection-pane">
+            <div class="flex justify-between items-center border-b border-secondary/15 pb-2">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Inspection Folio</h3>
+              <span class="font-mono-data text-xs text-on-surface-variant">Ref: #SLIP-8849</span>
+            </div>
+            
+            <!-- Virtual bank slip preview -->
+            <div class="receipt-advice p-6 flex flex-col gap-4 font-mono-data text-xs" style="border-radius: 0;">
+              <div class="text-center border-b border-secondary/20 pb-3">
+                <h5 class="font-label-caps text-sm text-tertiary font-bold tracking-wider">CREDIT SUISSE SWIFT ADVICE</h5>
+                <span class="text-on-surface-variant text-[10px]">Wire Transaction Receipt (Confirmed)</span>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-2 text-on-surface-variant">
+                <span>Ordering Client:</span>
+                <span class="text-on-surface text-right">L. Marcus Harrington (Acc #••••0488)</span>
+                
+                <span>Beneficiary:</span>
+                <span class="text-on-surface text-right">Amalfi Resort Operations SAS</span>
+                
+                <span>Beneficiary IBAN:</span>
+                <span class="text-on-surface text-right">CH89 0000 7865 4123 0089 9</span>
+                
+                <span>Amount:</span>
+                <span class="text-tertiary text-right font-bold text-sm">₱42,100.00 PHP</span>
+                
+                <span>Transaction Ref:</span>
+                <span class="text-on-surface text-right">AMA-V6-DEP-2026</span>
+                
+                <span>Value Date:</span>
+                <span class="text-on-surface text-right">2026-06-19 16:42:09</span>
+              </div>
+              
+              <div class="border-t border-secondary/20 pt-3 text-center text-[10px] text-mint-active font-semibold flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-[12px]">security</span> ELECTRONICALLY SIGNED & VERIFIED BY SWIFT GATEWAY
+              </div>
+            </div>
+            
+            <div class="flex gap-4 mt-auto">
+              <button class="flex-1 py-3 border border-alert-red/30 hover:border-alert-red text-alert-red font-label-caps text-label-caps font-bold transition-all text-xs focus:outline-none" id="btn-reject-slip">
+                Reject Slip
+              </button>
+              <button class="flex-grow-[2] py-3 bg-tertiary text-dark-obsidian hover:bg-white hover:text-dark-obsidian font-label-caps text-label-caps font-bold transition-all text-xs focus:outline-none" id="btn-approve-slip">
+                Approve Payment & Check-In
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW 3: ROOM GRID PANEL (SANCTUARY MAP) -->
+      <div id="view-assignments" class="view-panel hidden flex flex-col gap-6">
+        
+        <!-- Timeline Navigation Controls -->
+        <div class="glass-panel p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-tertiary">calendar_month</span>
+            <div>
+              <h4 class="font-headline-sm text-sm text-on-surface font-bold uppercase tracking-wider">Timeline Navigation</h4>
+              <p class="text-[11px] text-on-surface-variant mt-0.5" id="timeline-range-label">June 18, 2026 — June 27, 2026</p>
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-4">
+            <!-- Jump to Month Select -->
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-label-caps text-on-surface-variant font-semibold">Month</span>
+              <select id="nav-month-select" class="bg-surface border border-secondary/20 px-2 py-1 text-xs text-on-surface focus:border-tertiary focus:ring-0" style="border-radius: 0;">
+                <option value="2026-06-01">June 2026</option>
+                <option value="2026-07-01">July 2026</option>
+                <option value="2026-08-01">August 2026</option>
+              </select>
+            </div>
+            
+            <!-- Jump to Day Select -->
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-label-caps text-on-surface-variant font-semibold">Start Day</span>
+              <select id="nav-day-select" class="bg-surface border border-secondary/20 px-2 py-1 text-xs text-on-surface focus:border-tertiary focus:ring-0 w-16" style="border-radius: 0;">
+                <!-- Filled dynamically in app.js -->
+              </select>
+            </div>
+
+            <!-- Today button -->
+            <button id="btn-timeline-today" class="px-3 py-1 bg-secondary/10 hover:bg-secondary/20 text-xs font-label-caps border border-secondary/20 text-on-surface font-semibold transition-all">
+              Today
+            </button>
+
+            <!-- New Booking Button -->
+            <button id="btn-map-new-booking" class="px-3 py-1 bg-tertiary text-dark-obsidian hover:bg-white text-xs font-label-caps font-bold flex items-center gap-1.5 transition-all focus:outline-none shrink-0">
+              <span class="material-symbols-outlined text-sm">add_circle</span> New Booking
+            </button>
+            
+            <!-- Prev/Next buttons -->
+            <div class="flex border border-secondary/20 bg-surface">
+              <button id="btn-timeline-prev" class="p-1 hover:bg-surface-variant/30 text-on-surface hover:text-tertiary transition-all focus:outline-none border-r border-secondary/20 flex items-center justify-center" title="Previous 10 Days">
+                <span class="material-symbols-outlined text-sm">chevron_left</span>
+              </button>
+              <button id="btn-timeline-next" class="p-1 hover:bg-surface-variant/30 text-on-surface hover:text-tertiary transition-all focus:outline-none flex items-center justify-center" title="Next 10 Days">
+                <span class="material-symbols-outlined text-sm">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid legends -->
+        <div class="glass-panel p-4 flex flex-wrap gap-6 text-xs font-label-caps">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-mint-active border border-mint-active"></span>
+            <span>Checked In (Active stay)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-tertiary border border-tertiary"></span>
+            <span>Confirmed booking</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-secondary border border-secondary"></span>
+            <span>Checked Out (Past)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-alert-orange border border-alert-orange"></span>
+            <span>Housekeeping Active</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-alert-red border border-alert-red"></span>
+            <span>Maintenance Hold</span>
+          </div>
+        </div>
+
+        <!-- Gantt schedule layout container (Medium Villas) -->
+        <div class="glass-panel overflow-x-auto w-full mb-4" id="gantt-medium-container">
+          <div class="min-w-[1008px] flex flex-col">
+            <!-- Section Header -->
+            <div class="flex justify-between items-center bg-secondary/5 px-4 py-3 border-b border-secondary/15 select-none">
+              <h4 class="font-headline-sm text-xs text-tertiary font-bold uppercase tracking-widest">Medium Sized Luxury Villas</h4>
+              <span class="font-mono-data text-[9px] text-secondary tracking-widest uppercase opacity-85">4 Units Available • Standard Suite Config</span>
+            </div>
+            <!-- Gantt Header Row -->
+            <div class="flex border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant bg-surface">
+              <div class="w-52 py-3 px-4 shrink-0 border-r border-secondary/20 bg-surface font-semibold">Villa / Room</div>
+              <div class="gantt-header-days flex-grow flex">
+                <!-- Dynamically populated in app.js -->
+              </div>
+            </div>
+            
+            <!-- Gantt Rows Container -->
+            <div id="gantt-rows-medium" class="gantt-rows flex flex-col">
+              <!-- Dynamically populated in app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Gantt schedule layout container (Large Villas) -->
+        <div class="glass-panel overflow-x-auto w-full border border-tertiary/10 shadow-[0_0_15px_rgba(229,193,88,0.03)]" id="gantt-large-container">
+          <div class="min-w-[1008px] flex flex-col">
+            <!-- Section Header with Gold Tint Accent -->
+            <div class="flex justify-between items-center bg-tertiary/5 px-4 py-3 border-b border-secondary/15 select-none">
+              <h4 class="font-headline-sm text-xs text-tertiary font-bold uppercase tracking-widest flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-xs">star</span> Large Luxury Villas
+              </h4>
+              <span class="font-mono-data text-[9px] text-tertiary tracking-widest uppercase font-semibold">2 Premium Grand Suites • Ultra-Exclusive</span>
+            </div>
+            <!-- Gantt Header Row -->
+            <div class="flex border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant bg-surface">
+              <div class="w-52 py-3 px-4 shrink-0 border-r border-secondary/20 bg-surface font-semibold">Villa / Room</div>
+              <div class="gantt-header-days flex-grow flex">
+                <!-- Dynamically populated in app.js -->
+              </div>
+            </div>
+            
+            <!-- Gantt Rows Container -->
+            <div id="gantt-rows-large" class="gantt-rows flex flex-col">
+              <!-- Dynamically populated in app.js -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW 4: SPECIAL BOOKINGS (AMENITIES OPERATIONS) -->
+      <div id="view-special" class="view-panel hidden flex flex-col gap-6">
+        <section class="glass-panel p-stack-md flex flex-col">
+          <div class="flex justify-between items-center mb-6 border-b border-secondary/15 pb-2">
+            <div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Resort Amenities Reservations</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Manage events, occasion setups, and special service coordination</p>
+            </div>
+            <button class="px-4 py-2 bg-tertiary text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white hover:text-dark-obsidian transition-all" id="btn-new-special-booking">
+              Log Amenity Booking
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-left border-collapse" id="special-bookings-table">
+              <thead>
+                <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                  <th class="py-3 pr-4">Booking ID</th>
+                  <th class="py-3 px-4">Guest</th>
+                  <th class="py-3 px-4">Amenity Type</th>
+                  <th class="py-3 px-4">Date</th>
+                  <th class="py-3 px-4">Details & Occasion</th>
+                  <th class="py-3 px-4">Total Folio</th>
+                  <th class="py-3 pl-4 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm font-body-md">
+                <!-- Dynamically populated in app.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW 4.5: MAINTENANCE HUB -->
+      <div id="view-maintenance" class="view-panel hidden flex flex-col gap-6">
+        <section class="glass-panel p-stack-md flex flex-col">
+          <div class="flex justify-between items-center mb-4 border-b border-secondary/15 pb-2">
+            <div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Active Unit Blockings</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Real-time room blockouts, housekeeping slots, and maintenance holds</p>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-left border-collapse" id="maintenance-blockouts-table">
+              <thead>
+                <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                  <th class="py-3 pr-4">Villa Room</th>
+                  <th class="py-3 px-4">Blocking Type</th>
+                  <th class="py-3 px-4">Dates</th>
+                  <th class="py-3 px-4">Severity / Issue</th>
+                  <th class="py-3 px-4">Created On</th>
+                  <th class="py-3 pl-4 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm font-body-md">
+                <!-- Dynamically populated in app.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="flex flex-col md:flex-row gap-6">
+          <section class="glass-panel p-stack-md flex-1 md:flex-[7] flex flex-col">
+            <div class="flex justify-between items-center mb-6 border-b border-secondary/15 pb-2">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Maintenance Tickets</h3>
+              <button class="px-3 py-1.5 border border-secondary/20 hover:border-tertiary text-xs font-label-caps text-tertiary transition-all" id="btn-new-ticket">
+                New Ticket
+              </button>
+            </div>
+            
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-collapse" id="maintenance-tickets-table">
+                <thead>
+                  <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                    <th class="py-3 pr-4">Ticket</th>
+                    <th class="py-3 px-4">Location</th>
+                    <th class="py-3 px-4">System / Issue</th>
+                    <th class="py-3 px-4">Severity</th>
+                    <th class="py-3 pl-4 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm font-body-md">
+                  <tr class="border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer">
+                    <td class="py-4 pr-4 font-mono-data">#ENG-108</td>
+                    <td class="py-4 px-4 font-label-caps text-tertiary">Villa 4</td>
+                    <td class="py-4 px-4">AC compressor fan replacement requested.</td>
+                    <td class="py-4 px-4"><span class="text-alert-red font-semibold text-xs border border-alert-red/30 px-2 py-0.5">HIGH</span></td>
+                    <td class="py-4 pl-4 text-right"><span class="text-xs font-label-caps text-alert-orange">Dispatched</span></td>
+                  </tr>
+                  <tr class="border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer">
+                    <td class="py-4 pr-4 font-mono-data">#ENG-109</td>
+                    <td class="py-4 px-4 font-label-caps text-tertiary">Villa 5</td>
+                    <td class="py-4 px-4">Infiniti pool temperature sensor calibration.</td>
+                    <td class="py-4 px-4"><span class="text-alert-orange font-semibold text-xs border border-alert-orange/30 px-2 py-0.5">MEDIUM</span></td>
+                    <td class="py-4 pl-4 text-right"><span class="text-xs font-label-caps text-on-surface-variant">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="glass-panel p-stack-md flex-1 md:flex-[5] flex flex-col gap-6">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2">Operational Automation</h3>
+            <div class="flex flex-col gap-4 text-sm">
+              <div class="flex justify-between items-center bg-surface p-4 border border-secondary/10">
+                <div class="flex flex-col">
+                  <span class="font-label-caps text-xs text-on-surface font-semibold">AC Setback Mode</span>
+                  <span class="text-xs text-on-surface-variant mt-1">Set AC to YTD eco presets.</span>
+                </div>
+                <label class="privacy-toggle">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="flex justify-between items-center bg-surface p-4 border border-secondary/10">
+                <div class="flex flex-col">
+                  <span class="font-label-caps text-xs text-on-surface font-semibold">Pool Temperature Sync</span>
+                  <span class="text-xs text-on-surface-variant mt-1">Calibrate heating cycles.</span>
+                </div>
+                <label class="privacy-toggle">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- VIEW 5: CENTRAL LEDGER PANEL -->
+      <div id="view-ledger" class="view-panel hidden flex flex-col gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-panel p-stack-md flex flex-col">
+            <span class="font-label-caps text-on-surface-variant text-xs mb-2">Active Folio Receivables</span>
+            <div class="flex items-baseline gap-1">
+              <span class="font-mono-data text-tertiary text-xs">₱</span>
+              <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable" id="ledger-metric-receivables">312,850.00</span>
+            </div>
+          </div>
+          <div class="glass-panel p-stack-md flex flex-col">
+            <span class="font-label-caps text-on-surface-variant text-xs mb-2">Pending Checkout Billings</span>
+            <div class="flex items-baseline gap-1">
+              <span class="font-mono-data text-tertiary text-xs">₱</span>
+              <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable" id="ledger-metric-pending">18,600.00</span>
+            </div>
+          </div>
+          <div class="glass-panel p-stack-md flex flex-col">
+            <span class="font-label-caps text-on-surface-variant text-xs mb-2">Security Escrow Deposit</span>
+            <div class="flex items-baseline gap-1">
+              <span class="font-mono-data text-tertiary text-xs">₱</span>
+              <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable" id="ledger-metric-escrow">150,000.00</span>
+            </div>
+          </div>
+        </div>
+
+        <section class="glass-panel p-stack-md flex flex-col">
+          <div class="flex justify-between items-center mb-6 border-b border-secondary/15 pb-2">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface">Active Guest Ledger</h3>
+            <button class="px-3 py-1.5 bg-tertiary text-dark-obsidian hover:bg-white text-xs font-label-caps font-bold flex items-center gap-1.5 transition-all focus:outline-none" id="btn-ledger-new-booking">
+              <span class="material-symbols-outlined text-sm">add_circle</span> New Booking
+            </button>
+          </div>
+
+          <!-- Ledger Sub-navigation Switcher -->
+          <div class="bg-surface-variant/10 p-3 border border-secondary/10 mb-4 text-xs">
+            <div class="flex items-center gap-1.5 select-none overflow-x-auto whitespace-nowrap no-scrollbar w-full pb-0.5" id="ledger-view-switcher">
+              <span class="font-label-caps text-[9px] font-bold text-on-surface-variant mr-1 tracking-widest uppercase shrink-0">View by Ledger</span>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 bg-tertiary text-dark-obsidian text-[10px] font-semibold transition-all hover:brightness-110 flex items-center gap-1 shrink-0" data-ledger-tab="active">
+                Active Ledger <span class="bg-dark-obsidian/15 text-dark-obsidian text-[9px] px-1 py-px font-bold" id="badge-ledger-active">0</span>
+              </button>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0" data-ledger-tab="payments">
+                Payments Due <span class="bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold" id="badge-ledger-payments">0</span>
+              </button>
+              
+              <div class="h-4 w-[1px] bg-secondary/20 mx-0.5 shrink-0"></div>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0" data-ledger-tab="upcoming">
+                Upcoming Bookings <span class="bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold" id="badge-ledger-upcoming">0</span>
+              </button>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0" data-ledger-tab="checkins">
+                Today's Check Ins <span class="bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold" id="badge-ledger-checkins">0</span>
+              </button>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0" data-ledger-tab="checkouts">
+                Today's Check Outs <span class="bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold" id="badge-ledger-checkouts">0</span>
+              </button>
+              
+              <div class="h-4 w-[1px] bg-secondary/20 mx-0.5 shrink-0"></div>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0" data-ledger-tab="transactions">
+                Transaction Log <span class="bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold" id="badge-ledger-transactions">0</span>
+              </button>
+              
+              <button type="button" class="ledger-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0" data-ledger-tab="past">
+                Past Bookings <span class="bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold" id="badge-ledger-past">0</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Ledger Table Meta Information -->
+          <div class="flex justify-between items-center text-xs text-on-surface-variant mb-4 px-1 select-none">
+            <span id="ledger-showing-records-text">Showing 0 records</span>
+            <span class="hidden md:inline text-[11px] opacity-75 font-medium" id="ledger-help-description-text">Ledger view for booking balance checks, movement, payment review, and archive follow-up.</span>
+          </div>
+          <div class="overflow-x-auto w-full">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                  <th class="py-3 pr-4">Guest</th>
+                  <th class="py-3 px-4">Villa Room</th>
+                  <th class="py-3 px-4">Dates</th>
+                  <th class="py-3 px-4">Created On</th>
+                  <th class="py-3 px-4">Booking Status</th>
+                  <th class="py-3 px-4">Payment Status</th>
+                  <th class="py-3 pl-4 text-right">Outstanding Folio</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm font-body-md">
+                <tr class="ledger-row border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer" data-id="harrington">
+                  <td class="py-4 pr-4 font-semibold text-on-surface ledger-guest">Lord Marcus Harrington</td>
+                  <td class="py-4 px-4 font-label-caps text-tertiary ledger-room">Villa 6</td>
+                  <td class="py-4 px-4 ledger-dates">June 24 - July 02</td>
+                  <td class="py-4 px-4 ledger-created">June 15, 2026</td>
+                  <td class="py-4 px-4 ledger-booking-status"><span class="text-tertiary text-xs font-bold border border-tertiary/20 px-2 py-0.5">CONFIRMED</span></td>
+                  <td class="py-4 px-4 ledger-payment-status" id="harrington-ledger-status"><span class="text-alert-orange text-xs font-bold border border-alert-orange/20 px-2 py-0.5">UNPAID DEPOSIT</span></td>
+                  <td class="py-4 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable ledger-folio" id="harrington-ledger-val">42,100.00</span></td>
+                </tr>
+                <tr class="ledger-row border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer" data-id="loren">
+                  <td class="py-4 pr-4 font-semibold text-on-surface ledger-guest">Sophia Loren</td>
+                  <td class="py-4 px-4 font-label-caps text-tertiary ledger-room">Villa 1</td>
+                  <td class="py-4 px-4 ledger-dates">June 18 - June 25</td>
+                  <td class="py-4 px-4 ledger-created">June 10, 2026</td>
+                  <td class="py-4 px-4 ledger-booking-status"><span class="text-mint-active text-xs font-bold border border-mint-active/20 px-2 py-0.5">CHECKED IN</span></td>
+                  <td class="py-4 px-4 ledger-payment-status"><span class="text-mint-active text-xs font-bold border border-mint-active/20 px-2 py-0.5">OPEN</span></td>
+                  <td class="py-4 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable ledger-folio">62,150.00</span></td>
+                </tr>
+                <tr class="ledger-row border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer" data-id="clooney">
+                  <td class="py-4 pr-4 font-semibold text-on-surface ledger-guest">George Clooney</td>
+                  <td class="py-4 px-4 font-label-caps text-tertiary ledger-room">Villa 5</td>
+                  <td class="py-4 px-4 ledger-dates">June 22 - June 29</td>
+                  <td class="py-4 px-4 ledger-created">June 12, 2026</td>
+                  <td class="py-4 px-4 ledger-booking-status"><span class="text-tertiary text-xs font-bold border border-tertiary/20 px-2 py-0.5">CONFIRMED</span></td>
+                  <td class="py-4 px-4 ledger-payment-status"><span class="text-mint-active text-xs font-bold border border-mint-active/20 px-2 py-0.5">OPEN</span></td>
+                  <td class="py-4 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable ledger-folio">95,400.00</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW 6: PERFORMANCE ANALYTICS -->
+      <div id="view-analytics" class="view-panel hidden flex flex-col gap-6">
+        
+        <!-- Performance Sub-Navigation Tabs -->
+        <div class="flex border-b border-secondary/15 gap-2 overflow-x-auto shrink-0 select-none pb-1">
+          <button class="analytics-sub-tab px-4 py-2 border-b-2 border-tertiary text-tertiary text-xs font-label-caps font-bold transition-all focus:outline-none" data-subview="summary">
+            Executive Summary
+          </button>
+          <button class="analytics-sub-tab px-4 py-2 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none" data-subview="revenues">
+            Revenues
+          </button>
+          <button class="analytics-sub-tab px-4 py-2 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none" data-subview="units">
+            Units Analysis
+          </button>
+          <button class="analytics-sub-tab px-4 py-2 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none" data-subview="expenses">
+            Expenses &amp; Cashflow
+          </button>
+          <button class="analytics-sub-tab px-4 py-2 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none" data-subview="executive">
+            Executive Report
+          </button>
+        </div>
+
+        <!-- SUBVIEW 0: EXECUTIVE SUMMARY -->
+        <div id="analytics-subview-summary" class="analytics-subview flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">Average Daily Rate (ADR)</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-mono-data text-tertiary text-xs">₱</span>
+                <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable">4,733.33</span>
+              </div>
+              <span class="text-xs text-mint-active mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">trending_up</span> +12.4% vs Last Month
+              </span>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">RevPAR Performance</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-mono-data text-tertiary text-xs">₱</span>
+                <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable">4,007.16</span>
+              </div>
+              <span class="text-xs text-mint-active mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">trending_up</span> +8.2% vs Last Month
+              </span>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">Overall Occupancy</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-display-lg-mobile text-on-surface font-semibold">83.0%</span>
+              </div>
+              <span class="text-xs text-secondary mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">target</span> Target: 85.0%
+              </span>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">EBITDA Profit Margin</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-display-lg-mobile text-on-surface font-semibold">48.6%</span>
+              </div>
+              <span class="text-xs text-mint-active mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">check_circle</span> Target Pacing YTD
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-6 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Monthly Revenues vs. Expenses</h3>
+              <div class="relative w-full h-[220px]">
+                <canvas id="chart-summary-financials"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-3 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">EBITDA Margin Trend</h3>
+              <div class="relative w-full h-[220px] flex items-center justify-center">
+                <canvas id="chart-summary-margin"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-3 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Revenue Share</h3>
+              <div class="relative w-full h-[220px] flex items-center justify-center">
+                <canvas id="chart-summary-categories"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- MoM YTD Executive Table -->
+          <div class="glass-panel p-stack-md flex flex-col">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Year-to-Date Month-over-Month Executive Table (H1 YTD)</h3>
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                    <th class="py-3 pr-4">Reporting Month</th>
+                    <th class="py-3 px-4 text-right">Gross Revenues (₱)</th>
+                    <th class="py-3 px-4 text-right">Total Expenses (₱)</th>
+                    <th class="py-3 px-4 text-right">EBITDA (₱)</th>
+                    <th class="py-3 px-4 text-right">EBITDA Margin (%)</th>
+                    <th class="py-3 pl-4 text-right">Occupancy Rate</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body-md text-on-surface">
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">January 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">₱<span class="ledger-maskable">240,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">122,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">118,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-xs text-on-surface-variant">49.2%</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">72%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">February 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">₱<span class="ledger-maskable">295,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">150,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">145,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-xs text-on-surface-variant">49.2%</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">75%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">March 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">₱<span class="ledger-maskable">340,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">168,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">172,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-xs text-on-surface-variant">50.6%</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">80%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">April 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">₱<span class="ledger-maskable">325,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">162,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">163,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-xs text-on-surface-variant">50.2%</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">78%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">May 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">₱<span class="ledger-maskable">380,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">189,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">191,000.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-xs text-on-surface-variant">50.3%</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">82%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">June 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">₱<span class="ledger-maskable">412,850.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">233,500.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">179,350.00</span></td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-xs text-on-surface-variant">43.4%</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">83%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-3 pr-4 uppercase">Total H1 YTD</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">₱<span class="ledger-maskable">1,992,850.00</span></td>
+                    <td class="py-3 px-4 text-right font-mono-data text-alert-orange">₱<span class="ledger-maskable">1,025,300.00</span></td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">₱<span class="ledger-maskable">967,550.00</span></td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">48.6%</td>
+                    <td class="py-3 pl-4 text-right font-mono-data text-mint-active">78.3%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW 1: REVENUES -->
+        <div id="analytics-subview-revenues" class="analytics-subview hidden flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">Average Daily Rate (ADR)</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-mono-data text-tertiary text-xs">₱</span>
+                <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable">4,850.00</span>
+              </div>
+              <span class="text-xs text-mint-active mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">trending_up</span> +12.4% vs Last Month
+              </span>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">RevPAR Performance</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-mono-data text-tertiary text-xs">₱</span>
+                <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable">3,201.00</span>
+              </div>
+              <span class="text-xs text-mint-active mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">trending_up</span> +8.2% vs Last Month
+              </span>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <span class="font-label-caps text-on-surface-variant text-xs mb-2">Operating EBITDA (YTD)</span>
+              <div class="flex items-baseline gap-1">
+                <span class="font-mono-data text-tertiary text-xs">₱</span>
+                <span class="font-display-lg-mobile text-on-surface font-semibold ledger-maskable">1,482,900.00</span>
+              </div>
+              <span class="text-xs text-mint-active mt-2 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">trending_up</span> +14.6% Target Pacing
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-6 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Revenue Growth Performance</h3>
+              <div class="relative w-full h-[220px]">
+                <canvas id="chart-revenue"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-3 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Revenue Allocation</h3>
+              <div class="relative w-full h-[220px] flex items-center justify-center">
+                <canvas id="chart-categories"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-3 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Booking Channels</h3>
+              <div class="relative w-full h-[220px] flex items-center justify-center">
+                <canvas id="chart-channels"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Daily Revenue & Occupancy Trend Combo Chart -->
+          <div class="glass-panel p-stack-md flex flex-col">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Daily Revenue &amp; Occupancy Trend</h3>
+            <div class="relative w-full h-[220px]">
+              <canvas id="chart-daily-revenue-occupancy"></canvas>
+            </div>
+          </div>
+
+          <!-- New Add-on Services and Top Spenders Tables -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="glass-panel p-stack-md flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Add-on Services Revenue (June YTD)</h3>
+              <div class="overflow-x-auto w-full">
+                <table class="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                      <th class="py-3 pr-4">Service Item</th>
+                      <th class="py-3 px-4">Department</th>
+                      <th class="py-3 px-4 text-right">Bookings</th>
+                      <th class="py-3 px-4 text-right">Unit Rate (₱)</th>
+                      <th class="py-3 pl-4 text-right">Revenue (₱)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="font-body-md text-on-surface">
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-tertiary">Sommelier Wine Stocking</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Wine &amp; Beverage</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">2</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">43,600.00</td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data">87,200.00</td>
+                    </tr>
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-tertiary">Yacht Charter Experience</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Guest Experiences</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">2</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">12,500.00</td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data">25,000.00</td>
+                    </tr>
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-tertiary">Spa &amp; Wellness Program</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Wellness Center</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">3</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">4,200.00</td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data">12,600.00</td>
+                    </tr>
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-tertiary">Private Chef Dining</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Culinary Arts</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">2</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">1,500.00</td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data">3,550.00</td>
+                    </tr>
+                    <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                      <td class="py-3 pr-4 uppercase">Total Incidentals</td>
+                      <td class="py-3 px-4 text-xs">Services</td>
+                      <td class="py-3 px-4 text-right font-mono-data text-mint-active">9</td>
+                      <td class="py-3 px-4 text-right font-mono-data text-mint-active">-</td>
+                      <td class="py-3 pl-4 text-right font-mono-data text-mint-active">128,350.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="glass-panel p-stack-md flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Top Spender Guests</h3>
+              <div class="overflow-x-auto w-full">
+                <table class="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                      <th class="py-3 pr-4">Guest Name</th>
+                      <th class="py-3 px-4">Villa Unit</th>
+                      <th class="py-3 px-4 text-right">Nights</th>
+                      <th class="py-3 px-4 text-right">Status</th>
+                      <th class="py-3 pl-4 text-right">Folio Total (₱)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="font-body-md text-on-surface">
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-on-surface">George Clooney</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Villa 5 (Sirenuse Suite)</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">5</td>
+                      <td class="py-2.5 px-4 text-right"><span class="text-tertiary text-[10px] font-bold border border-tertiary/20 px-2 py-0.5">PARTIAL</span></td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">95,400.00</span></td>
+                    </tr>
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-on-surface">Sophia Loren</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Villa 1 (Amalfi Suite)</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">7</td>
+                      <td class="py-2.5 px-4 text-right"><span class="text-tertiary text-[10px] font-bold border border-tertiary/20 px-2 py-0.5">PARTIAL</span></td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">62,150.00</span></td>
+                    </tr>
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-on-surface">Brad Pitt</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Villa 4 (Capri Vista)</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">6</td>
+                      <td class="py-2.5 px-4 text-right"><span class="text-mint-active text-[10px] font-bold border border-mint-active/20 px-2 py-0.5">FULL</span></td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">52,800.00</span></td>
+                    </tr>
+                    <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                      <td class="py-2.5 pr-4 font-semibold text-on-surface">Lord Marcus Harrington</td>
+                      <td class="py-2.5 px-4 text-xs text-on-surface-variant">Villa 6 (Sunset Pavilion)</td>
+                      <td class="py-2.5 px-4 text-right font-mono-data">4</td>
+                      <td class="py-2.5 px-4 text-right"><span class="text-alert-orange text-[10px] font-bold border border-alert-orange/20 px-2 py-0.5">UNPAID</span></td>
+                      <td class="py-2.5 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable">42,100.00</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW 2: UNITS ANALYSIS -->
+        <div id="analytics-subview-units" class="analytics-subview hidden flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-stack-md flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Occupancy Rate per Villa (June YTD)</h3>
+              <div class="relative w-full h-[220px]">
+                <canvas id="chart-unit-occupancy"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Average Daily Rate (ADR) per Villa</h3>
+              <div class="relative w-full h-[220px]">
+                <canvas id="chart-unit-adr"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">RevPAR per Villa (June YTD)</h3>
+              <div class="relative w-full h-[220px]">
+                <canvas id="chart-unit-revpar"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Villa Performance Metrics Table -->
+          <div class="glass-panel p-stack-md flex flex-col">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Villa Performance Metrics Table (June YTD)</h3>
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                    <th class="py-3 pr-4">Villa Unit</th>
+                    <th class="py-3 px-4">Villa Category</th>
+                    <th class="py-3 px-4 text-right">Occupancy Rate</th>
+                    <th class="py-3 px-4 text-right">ADR (₱)</th>
+                    <th class="py-3 px-4 text-right">RevPAR (₱)</th>
+                    <th class="py-3 pl-4 text-right">June Room Revenue (₱)</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body-md text-on-surface">
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-tertiary">Villa 1 (Amalfi Suite)</td>
+                    <td class="py-2.5 px-4 text-xs text-on-surface-variant">Medium Luxury Villa</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">82%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">3,200.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">2,624.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">45,200.00</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-tertiary">Villa 2 (Positano Vista)</td>
+                    <td class="py-2.5 px-4 text-xs text-on-surface-variant">Medium Luxury Villa</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">78%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">3,500.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">2,730.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">22,500.00</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-tertiary">Villa 3 (Ravello Suite)</td>
+                    <td class="py-2.5 px-4 text-xs text-on-surface-variant">Medium Luxury Villa</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">85%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">3,800.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">3,230.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">28,000.00</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-tertiary">Villa 4 (Capri Vista)</td>
+                    <td class="py-2.5 px-4 text-xs text-on-surface-variant">Medium Luxury Villa</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">74%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">4,200.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">3,108.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">42,800.00</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-tertiary">Villa 5 (Sirenuse Suite)</td>
+                    <td class="py-2.5 px-4 text-xs text-on-surface-variant">Large Luxury Villa</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">91%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">6,500.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">5,915.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">80,400.00</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-tertiary">Villa 6 (Sunset Pavilion)</td>
+                    <td class="py-2.5 px-4 text-xs text-on-surface-variant">Large Luxury Villa</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">88%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">7,200.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">6,336.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">65,600.00</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-3 pr-4 uppercase">Average / Total Portfolio</td>
+                    <td class="py-3 px-4 text-xs">6 units</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">83.0%</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">4,733.33</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">4,007.16</td>
+                    <td class="py-3 pl-4 text-right font-mono-data text-mint-active">284,500.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW 3: EXPENSES & CASHFLOW -->
+        <div id="analytics-subview-expenses" class="analytics-subview hidden flex flex-col gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-6 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Revenues vs. Operating Expenses vs. Net Cashflow</h3>
+              <div class="relative w-full h-[220px]">
+                <canvas id="chart-expenses-cashflow"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-3 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Expense Categories Allocation</h3>
+              <div class="relative w-full h-[220px] flex items-center justify-center">
+                <canvas id="chart-expense-categories"></canvas>
+              </div>
+            </div>
+            <div class="glass-panel p-stack-md col-span-1 md:col-span-3 flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Operating Margin Trend (EBITDA %)</h3>
+              <div class="relative w-full h-[220px] flex items-center justify-center">
+                <canvas id="chart-operating-margin"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Monthly Cashflow & Profitability Ledger -->
+          <div class="glass-panel p-stack-md flex flex-col">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 border-b border-secondary/15 pb-2">Monthly Cashflow & Profitability Ledger (H1 YTD)</h3>
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                    <th class="py-3 pr-4">Reporting Month</th>
+                    <th class="py-3 px-4 text-right">Gross Revenues (₱)</th>
+                    <th class="py-3 px-4 text-right">COGS (₱)</th>
+                    <th class="py-3 px-4 text-right">SGA Expenses (₱)</th>
+                    <th class="py-3 px-4 text-right">Fixed Charges (₱)</th>
+                    <th class="py-3 px-4 text-right">EBITDA (₱)</th>
+                    <th class="py-3 pl-4 text-right">Operating Margin (%)</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body-md text-on-surface">
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">January 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">240,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">32,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">78,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">12,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">118,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-xs text-on-surface-variant">49.2%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">February 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">295,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">40,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">95,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">15,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">145,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-xs text-on-surface-variant">49.2%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">March 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">340,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">48,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">102,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">18,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">172,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-xs text-on-surface-variant">50.6%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">April 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">325,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">44,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">101,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">17,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">163,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-xs text-on-surface-variant">50.2%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">May 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">380,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">53,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">117,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">19,000.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">191,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-xs text-on-surface-variant">50.3%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5 hover:bg-surface-variant/5">
+                    <td class="py-2.5 pr-4 font-semibold text-on-surface">June 2026</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">412,850.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">60,300.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">152,700.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">20,500.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">179,350.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-xs text-on-surface-variant">43.4%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-3 pr-4 uppercase">Total H1 YTD</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-mint-active">1,992,850.00</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-alert-orange">277,600.00</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-alert-orange">645,700.00</td>
+                    <td class="py-3 px-4 text-right font-mono-data">102,000.00</td>
+                    <td class="py-3 px-4 text-right font-mono-data text-tertiary">967,550.00</td>
+                    <td class="py-3 pl-4 text-right font-mono-data text-mint-active">48.6%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW 4: EXECUTIVE REPORT -->
+        <div id="analytics-subview-executive" class="analytics-subview hidden flex flex-col gap-6">
+          <div class="glass-panel p-stack-md flex flex-col">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-secondary/15 pb-4 gap-3">
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Executive Profit &amp; Loss Statement</h3>
+                <p class="text-xs text-on-surface-variant mt-1">Quarter-to-Date &amp; Year-to-Date operations ledger breakdown</p>
+              </div>
+              <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                <button class="flex-grow sm:flex-grow-0 px-3 py-2 border border-secondary/20 hover:border-tertiary text-xs font-label-caps text-tertiary flex items-center justify-center gap-1.5 transition-all focus:outline-none" id="btn-export-csv">
+                  <span class="material-symbols-outlined text-sm">download</span> Export Ledger CSV
+                </button>
+                <button class="flex-grow sm:flex-grow-0 px-3 py-2 bg-tertiary text-dark-obsidian hover:bg-white hover:text-dark-obsidian text-xs font-label-caps font-bold flex items-center justify-center gap-1.5 transition-all focus:outline-none" id="btn-export-pdf">
+                  <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Print Owner PDF
+                </button>
+              </div>
+            </div>
+            
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-secondary/20 text-xs font-label-caps text-on-surface-variant">
+                    <th class="py-3 pr-4">Account Category</th>
+                    <th class="py-3 px-4 text-right">June 2026 (₱)</th>
+                    <th class="py-3 px-4 text-right">June %</th>
+                    <th class="py-3 px-4 text-right">YTD Total (₱)</th>
+                    <th class="py-3 pl-4 text-right">YTD %</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body-md text-on-surface">
+                  <!-- OPERATING REVENUES -->
+                  <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+                    <td class="py-3 pr-4" colspan="5">Operating Revenues</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Rooms Base Rates</td>
+                    <td class="py-2 px-4 text-right font-mono-data">284,500.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">68.9%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">1,204,500.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">70.4%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Food, Wine &amp; Sommelier Services</td>
+                    <td class="py-2 px-4 text-right font-mono-data">64,200.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">15.5%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">244,200.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">14.3%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Yacht Experience &amp; Amenities</td>
+                    <td class="py-2 px-4 text-right font-mono-data">48,500.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">11.7%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">198,500.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">11.6%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Spa &amp; Wellness Program</td>
+                    <td class="py-2 px-4 text-right font-mono-data">15,650.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">3.8%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">62,800.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">3.7%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Gross Operating Revenue</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-mint-active">412,850.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-mint-active">100.0%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-mint-active">1,710,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-mint-active">100.0%</td>
+                  </tr>
+                  
+                  <!-- COST OF GOODS SOLD -->
+                  <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+                    <td class="py-3 pr-4 mt-2" colspan="5">Cost of Goods Sold (COGS)</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Sommelier Wine Stocking Costs</td>
+                    <td class="py-2 px-4 text-right font-mono-data">43,600.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">10.6%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">163,600.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">9.6%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Yacht Fuel &amp; Consumables</td>
+                    <td class="py-2 px-4 text-right font-mono-data">12,500.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">3.0%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">42,500.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">2.5%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Spa &amp; Wellness Materials</td>
+                    <td class="py-2 px-4 text-right font-mono-data">4,200.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">1.0%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">15,200.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">0.9%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Total Cost of Goods Sold</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">60,300.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">14.6%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">221,300.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-alert-orange">12.9%</td>
+                  </tr>
+
+                  <!-- GROSS PROFIT -->
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20 text-on-surface">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Gross profit</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">352,550.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">85.4%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">1,488,700.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">87.1%</td>
+                  </tr>
+                  
+                  <!-- UNDISTRIBUTED OPERATING EXPENSES -->
+                  <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+                    <td class="py-3 pr-4 mt-2" colspan="5">Undistributed Operating Expenses (SGA)</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Staff Salaries &amp; Benefits</td>
+                    <td class="py-2 px-4 text-right font-mono-data">87,200.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">21.1%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">387,200.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">22.6%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Utilities, Infrastructure &amp; IT</td>
+                    <td class="py-2 px-4 text-right font-mono-data">10,900.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">2.6%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">48,900.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">2.9%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Yacht Crewing &amp; Operations Maintenance</td>
+                    <td class="py-2 px-4 text-right font-mono-data">20,200.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">4.9%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">80,200.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">4.7%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Spa &amp; Wellness Operations Staffing</td>
+                    <td class="py-2 px-4 text-right font-mono-data">6,700.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">1.6%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">25,700.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">1.5%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Maintenance &amp; Facility Upkeep</td>
+                    <td class="py-2 px-4 text-right font-mono-data">12,400.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">3.0%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">45,600.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">2.7%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Administration, Guest Acquisition &amp; Marketing</td>
+                    <td class="py-2 px-4 text-right font-mono-data">15,300.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">3.7%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">65,200.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">3.8%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Total SGA Expenses</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">152,700.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">37.0%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">652,800.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-alert-orange">38.2%</td>
+                  </tr>
+                  
+                  <!-- GROSS OPERATING PROFIT -->
+                  <tr class="border-b border-secondary/15 font-bold bg-tertiary/5 text-tertiary">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Gross Operating Profit (EBITDA)</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">199,850.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">48.4%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">835,900.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data text-tertiary">48.9%</td>
+                  </tr>
+
+                  <!-- FIXED CHARGES -->
+                  <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+                    <td class="py-3 pr-4 mt-2" colspan="5">Fixed Charges</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Property Insurance &amp; Taxes</td>
+                    <td class="py-2 px-4 text-right font-mono-data">8,500.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">2.1%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">51,000.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">3.0%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Management &amp; Brand Franchise Fees</td>
+                    <td class="py-2 px-4 text-right font-mono-data">12,000.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">2.9%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">72,000.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">4.2%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Total Fixed Charges</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">20,500.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">5.0%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">123,000.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">7.2%</td>
+                  </tr>
+
+                  <!-- NET OPERATING INCOME -->
+                  <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20 text-on-surface">
+                    <td class="py-2.5 pr-4 text-xs uppercase">Net Operating Income (NOI)</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">179,350.00</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">43.4%</td>
+                    <td class="py-2.5 px-4 text-right font-mono-data">712,900.00</td>
+                    <td class="py-2.5 pl-4 text-right font-mono-data">41.7%</td>
+                  </tr>
+
+                  <!-- NON-OPERATING ITEMS -->
+                  <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+                    <td class="py-3 pr-4 mt-2" colspan="5">Non-Operating Expenses / Taxes</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Mortgage &amp; Debt Interest Expense</td>
+                    <td class="py-2 px-4 text-right font-mono-data">5,400.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">1.3%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">32,400.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">1.9%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Depreciation &amp; Capital Amortization</td>
+                    <td class="py-2 px-4 text-right font-mono-data">14,000.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">3.4%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">84,000.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">4.9%</td>
+                  </tr>
+                  <tr class="border-b border-secondary/5">
+                    <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Corporate Taxes</td>
+                    <td class="py-2 px-4 text-right font-mono-data">25,000.00</td>
+                    <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">6.1%</td>
+                    <td class="py-2 px-4 text-right font-mono-data">120,000.00</td>
+                    <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">7.0%</td>
+                  </tr>
+
+                  <!-- NET INCOME -->
+                  <tr class="border-b-2 border-double border-secondary/35 font-bold bg-tertiary/10 text-on-surface">
+                    <td class="py-4 pr-4 text-xs uppercase">Net Income</td>
+                    <td class="py-4 px-4 text-right font-mono-data text-tertiary">134,950.00</td>
+                    <td class="py-4 px-4 text-right font-mono-data text-tertiary">32.7%</td>
+                    <td class="py-4 pl-4 text-right font-mono-data text-tertiary">476,500.00</td>
+                    <td class="py-4 pl-4 text-right font-mono-data text-tertiary">27.9%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 7: KNOWLEDGE MONITOR (KNOWLEDGEBASE VIEW) -->
+      <div id="view-knowledge" class="view-panel hidden flex flex-col gap-6">
+        
+        <!-- Search Controls Deck (Like in Breeze Screenshot) -->
+        <div class="flex flex-col gap-1 border-b border-secondary/15 pb-2">
+          <h3 class="font-headline-sm text-lg text-on-surface font-semibold">Resort Source of Truth</h3>
+          <p class="text-xs text-on-surface-variant">Sync accommodation details, pricing matrices, and operations rules.</p>
+        </div>
+
+        <!-- Room Cards Grid (Breeze style layout, adapted for Amalfi Luxury) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6" id="knowledge-cards-grid">
+          <!-- Room Card 1 -->
+          <div class="glass-panel flex flex-col border border-secondary/10 group overflow-hidden knowledge-card" data-category="accommodations" data-search="amalfi vista suite room pricing 2500 pax">
+            <div class="h-44 overflow-hidden relative">
+              <img class="w-full h-full object-cover opacity-75 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9OfojDaTigBDll4pzjt1itJ6w5vGah_48HHYv53IkfQreOR_YOjunsuQjnsLu10bHJkLhK6h_wU-YGw2IXutiVxuCrZW6bCAyqpUcW39UP0Rzsf035sQ67DC62gmhYUqjcgAOPEP-GW-qInVDNgNMrN4pueBHBkq_iFfzmGojLMi0UnkPsA9yuXLHl3zmMrrgyq-xepVxt6gcDJGdTLXTkZHZSCxfAKrqp27PuissXftYFeg_2QgIK8RpcU2w4_rLT0OYexfhLk" alt="Amalfi Vista Suite">
+              <span class="absolute top-3 left-3 bg-tertiary text-dark-obsidian font-label-caps text-[9px] font-bold px-2 py-0.5">SUITE</span>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <div class="flex justify-between items-baseline mb-1">
+                <h4 class="font-headline-sm text-lg text-on-surface">Amalfi Vista Suite</h4>
+                <span class="font-mono-data text-tertiary font-bold">₱2,500.00</span>
+              </div>
+              <span class="font-label-caps text-[10px] text-on-surface-variant mb-3 block">1-2 Pax capacity</span>
+              
+              <ul class="text-[11px] text-on-surface-variant flex flex-col gap-1.5 border-t border-secondary/10 pt-3 flex-grow">
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Private infinity pool overlooking marina</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Premium silk sheets & custom down pillow menu</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> 24/7 dedicated butler & direct concierge interface</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Room Card 2 -->
+          <div class="glass-panel flex flex-col border border-secondary/10 group overflow-hidden knowledge-card" data-category="accommodations" data-search="positano deluxe room pricing 2800 pax">
+            <div class="h-44 overflow-hidden relative">
+              <img class="w-full h-full object-cover opacity-75 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9OfojDaTigBDll4pzjt1itJ6w5vGah_48HHYv53IkfQreOR_YOjunsuQjnsLu10bHJkLhK6h_wU-YGw2IXutiVxuCrZW6bCAyqpUcW39UP0Rzsf035sQ67DC62gmhYUqjcgAOPEP-GW-qInVDNgNMrN4pueBHBkq_iFfzmGojLMi0UnkPsA9yuXLHl3zmMrrgyq-xepVxt6gcDJGdTLXTkZHZSCxfAKrqp27PuissXftYFeg_2QgIK8RpcU2w4_rLT0OYexfhLk" alt="Positano Deluxe">
+              <span class="absolute top-3 left-3 bg-tertiary text-dark-obsidian font-label-caps text-[9px] font-bold px-2 py-0.5">VILLA</span>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <div class="flex justify-between items-baseline mb-1">
+                <h4 class="font-headline-sm text-lg text-on-surface">Positano Deluxe</h4>
+                <span class="font-mono-data text-tertiary font-bold">₱2,800.00</span>
+              </div>
+              <span class="font-label-caps text-[10px] text-on-surface-variant mb-3 block">1-4 Pax capacity</span>
+              
+              <ul class="text-[11px] text-on-surface-variant flex flex-col gap-1.5 border-t border-secondary/10 pt-3 flex-grow">
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Double cliffside balcony & sunrise breakfast service</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Private organic olive oil cellar preset</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Mercedes Maybach airport transfer included</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Room Card 3 -->
+          <div class="glass-panel flex flex-col border border-secondary/10 group overflow-hidden knowledge-card" data-category="accommodations" data-search="ravello penthouse room pricing 3800 pax">
+            <div class="h-44 overflow-hidden relative">
+              <img class="w-full h-full object-cover opacity-75 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9OfojDaTigBDll4pzjt1itJ6w5vGah_48HHYv53IkfQreOR_YOjunsuQjnsLu10bHJkLhK6h_wU-YGw2IXutiVxuCrZW6bCAyqpUcW39UP0Rzsf035sQ67DC62gmhYUqjcgAOPEP-GW-qInVDNgNMrN4pueBHBkq_iFfzmGojLMi0UnkPsA9yuXLHl3zmMrrgyq-xepVxt6gcDJGdTLXTkZHZSCxfAKrqp27PuissXftYFeg_2QgIK8RpcU2w4_rLT0OYexfhLk" alt="Ravello Penthouse">
+              <span class="absolute top-3 left-3 bg-tertiary text-dark-obsidian font-label-caps text-[9px] font-bold px-2 py-0.5">PENTHOUSE</span>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <div class="flex justify-between items-baseline mb-1">
+                <h4 class="font-headline-sm text-lg text-on-surface">Ravello Penthouse</h4>
+                <span class="font-mono-data text-tertiary font-bold">₱3,800.00</span>
+              </div>
+              <span class="font-label-caps text-[10px] text-on-surface-variant mb-3 block">1-4 Pax capacity</span>
+              
+              <ul class="text-[11px] text-on-surface-variant flex flex-col gap-1.5 border-t border-secondary/10 pt-3 flex-grow">
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> 360° coastal panorama terrace</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Cliffside open-air heated jacuzzi</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Bang & Olufsen high-fidelity acoustics throughout</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Room Card 4 -->
+          <div class="glass-panel flex flex-col border border-secondary/10 group overflow-hidden knowledge-card" data-category="accommodations" data-search="emerald cove villa room pricing 12000 pax">
+            <div class="h-44 overflow-hidden relative">
+              <img class="w-full h-full object-cover opacity-75 group-hover:scale-105 transition-all duration-700 mix-blend-luminosity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj9OfojDaTigBDll4pzjt1itJ6w5vGah_48HHYv53IkfQreOR_YOjunsuQjnsLu10bHJkLhK6h_wU-YGw2IXutiVxuCrZW6bCAyqpUcW39UP0Rzsf035sQ67DC62gmhYUqjcgAOPEP-GW-qInVDNgNMrN4pueBHBkq_iFfzmGojLMi0UnkPsA9yuXLHl3zmMrrgyq-xepVxt6gcDJGdTLXTkZHZSCxfAKrqp27PuissXftYFeg_2QgIK8RpcU2w4_rLT0OYexfhLk" alt="Emerald Cove Villa">
+              <span class="absolute top-3 left-3 bg-tertiary text-dark-obsidian font-label-caps text-[9px] font-bold px-2 py-0.5">VILLA OVERSIZED</span>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <div class="flex justify-between items-baseline mb-1">
+                <h4 class="font-headline-sm text-lg text-on-surface">Emerald Cove</h4>
+                <span class="font-mono-data text-tertiary font-bold">₱12,000.00</span>
+              </div>
+              <span class="font-label-caps text-[10px] text-on-surface-variant mb-3 block">1-8 Pax capacity</span>
+              
+              <ul class="text-[11px] text-on-surface-variant flex flex-col gap-1.5 border-t border-secondary/10 pt-3 flex-grow">
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Private beach access with thermal cave sauna</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Full professional kitchen & dedicated private chef</li>
+                <li class="flex items-center gap-1.5"><span class="w-1 h-1 bg-tertiary"></span> Dedicated concierge car & private skippered tender</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Category 2 Cards: Services (Hidden by default, shown when tab active) -->
+          <div class="glass-panel flex flex-col border border-secondary/10 group overflow-hidden knowledge-card hidden" data-category="services" data-search="yacht charter capri private skipper price 8500">
+            <div class="h-44 overflow-hidden relative bg-surface-variant flex items-center justify-center">
+              <span class="material-symbols-outlined text-[64px] text-tertiary/20">directions_boat</span>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <div class="flex justify-between items-baseline mb-1">
+                <h4 class="font-headline-sm text-lg text-on-surface">Private Yacht Charter</h4>
+                <span class="font-mono-data text-tertiary font-bold">₱8,500.00</span>
+              </div>
+              <span class="font-label-caps text-[10px] text-on-surface-variant mb-3 block">Daily Cruise Rate</span>
+              <p class="text-xs text-on-surface-variant leading-relaxed">
+                80ft Riva Flybridge cruiser cruise to Capri coastlines. Fully skippered, includes chef prepared sunset dinner and luxury bar reserves.
+              </p>
+            </div>
+          </div>
+
+          <!-- Category 3 Cards: Rules (Hidden by default, shown when tab active) -->
+          <div class="glass-panel flex flex-col border border-secondary/10 group overflow-hidden knowledge-card hidden" data-category="rules" data-search="cancellation refund policy check in check out hours">
+            <div class="p-4 flex flex-col flex-grow gap-3">
+              <h4 class="font-headline-sm text-lg text-on-surface border-b border-secondary/10 pb-2">Check-in / Check-out</h4>
+              <ul class="text-xs text-on-surface-variant flex flex-col gap-2">
+                <li><strong>Check-in Hour:</strong> 15:00 onwards. Custom helicopter arrivals coordinates pre-cleared by Operations.</li>
+                <li><strong>Check-out Hour:</strong> 11:00 AM. Late checkouts up to 15:00 requested 24 hours prior.</li>
+                <li><strong>Verification Required:</strong> SWIFT wire receipts cleared prior to check-in keys issuance.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW 8: CHATBOT MONITOR PANEL -->
+      <div id="view-chatbot" class="view-panel hidden flex flex-col md:flex-row gap-6">
+        
+        <!-- Active Chat Sessions List (4 cols) -->
+        <div class="glass-panel p-stack-md flex-1 md:flex-[4] flex flex-col">
+          <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2 mb-4">Active Guest Chats</h3>
+          
+          <div class="flex flex-col gap-3" id="chatbot-sessions-list">
+            <!-- Active item (Harrington) -->
+            <div class="bg-surface border-l-2 border-tertiary p-3 flex flex-col gap-1 cursor-pointer hover:bg-surface-variant/20 active-chat-session" data-chat-ref="harrington" onclick="selectChatSession('harrington')">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold">Lord Harrington</span>
+                <span class="w-2 h-2 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span>
+              </div>
+              <span class="text-xs text-tertiary font-label-caps">AI Concierge active</span>
+              <p class="text-[11px] text-on-surface-variant truncate mt-1">"Can I request a bottle of Sassicaia 2016..."</p>
+            </div>
+            
+            <!-- Inactive item (Sophia Loren) -->
+            <div class="bg-surface/50 border-l-2 border-secondary/20 p-3 flex flex-col gap-1 cursor-pointer hover:bg-surface-variant/20" data-chat-ref="loren" onclick="selectChatSession('loren')">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-semibold">Sophia Loren</span>
+                <span class="w-1.5 h-1.5 bg-secondary/40 rounded-full"></span>
+              </div>
+              <span class="text-xs text-on-surface-variant font-label-caps">Idle (Last msg 2h ago)</span>
+              <p class="text-[11px] text-on-surface-variant truncate mt-1">"No, that will be all. Thank you."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat logs viewer & Human operator takeover panel (8 cols) -->
+        <div class="glass-panel p-stack-md flex-1 md:flex-[8] flex flex-col h-[500px]">
+          <div class="flex justify-between items-center border-b border-secondary/15 pb-2 mb-4">
+            <div class="flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface" id="chat-header-guest">Chatbot: Lord Harrington</h3>
+              <span class="text-xs text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+                <span class="w-1.5 h-1.5 bg-mint-active rounded-full" id="chat-header-ai-dot"></span>
+                <span id="chat-header-ai-text">AI Concierge handling query...</span>
+              </span>
+            </div>
+            
+            <!-- Human take over switch -->
+            <button class="px-4 py-2 bg-alert-orange text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white hover:text-dark-obsidian transition-all text-xs" id="btn-chat-takeover">
+              Pause AI & Take Over
+            </button>
+          </div>
+
+          <!-- Conversation stream -->
+          <div class="flex-grow overflow-y-auto pr-2 mb-4 flex flex-col gap-3" id="chat-messages-stream">
+            <!-- Guest message -->
+            <div class="bg-surface/60 border border-secondary/10 p-3 self-start max-w-[80%] text-xs">
+              <div class="font-semibold text-tertiary mb-1">Lord Harrington</div>
+              <p>Hi, we will arrive at Villa 6 at 14:00. Can I request a bottle of Sassicaia 2016 wine stocked in our kitchen before we get there?</p>
+              <span class="text-[9px] text-on-surface-variant block text-right mt-1">11:02 AM</span>
+            </div>
+            
+            <!-- AI Concierge response -->
+            <div class="bg-surface-variant/40 border border-tertiary/20 p-3 self-end max-w-[80%] text-xs">
+              <div class="font-semibold text-mint-active mb-1 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[12px]">smart_toy</span> AI Concierge
+              </div>
+              <p>Certainly, Lord Harrington. I have registered the requested bottle of Sassicaia 2016 wine for Villa 6. The request has been routed to our sommelier team, and it will be stocked prior to your 14:00 check-in. Incidental charge (₱1,860.00) will be added to your folio.</p>
+              <span class="text-[9px] text-on-surface-variant block text-right mt-1">11:02 AM</span>
+            </div>
+            
+            <!-- Guest message -->
+            <div class="bg-surface/60 border border-secondary/10 p-3 self-start max-w-[80%] text-xs">
+              <div class="font-semibold text-tertiary mb-1">Lord Harrington</div>
+              <p>Excellent. Also, can you confirm if the check-in deposit was processed? My banker sent the SWIFT advice earlier.</p>
+              <span class="text-[9px] text-on-surface-variant block text-right mt-1">11:03 AM</span>
+            </div>
+
+            <!-- AI Concierge response -->
+            <div class="bg-surface-variant/40 border border-tertiary/20 p-3 self-end max-w-[80%] text-xs">
+              <div class="font-semibold text-mint-active mb-1 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[12px]">smart_toy</span> AI Concierge
+              </div>
+              <p>I am checking with the resort auditor team. Your SWIFT wire transfer of ₱42,100.00 is currently pending operational verification. I will notify you the moment it is confirmed by the front desk.</p>
+              <span class="text-[9px] text-on-surface-variant block text-right mt-1">11:03 AM</span>
+            </div>
+          </div>
+
+          <!-- Chat Operator Input area -->
+          <form id="chat-input-form" class="mt-auto flex gap-2">
+            <input type="text" id="chat-input-msg" placeholder="Take over the chat to send operator messages..." disabled class="flex-1 bg-surface border border-secondary/20 p-2 text-xs text-on-surface focus:border-tertiary focus:ring-0 opacity-50 cursor-not-allowed">
+            <button type="submit" id="chat-input-send" disabled class="px-4 bg-tertiary text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white transition-all text-xs opacity-50 cursor-not-allowed">
+              Send
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- VIEW 9: AI OPERATIONS COPILOT (RAG) -->
+      <div id="view-copilot" class="view-panel hidden flex flex-col md:flex-row gap-6">
+        
+        <!-- RAG Context Status & Suggested Prompts (4 cols) -->
+        <div class="glass-panel p-stack-md flex-1 md:flex-[4] flex flex-col gap-6">
+          <div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-secondary/15 pb-2 mb-3">RAG Context Engine</h3>
+            
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center bg-surface/40 p-2.5 border border-secondary/10">
+                <span class="text-xs font-semibold">Reservations Sync</span>
+                <span class="text-[10px] text-accent-mint font-bold flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span> Active
+                </span>
+              </div>
+              <div class="flex justify-between items-center bg-surface/40 p-2.5 border border-secondary/10">
+                <span class="text-xs font-semibold">Ledger & Folios</span>
+                <span class="text-[10px] text-accent-mint font-bold flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span> Synced
+                </span>
+              </div>
+              <div class="flex justify-between items-center bg-surface/40 p-2.5 border border-secondary/10">
+                <span class="text-xs font-semibold">Knowledgebase Docs</span>
+                <span class="text-[10px] text-accent-mint font-bold flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span> Loaded
+                </span>
+              </div>
+              <div class="flex justify-between items-center bg-surface/40 p-2.5 border border-secondary/10">
+                <span class="text-xs font-semibold">Maintenance Hold Logs</span>
+                <span class="text-[10px] text-accent-mint font-bold flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 bg-mint-active rounded-full shadow-[0_0_4px_#39FF14]"></span> Tracked
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h4 class="text-xs font-label-caps text-on-surface-variant mb-2.5 tracking-widest uppercase opacity-75">Suggested Analysis Queries</h4>
+            <div class="flex flex-col gap-2">
+              <button class="w-full text-left p-2.5 bg-surface hover:bg-surface-variant/20 border border-secondary/15 text-xs text-on-surface-variant transition-all hover:text-on-surface" onclick="setCopilotPrompt('Who is our top spending guest this month and what did they order?')">
+                "Who is our top spending guest and what did they order?"
+              </button>
+              <button class="w-full text-left p-2.5 bg-surface hover:bg-surface-variant/20 border border-secondary/15 text-xs text-on-surface-variant transition-all hover:text-on-surface" onclick="setCopilotPrompt('Which villas are occupied, and what is our current occupancy rate?')">
+                "What is our occupancy rate and which villas are checked in?"
+              </button>
+              <button class="w-full text-left p-2.5 bg-surface hover:bg-surface-variant/20 border border-secondary/15 text-xs text-on-surface-variant transition-all hover:text-on-surface" onclick="setCopilotPrompt('What is the status of active maintenance holds?')">
+                "What is the status of active maintenance holds?"
+              </button>
+              <button class="w-full text-left p-2.5 bg-surface hover:bg-surface-variant/20 border border-secondary/15 text-xs text-on-surface-variant transition-all hover:text-on-surface" onclick="setCopilotPrompt('Analyze current H1 revenue pacing, cashflow, and EBITDA margins.')">
+                "Analyze H1 revenue pacing, cashflow, and EBITDA margins."
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Stream & RAG Prompt Area (8 cols) -->
+        <div class="glass-panel p-stack-md flex-1 md:flex-[8] flex flex-col h-[520px]">
+          <div class="flex justify-between items-center border-b border-secondary/15 pb-2 mb-4">
+            <div class="flex flex-col">
+              <h3 class="font-headline-sm text-headline-sm text-on-surface">Amalfi Operations Copilot</h3>
+              <span class="text-xs text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+                <span class="w-1.5 h-1.5 bg-mint-active rounded-full"></span>
+                <span>RAG Engine: Synced with reservations, ledger, and knowledge base</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Message log stream -->
+          <div class="flex-grow overflow-y-auto pr-2 mb-4 flex flex-col gap-3" id="copilot-messages-stream">
+            <!-- Welcome message -->
+            <div class="bg-surface-variant/30 border border-tertiary/20 p-3.5 self-start max-w-[90%] text-xs">
+              <div class="font-semibold text-accent-gold mb-1.5 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[14px]">psychology</span> Operations Copilot AI
+              </div>
+              <p class="leading-relaxed">Welcome, Manager. I am your Amalfi Resort Operations Copilot, integrated directly with your resort databases. I have indexed:
+                <br><strong class="text-on-surface">1. Accommodation Rules & Knowledgebase docs</strong>
+                <br><strong class="text-on-surface">2. Active Guest Reservations & Sanctuary Timeline Map</strong>
+                <br><strong class="text-on-surface">3. Financial Ledger folios, transactions, & margins</strong>
+                <br><strong class="text-on-surface">4. Maintenance Holds & service requests</strong>
+                <br><br>Ask me any RAG analysis query about transactions, guest spending, room occupancy, or active operational holds. Let's begin.
+              </p>
+            </div>
+          </div>
+
+          <!-- Input Area -->
+          <form id="copilot-input-form" class="mt-auto flex gap-2">
+            <input type="text" id="copilot-input-msg" placeholder="Ask details about reservations, ledger, analysis, knowledgebase..." class="flex-1 bg-surface border border-secondary/20 p-3 text-xs text-on-surface focus:border-tertiary focus:ring-0">
+            <button type="submit" id="copilot-input-send" class="px-5 bg-tertiary text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white transition-all text-xs">
+              Query RAG
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+    
+  </main>
+
+  <!-- Create New Maintenance Ticket Modal -->
+  <div id="modal-ticket" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="glass-panel w-full max-w-md p-stack-md flex flex-col gap-4">
+      <div class="flex justify-between items-center border-b border-secondary/15 pb-2">
+        <h4 class="font-headline-sm text-lg text-on-surface">File Maintenance Ticket</h4>
+        <button class="text-on-surface hover:text-tertiary focus:outline-none" id="btn-close-modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      
+      <form id="ticket-form" class="flex flex-col gap-4 text-sm">
+        <div class="flex flex-col gap-2">
+          <label class="font-label-caps text-xs text-on-surface-variant" for="ticket-villa">Villa Location</label>
+          <select id="ticket-villa" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+            <option value="Villa 1">Villa 1 (Amalfi Suite)</option>
+            <option value="Villa 2">Villa 2 (Positano Vista)</option>
+            <option value="Villa 3">Villa 3 (Ravello Suite)</option>
+            <option value="Villa 4">Villa 4 (Capri Vista)</option>
+            <option value="Villa 5">Villa 5 (Sirenuse Suite)</option>
+            <option value="Villa 6">Villa 6 (Sunset Pavilion)</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="font-label-caps text-xs text-on-surface-variant" for="ticket-desc">Issue Description</label>
+          <input type="text" id="ticket-desc" placeholder="e.g. Master bedroom shower drain blocked" required class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="font-label-caps text-xs text-on-surface-variant" for="ticket-severity">Severity Level</label>
+          <select id="ticket-severity" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+            <option value="LOW">LOW (Descaling, filters, minor fixes)</option>
+            <option value="MEDIUM">MEDIUM (Light plumbing, pool temp calibration)</option>
+            <option value="HIGH">HIGH (AC unit failure, major leaks, security)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-tertiary text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white hover:text-dark-obsidian transition-all mt-2">
+          Submit Ticket
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Special Booking Modal -->
+  <div id="modal-special-booking" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="glass-panel w-full max-w-md p-stack-md flex flex-col gap-4">
+      <div class="flex justify-between items-center border-b border-secondary/15 pb-2">
+        <h4 class="font-headline-sm text-lg text-on-surface">New Special Booking</h4>
+        <button class="text-on-surface hover:text-tertiary focus:outline-none" id="btn-close-special-modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      
+      <form id="special-booking-form" class="flex flex-col gap-3 text-sm">
+        <div class="flex flex-col gap-1">
+          <label class="font-label-caps text-[10px] text-on-surface-variant" for="special-booking-guest">Guest Name</label>
+          <input type="text" id="special-booking-guest" placeholder="e.g. George Clooney" required class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-label-caps text-[10px] text-on-surface-variant" for="special-booking-amenity">Amenity Type</label>
+          <select id="special-booking-amenity" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+            <option value="Private Yacht Charter">Private Yacht Charter</option>
+            <option value="Sommelier Wine Reserve">Sommelier Wine Reserve</option>
+            <option value="Helicopter Arrival Transfer">Helicopter Arrival Transfer</option>
+            <option value="Private Chef Dining">Private Chef Dining</option>
+            <option value="Spa Reserve & Treatments">Spa Reserve & Treatments</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="special-booking-date">Date</label>
+            <input type="text" id="special-booking-date" placeholder="e.g. June 23, 2026" required class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="special-booking-folio">Folio Cost (₱)</label>
+            <input type="text" id="special-booking-folio" placeholder="e.g. 8,500.00" required class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-label-caps text-[10px] text-on-surface-variant" for="special-booking-details">Booking Details</label>
+          <input type="text" id="special-booking-details" placeholder="e.g. Sunset dinner and luxury bar reserves" required class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-label-caps text-[10px] text-on-surface-variant" for="special-booking-status">Booking Status</label>
+          <select id="special-booking-status" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+            <option value="Confirmed">Confirmed</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Pending verification">Pending verification</option>
+            <option value="Cleared">Cleared</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-tertiary text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white hover:text-dark-obsidian transition-all mt-2">
+          Log Special Booking
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-edit-booking" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="glass-panel w-full max-w-md p-stack-md flex flex-col gap-4">
+      <div class="flex justify-between items-center border-b border-secondary/15 pb-2">
+        <h4 class="font-headline-sm text-lg text-on-surface">Edit Booking Details</h4>
+        <button class="text-on-surface hover:text-tertiary focus:outline-none" id="btn-close-edit-modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Tabs Navigation -->
+      <div class="flex border-b border-secondary/15 gap-1 shrink-0 select-none pb-1 overflow-x-auto whitespace-nowrap no-scrollbar w-full">
+        <button type="button" class="booking-modal-tab px-3 py-1.5 border-b-2 border-tertiary text-tertiary text-xs font-label-caps font-bold transition-all focus:outline-none shrink-0" data-tab="details">
+          Details
+        </button>
+        <button type="button" class="booking-modal-tab px-3 py-1.5 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none shrink-0" data-tab="stay">
+          Stay
+        </button>
+        <button type="button" class="booking-modal-tab px-3 py-1.5 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none shrink-0" data-tab="payments">
+          Payments
+        </button>
+        <button type="button" class="booking-modal-tab px-3 py-1.5 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none shrink-0" data-tab="addons">
+          Add-ons
+        </button>
+        <button type="button" class="booking-modal-tab px-3 py-1.5 border-b-2 border-transparent text-secondary hover:text-on-surface text-xs font-label-caps font-bold transition-all focus:outline-none shrink-0" data-tab="discounts">
+          Discounts & Promos
+        </button>
+      </div>
+      
+      <form id="edit-booking-form" class="flex flex-col gap-3 text-sm">
+        <input type="hidden" id="edit-booking-row-id">
+        <input type="hidden" id="edit-booking-dates">
+        
+        <!-- Tab 1: Details -->
+        <div id="booking-tabpane-details" class="booking-tabpane flex flex-col gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-guest">Guest Name</label>
+            <input type="text" id="edit-booking-guest" required class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-status">Booking Status</label>
+            <select id="edit-booking-status" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+              <option value="Confirmed">Confirmed</option>
+              <option value="Checked In">Checked In</option>
+              <option value="Checked Out">Checked Out</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-created">Created On</label>
+            <input type="text" id="edit-booking-created" required placeholder="June 15, 2026" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+          </div>
+        </div>
+
+        <!-- Tab 2: Stay -->
+        <div id="booking-tabpane-stay" class="booking-tabpane hidden flex flex-col gap-3">
+          <!-- Unit Mode Toggle -->
+          <div class="flex items-center justify-between bg-surface-variant/10 p-2.5 border border-outline/10 select-none">
+            <span class="font-label-caps text-[10px] text-on-surface-variant shrink-0">Booking Type</span>
+            <div class="flex bg-surface border border-secondary/20 p-0.5 shrink-0">
+              <label class="segmented-control-option shrink-0">
+                <input type="radio" name="booking-unit-mode" value="single" checked>
+                <span>Single Villa</span>
+              </label>
+              <label class="segmented-control-option shrink-0">
+                <input type="radio" name="booking-unit-mode" value="multi">
+                <span>Multi-Villa</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Single Villa Select (default) -->
+          <div id="booking-single-villa-container" class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-villa">Villa Room</label>
+            <select id="edit-booking-villa" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+              <option value="Villa 1">Villa 1 (Amalfi Suite)</option>
+              <option value="Villa 2">Villa 2 (Positano Vista)</option>
+              <option value="Villa 3">Villa 3 (Ravello Suite)</option>
+              <option value="Villa 4">Villa 4 (Capri Vista)</option>
+              <option value="Villa 5">Villa 5 (Sirenuse Suite)</option>
+              <option value="Villa 6">Villa 6 (Sunset Pavilion)</option>
+            </select>
+          </div>
+
+          <!-- Multi Villa Selection List -->
+          <div id="booking-villas-multiselect-container" class="hidden flex flex-col gap-2 bg-surface-variant/15 p-3 border border-secondary/10">
+            <span class="font-label-caps text-[10px] text-on-surface-variant mb-1">Select Villa Rooms</span>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="multi-villa-select" value="Villa 1" class="rounded border-secondary/30 text-tertiary focus:ring-0 bg-surface">
+                <span class="text-xs text-on-surface">Villa 1 (Amalfi)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="multi-villa-select" value="Villa 2" class="rounded border-secondary/30 text-tertiary focus:ring-0 bg-surface">
+                <span class="text-xs text-on-surface">Villa 2 (Positano)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="multi-villa-select" value="Villa 3" class="rounded border-secondary/30 text-tertiary focus:ring-0 bg-surface">
+                <span class="text-xs text-on-surface">Villa 3 (Ravello)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="multi-villa-select" value="Villa 4" class="rounded border-secondary/30 text-tertiary focus:ring-0 bg-surface">
+                <span class="text-xs text-on-surface">Villa 4 (Capri)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="multi-villa-select" value="Villa 5" class="rounded border-secondary/30 text-tertiary focus:ring-0 bg-surface">
+                <span class="text-xs text-on-surface">Villa 5 (Sirenuse)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" name="multi-villa-select" value="Villa 6" class="rounded border-secondary/30 text-tertiary focus:ring-0 bg-surface">
+                <span class="text-xs text-on-surface">Villa 6 (Sunset)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Stay Dates with Calendar Icons -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1">
+              <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-checkin">Check-in Date</label>
+              <div class="relative">
+                <input type="date" id="edit-booking-checkin" required class="w-full bg-surface border border-secondary/20 p-2 pl-8 text-on-surface focus:border-tertiary focus:ring-0">
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-secondary text-base select-none pointer-events-none">calendar_month</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-checkout">Check-out Date</label>
+              <div class="relative">
+                <input type="date" id="edit-booking-checkout" required class="w-full bg-surface border border-secondary/20 p-2 pl-8 text-on-surface focus:border-tertiary focus:ring-0">
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-secondary text-base select-none pointer-events-none">calendar_month</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Payments -->
+        <div id="booking-tabpane-payments" class="booking-tabpane hidden flex flex-col gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-payment-status">Payment Status</label>
+            <select id="edit-booking-payment-status" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+              <option value="UNPAID">UNPAID</option>
+              <option value="PARTIAL">PARTIAL</option>
+              <option value="FULL">FULL</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-base-rate">Base Rate (₱)</label>
+            <div class="flex items-center gap-2 mb-1.5">
+              <input type="checkbox" id="edit-booking-manual-override" class="rounded border-secondary/30 text-tertiary focus:ring-0 focus:ring-offset-0 bg-surface">
+              <label for="edit-booking-manual-override" class="text-xs text-on-surface-variant cursor-pointer select-none">Manual Rate Override</label>
+            </div>
+            <input type="text" id="edit-booking-base-rate" required placeholder="35,000.00" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+          </div>
+        </div>
+
+        <!-- Tab 4: Add-ons -->
+        <div id="booking-tabpane-addons" class="booking-tabpane hidden flex flex-col gap-3">
+          <span class="font-label-caps text-[10px] text-on-surface-variant mb-1">Available Premium Services</span>
+          <div class="flex flex-col gap-2 bg-surface-variant/15 p-3 border border-secondary/10">
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="edit-booking-addon-wine" class="rounded border-secondary/30 text-tertiary focus:ring-0 focus:ring-offset-0 bg-surface">
+              <span class="text-xs text-on-surface">Sommelier Wine Stocking (+₱43,600.00)</span>
+            </label>
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="edit-booking-addon-yacht" class="rounded border-secondary/30 text-tertiary focus:ring-0 focus:ring-offset-0 bg-surface">
+              <span class="text-xs text-on-surface">Yacht Charter Experience (+₱12,500.00)</span>
+            </label>
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="edit-booking-addon-spa" class="rounded border-secondary/30 text-tertiary focus:ring-0 focus:ring-offset-0 bg-surface">
+              <span class="text-xs text-on-surface">Spa & Wellness Program (+₱4,200.00)</span>
+            </label>
+            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="edit-booking-addon-chef" class="rounded border-secondary/30 text-tertiary focus:ring-0 focus:ring-offset-0 bg-surface">
+              <span class="text-xs text-on-surface">Private Chef Dining (+₱1,500.00)</span>
+            </label>
+          </div>
+          
+          <div class="flex flex-col gap-1 border-t border-secondary/15 pt-2">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-folio">Calculated Total Folio (₱)</label>
+            <input type="text" id="edit-booking-folio" readonly placeholder="0.00" class="bg-surface border border-secondary/20 p-2 text-tertiary font-mono-data focus:border-tertiary focus:ring-0 select-none cursor-not-allowed">
+          </div>
+        </div>
+
+        <!-- Tab 5: Discounts & Promos -->
+        <div id="booking-tabpane-discounts" class="booking-tabpane hidden flex flex-col gap-3">
+          <span class="font-label-caps text-[10px] text-on-surface-variant mb-1">Apply Promotion or Discount</span>
+          
+          <div class="flex flex-col gap-1">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-discount-type">Discount Type</label>
+            <select id="edit-booking-discount-type" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+              <option value="none">None</option>
+              <option value="flat">Flat Amount (₱)</option>
+              <option value="percent">Percentage (%)</option>
+              <option value="promo">Promo Code</option>
+            </select>
+          </div>
+
+          <div id="discount-value-container" class="flex flex-col gap-1 hidden">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" id="discount-value-label" for="edit-booking-discount-value">Discount Value</label>
+            <input type="text" id="edit-booking-discount-value" placeholder="0.00" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+          </div>
+
+          <div id="promo-code-container" class="flex flex-col gap-1 hidden">
+            <label class="font-label-caps text-[10px] text-on-surface-variant" for="edit-booking-promo-code">Promo Code</label>
+            <select id="edit-booking-promo-code" class="bg-surface border border-secondary/20 p-2 text-on-surface focus:border-tertiary focus:ring-0">
+              <option value="">Select Promo Code</option>
+              <option value="WELCOME10">WELCOME10 (10% Off Room)</option>
+              <option value="AMALFISUMMER">AMALFISUMMER (₱15,000.00 Flat Off Room)</option>
+              <option value="VIPMEMBER">VIPMEMBER (20% Off Room)</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1 border-t border-secondary/15 pt-2 mt-2">
+            <span class="font-label-caps text-[10px] text-on-surface-variant">Applied Discount</span>
+            <div class="text-tertiary font-mono-data text-sm font-semibold">
+              -₱<span id="edit-booking-applied-discount">0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 mt-2 border-t border-secondary/15 pt-3">
+          <button type="button" id="btn-delete-booking" class="flex-1 py-3 border border-alert-red/30 hover:border-alert-red text-alert-red font-label-caps text-label-caps font-bold hover:bg-alert-red hover:text-dark-obsidian transition-all text-xs focus:outline-none">
+            Delete Booking
+          </button>
+          <button type="submit" id="btn-submit-booking" class="flex-1 py-3 bg-tertiary text-dark-obsidian font-label-caps text-label-caps font-bold hover:bg-white hover:text-dark-obsidian transition-all text-xs focus:outline-none">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js?v=2" defer></script>
+</body>
+</html>
