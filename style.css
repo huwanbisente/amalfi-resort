@@ -1,51 +1,65 @@
 /* Root Variables & Token Overrides */
 :root {
-  /* Mediterranean Dark Mode (Deep Sea & Terracotta Sun) */
-  --stitch-bg-dark: #070D19; /* Deep maritime obsidian */
-  --stitch-bg-midnight: #0F1A2D; /* Maritime navy panels */
-  --stitch-text-platinum: #E6ECF5; /* Alabaster blue-white text */
-  --stitch-text-muted: #8E9BB0; /* Soft sea-mist grey */
-  --stitch-accent-gold: #E5C158; /* Warm sandy gold */
-  --stitch-accent-mint: #2EEA92; /* Seafoam vibrant green */
-  --stitch-alert-red: #E64A19; /* Deep terracotta red */
-  --stitch-alert-orange: #F57C00; /* Warm citrus orange */
+  /* Mediterranean Light Mode (Muted Warm Stone) - RGB Channels - DEFAULT */
+  --stitch-bg-dark-rgb: 249 246 240; /* Warm alabaster / ivory sand */
+  --stitch-bg-midnight-rgb: 239 236 230; /* Soft sun-baked stone plaster */
+  --stitch-text-platinum-rgb: 10 17 40; /* Aegean navy */
+  --stitch-text-muted-rgb: 85 93 107; /* Muted stone grey */
+  --stitch-accent-gold-rgb: 181 142 46; /* Warm Roman gold accent */
+  --stitch-accent-mint-rgb: 30 107 59; /* Tuscan cypress green */
+  --stitch-alert-red-rgb: 176 58 11; /* Classic terracotta clay red */
+  --stitch-alert-orange-rgb: 194 106 5; /* Mediterranean citrus orange */
+
+  /* Mapped standard variables for native CSS usage */
+  --stitch-bg-dark: rgb(var(--stitch-bg-dark-rgb));
+  --stitch-bg-midnight: rgb(var(--stitch-bg-midnight-rgb));
+  --stitch-text-platinum: rgb(var(--stitch-text-platinum-rgb));
+  --stitch-text-muted: rgb(var(--stitch-text-muted-rgb));
+  --stitch-accent-gold: rgb(var(--stitch-accent-gold-rgb));
+  --stitch-accent-mint: rgb(var(--stitch-accent-mint-rgb));
+  --stitch-alert-red: rgb(var(--stitch-alert-red-rgb));
+  --stitch-alert-orange: rgb(var(--stitch-alert-orange-rgb));
   
-  --stitch-border-glass: rgba(230, 236, 245, 0.08);
-  --stitch-border-glass-hover: rgba(230, 236, 245, 0.16);
-  --stitch-bg-sidebar: rgba(7, 13, 25, 0.95);
-  --stitch-bg-glass: rgba(15, 26, 45, 0.65);
+  --stitch-border-glass: rgba(var(--stitch-text-platinum-rgb), 0.08);
+  --stitch-border-glass-hover: rgba(var(--stitch-text-platinum-rgb), 0.16);
+  --stitch-bg-sidebar: rgba(var(--stitch-bg-midnight-rgb), 0.98);
+  --stitch-bg-glass: rgba(var(--stitch-bg-midnight-rgb), 0.75);
   
-  --stitch-scrollbar-track: rgba(7, 13, 25, 0.4);
-  --stitch-scrollbar-thumb: rgba(230, 236, 245, 0.15);
-  --stitch-card-hover-border: rgba(229, 193, 88, 0.4);
+  --stitch-scrollbar-track: rgba(var(--stitch-text-platinum-rgb), 0.05);
+  --stitch-scrollbar-thumb: rgba(var(--stitch-text-platinum-rgb), 0.15);
+  --stitch-card-hover-border: rgba(var(--stitch-accent-gold-rgb), 0.4);
   
   --stitch-transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   --stitch-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Light Mode Overrides */
-html:not(.dark) {
-  /* Mediterranean Light Mode (Muted Warm Stone) */
-  --stitch-bg-dark: #E3DDD3; /* Dusty warm Mediterranean stone plaster */
-  --stitch-bg-midnight: #D4CDC0; /* Soft warm desaturated stone panel background */
-  --stitch-text-platinum: #0A1128; /* Deep maritime navy text */
-  --stitch-text-muted: #555D6B; /* Muted stone grey text */
-  --stitch-accent-gold: #B58E2E; /* Desaturated Roman gold accent */
-  --stitch-accent-mint: #1E6B3B; /* Tuscan cypress green */
-  --stitch-alert-red: #B03A0B; /* Classic terracotta clay red */
-  --stitch-alert-orange: #C26A05; /* Mediterranean citrus orange */
+/* Dark Mode Overrides */
+.dark, html.dark {
+  /* Mediterranean Dark Mode (Deep Sea & Terracotta Sun) - RGB Channels */
+  --stitch-bg-dark-rgb: 7 13 25; /* #070D19 */
+  --stitch-bg-midnight-rgb: 15 26 45; /* #0F1A2D */
+  --stitch-text-platinum-rgb: 230 236 245; /* #E6ECF5 */
+  --stitch-text-muted-rgb: 142 155 176; /* #8E9BB0 */
+  --stitch-accent-gold-rgb: 229 193 88; /* #E5C158 */
+  --stitch-accent-mint-rgb: 46 234 146; /* #2EEA92 */
+  --stitch-alert-red-rgb: 230 74 25; /* #E64A19 */
+  --stitch-alert-orange-rgb: 245 124 0; /* #F57C00 */
+
+  --stitch-bg-sidebar: rgba(var(--stitch-bg-dark-rgb), 0.95);
+  --stitch-bg-glass: rgba(var(--stitch-bg-midnight-rgb), 0.65);
   
-  --stitch-border-glass: rgba(10, 17, 40, 0.08);
-  --stitch-border-glass-hover: rgba(10, 17, 40, 0.16);
-  --stitch-bg-sidebar: rgba(212, 205, 192, 0.98); /* Muted warm stone sidebar background */
-  --stitch-bg-glass: rgba(212, 205, 192, 0.75); /* Warm desaturated stone card background */
-  
-  --stitch-scrollbar-track: rgba(10, 17, 40, 0.05);
-  --stitch-scrollbar-thumb: rgba(10, 17, 40, 0.15);
-  --stitch-card-hover-border: rgba(181, 142, 46, 0.4);
+  --stitch-scrollbar-track: rgba(var(--stitch-bg-dark-rgb), 0.4);
+  --stitch-scrollbar-thumb: rgba(var(--stitch-text-platinum-rgb), 0.15);
+  --stitch-card-hover-border: rgba(var(--stitch-accent-gold-rgb), 0.4);
 }
 
+
 /* Base resets & fonts */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  max-width: 100%;
+}
 body {
   background-color: var(--stitch-bg-dark);
   font-family: 'Hanken Grotesk', sans-serif;
@@ -62,9 +76,13 @@ body::before {
   right: -10%;
   width: 50vw;
   height: 50vw;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(181, 142, 46, 0.06) 0%, transparent 70%);
   z-index: 0;
   pointer-events: none;
+}
+
+.dark body::before {
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
 }
 
 body::after {
@@ -92,6 +110,10 @@ body::after {
 
 html:not(.dark) .glass-panel {
   box-shadow: 0 16px 36px 0 rgba(10, 17, 40, 0.12), 0 4px 10px 0 rgba(10, 17, 40, 0.06);
+}
+
+.dark .glass-panel {
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.22);
 }
 
 .glass-panel:hover {
@@ -185,13 +207,13 @@ html:not(.dark) .glass-panel {
 
 /* Theme-Aware Virtual Bank Slip Preview */
 .receipt-advice {
-  background-color: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(227, 232, 236, 0.1);
-  transition: var(--stitch-transition-smooth);
-}
-html:not(.dark) .receipt-advice {
   background-color: rgba(15, 20, 23, 0.03);
   border: 1px solid rgba(15, 20, 23, 0.08);
+  transition: var(--stitch-transition-smooth);
+}
+.dark .receipt-advice {
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(227, 232, 236, 0.1);
 }
 
 /* Premium Sidebar Privacy & Operations Toggles */
@@ -232,12 +254,12 @@ html:not(.dark) .receipt-advice {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(227, 232, 236, 0.15);
+  background-color: rgba(15, 20, 23, 0.12);
   transition: .3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-html:not(.dark) .toggle-slider {
-  background-color: rgba(15, 20, 23, 0.12);
+.dark .toggle-slider {
+  background-color: rgba(227, 232, 236, 0.15);
 }
 
 .toggle-slider:before {
@@ -262,19 +284,19 @@ html:not(.dark) .toggle-slider {
 
 /* Banner Backdrop Image Gradients & Dramatic Shadows */
 .banner-backdrop-gradient {
-  background: linear-gradient(to right, rgba(7, 13, 25, 0.95) 15%, rgba(7, 13, 25, 0.6) 50%, rgba(7, 13, 25, 0.95) 85%);
+  background: linear-gradient(to right, rgba(250, 246, 238, 0.95) 15%, rgba(250, 246, 238, 0.5) 50%, rgba(250, 246, 238, 0.95) 85%);
 }
 
-html:not(.dark) .banner-backdrop-gradient {
-  background: linear-gradient(to right, rgba(250, 246, 238, 0.95) 15%, rgba(250, 246, 238, 0.5) 50%, rgba(250, 246, 238, 0.95) 85%);
+.dark .banner-backdrop-gradient {
+  background: linear-gradient(to right, rgba(7, 13, 25, 0.95) 15%, rgba(7, 13, 25, 0.6) 50%, rgba(7, 13, 25, 0.95) 85%);
 }
 
 /* Make Serif fonts pop with text-shadow */
 .font-pop-shadow {
-  text-shadow: 0 2px 8px rgba(7, 13, 25, 0.3);
-}
-html:not(.dark) .font-pop-shadow {
   text-shadow: 0 1px 4px rgba(10, 17, 40, 0.1);
+}
+.dark .font-pop-shadow {
+  text-shadow: 0 2px 8px rgba(7, 13, 25, 0.3);
 }
 
 /* Dynamic Operational Control Panel Glass adjustment */
@@ -342,4 +364,10 @@ html:not(.dark) .font-pop-shadow {
 .segmented-control-option input[type="radio"]:checked + span {
   background-color: var(--stitch-accent-gold);
   color: var(--stitch-bg-dark) !important;
+}
+
+/* Fix for native select dropdown options readability in dark/light mode mismatch */
+select option {
+  background-color: var(--stitch-bg-midnight) !important;
+  color: var(--stitch-text-platinum) !important;
 }

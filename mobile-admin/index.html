@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>Amalfi Resort - Mobile Butler Suite</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css?v=1.0.2">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "stitch-dark": "rgb(var(--stitch-bg-dark-rgb) / <alpha-value>)",
+            "stitch-midnight": "rgb(var(--stitch-bg-midnight-rgb) / <alpha-value>)",
+            "stitch-platinum": "rgb(var(--stitch-text-platinum-rgb) / <alpha-value>)",
+            "stitch-muted": "rgb(var(--stitch-text-muted-rgb) / <alpha-value>)",
+            "stitch-gold": "rgb(var(--stitch-accent-gold-rgb) / <alpha-value>)",
+            "stitch-mint": "rgb(var(--stitch-accent-mint-rgb) / <alpha-value>)"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#02050B] text-stitch-platinum select-none">
+
+  <!-- Phone Mockup Viewport -->
+  <div class="phone-viewport">
+    
+    <!-- App Header -->
+    <header class="h-16 shrink-0 border-b border-stitch-platinum border-opacity-5 flex items-center justify-between px-5 bg-stitch-midnight bg-opacity-75 backdrop-blur-md transition duration-300">
+      <div class="flex items-center gap-2.5">
+        <!-- Brand Logo -->
+        <div class="h-8 w-8 overflow-hidden relative shrink-0">
+          <img src="../amalfi_logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
+        </div>
+        <div class="flex flex-col">
+          <span class="font-serif italic text-xs tracking-wider text-stitch-platinum font-semibold leading-none">Amalfi Resort</span>
+          <span class="text-[8px] uppercase tracking-[0.2em] text-stitch-muted mt-0.5 font-bold">Mobile Butler Suite</span>
+        </div>
+      </div>
+      
+      <!-- Right Header Actions (Theme + Live Indicator) -->
+      <div class="flex items-center gap-3">
+        <!-- Floating Theme Toggle -->
+        <button id="mobile-theme-toggle" class="mobile-theme-switch" aria-label="Toggle Theme">
+          <span id="mobile-theme-icon" class="material-symbols-outlined text-sm text-stitch-gold">light_mode</span>
+        </button>
+        
+        <!-- Network / Live Indicator -->
+        <div class="flex items-center gap-1.5 bg-stitch-dark bg-opacity-40 border border-stitch-platinum border-opacity-5 px-2.5 py-1 text-[8px] uppercase tracking-wider font-mono">
+          <span class="h-1 w-1 rounded-full bg-stitch-mint shadow-mint-pulse"></span>
+          <span class="text-stitch-mint">Live</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Panels (Scrollable viewport area) -->
+    <main class="flex-1 overflow-y-auto no-scrollbar p-5 pb-20">
+      
+      <!-- 1. Movements / Today Panel -->
+      <section id="movements-panel" class="tab-panel flex flex-col gap-6">
+        <div>
+          <div class="text-[9px] tracking-[0.2em] uppercase text-stitch-gold font-bold mb-1">Movements Desk</div>
+          <h2 class="text-xl font-serif font-bold text-stitch-platinum">Guest Activities</h2>
+        </div>
+
+        <!-- Stays list -->
+        <div class="flex flex-col gap-3">
+          <h3 class="text-[10px] uppercase tracking-widest text-stitch-muted font-bold border-b border-stitch-platinum border-opacity-5 pb-1">Today's Reservations</h3>
+          <div id="movements-list" class="flex flex-col gap-2">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Concierge requests -->
+        <div class="flex flex-col gap-3 mt-2">
+          <h3 class="text-[10px] uppercase tracking-widest text-stitch-muted font-bold border-b border-stitch-platinum border-opacity-5 pb-1">Concierge Requests</h3>
+          <div id="service-list" class="flex flex-col gap-3">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Manual Bookings Panel -->
+      <section id="bookings-panel" class="tab-panel flex flex-col gap-6 hidden">
+        <div>
+          <div class="text-[9px] tracking-[0.2em] uppercase text-stitch-gold font-bold mb-1">Reservation Desk</div>
+          <h2 class="text-xl font-serif font-bold text-stitch-platinum">Create Booking</h2>
+        </div>
+
+        <form id="manual-booking-form" class="glass-panel p-5 bg-opacity-40 flex flex-col gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label for="manual-guest-name" class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Guest Full Name</label>
+            <input type="text" id="manual-guest-name" placeholder="John Smith" class="w-full bg-transparent border-0 border-b border-stitch-platinum border-opacity-20 text-stitch-platinum text-xs py-2 px-0 focus:border-stitch-gold focus:ring-0 focus:border-opacity-100 transition duration-300" required>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="manual-villa-select" class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Villa Assignment</label>
+            <select id="manual-villa-select" class="w-full bg-transparent border-0 border-b border-stitch-platinum border-opacity-20 text-stitch-platinum text-xs py-2 px-0 focus:border-stitch-gold focus:ring-0 focus:border-opacity-100 transition duration-300">
+              <option value="Villa 1">Villa 1 (Amalfi Suite)</option>
+              <option value="Villa 2">Villa 2 (Positano Vista)</option>
+              <option value="Villa 3">Villa 3 (Ravello Suite)</option>
+              <option value="Villa 4">Villa 4 (Capri Vista)</option>
+              <option value="Villa 5">Villa 5 (Sirenuse Suite)</option>
+              <option value="Villa 6">Villa 6 (Sunset Pavilion)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1.5">
+              <label for="manual-check-in" class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Check-In</label>
+              <input type="date" id="manual-check-in" class="w-full bg-transparent border-0 border-b border-stitch-platinum border-opacity-20 text-stitch-platinum text-xs py-2 px-0 focus:border-stitch-gold focus:ring-0 focus:border-opacity-100 transition duration-300">
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="manual-check-out" class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Check-Out</label>
+              <input type="date" id="manual-check-out" class="w-full bg-transparent border-0 border-b border-stitch-platinum border-opacity-20 text-stitch-platinum text-xs py-2 px-0 focus:border-stitch-gold focus:ring-0 focus:border-opacity-100 transition duration-300">
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="manual-cost" class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Total Cost ($ USD)</label>
+            <input type="number" id="manual-cost" placeholder="42100" class="w-full bg-transparent border-0 border-b border-stitch-platinum border-opacity-20 text-stitch-platinum text-xs py-2 px-0 focus:border-stitch-gold focus:ring-0 focus:border-opacity-100 transition duration-300" required>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 bg-stitch-gold hover:bg-opacity-95 text-stitch-dark font-bold text-xs uppercase tracking-widest transition duration-300 mt-2 shadow">
+            Confirm & Save Booking
+          </button>
+        </form>
+      </section>
+
+      <!-- 3. Verification Panel -->
+      <section id="verification-panel" class="tab-panel flex flex-col gap-6 hidden">
+        <div>
+          <div class="text-[9px] tracking-[0.2em] uppercase text-stitch-gold font-bold mb-1">Verification Desk</div>
+          <h2 class="text-xl font-serif font-bold text-stitch-platinum">Verify Payments</h2>
+        </div>
+
+        <div id="verification-list" class="flex flex-col gap-4">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+      <!-- 4. Ledger Panel -->
+      <section id="ledger-panel" class="tab-panel flex flex-col gap-6 hidden">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="text-[9px] tracking-[0.2em] uppercase text-stitch-gold font-bold mb-1">Financial Desk</div>
+            <h2 class="text-xl font-serif font-bold text-stitch-platinum">Discreet Ledger</h2>
+          </div>
+          
+          <!-- Obscure Ledger Toggle -->
+          <div class="privacy-control border border-stitch-platinum border-opacity-5 flex gap-2">
+            <span class="text-[9px]">Obscure</span>
+            <label class="privacy-toggle">
+              <input type="checkbox" id="ledger-privacy-toggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Ledger Summary cards -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="glass-panel p-4 bg-opacity-40 border-opacity-10">
+            <span class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Verified Income</span>
+            <div id="ledger-total-income" class="text-lg font-mono font-bold text-stitch-mint mt-1">$0</div>
+          </div>
+          <div class="glass-panel p-4 bg-opacity-40 border-opacity-10">
+            <span class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Unverified</span>
+            <div id="ledger-pending-income" class="text-lg font-mono font-bold text-stitch-gold mt-1">$0</div>
+          </div>
+        </div>
+
+        <!-- Ledger Transactions Table -->
+        <div class="glass-panel bg-opacity-20 border-opacity-10">
+          <div class="px-4 py-3 border-b border-stitch-platinum border-opacity-5 flex justify-between">
+            <span class="text-[10px] uppercase tracking-widest text-stitch-platinum font-bold">Ledger Folio</span>
+          </div>
+          <div class="p-4 overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="border-b border-stitch-platinum border-opacity-5">
+                  <th class="pb-2 text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Guest</th>
+                  <th class="pb-2 text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Villa</th>
+                  <th class="pb-2 text-[9px] uppercase tracking-widest text-stitch-muted font-bold text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-list" class="divide-y divide-stitch-platinum divide-opacity-5">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Room Ops Panel -->
+      <section id="room-ops-panel" class="tab-panel flex flex-col gap-5 hidden">
+        <div>
+          <div class="text-[9px] tracking-[0.2em] uppercase text-stitch-gold font-bold mb-1">Room Operations</div>
+          <h2 id="room-ops-title" class="text-xl font-serif font-bold text-stitch-platinum">Sanctuary Map</h2>
+        </div>
+
+        <!-- Segmented Control for Sub-Views -->
+        <div class="flex border border-stitch-platinum border-opacity-10 p-0.5 bg-stitch-midnight bg-opacity-40">
+          <button id="ops-toggle-map" class="flex-1 py-2 text-[10px] uppercase tracking-widest font-bold transition-all bg-stitch-gold text-stitch-dark" style="border-radius: 0;">
+            7-Day Board
+          </button>
+          <button id="ops-toggle-matrix" class="flex-1 py-2 text-[10px] uppercase tracking-widest font-bold transition-all text-stitch-muted hover:text-stitch-platinum" style="border-radius: 0;">
+            Override Matrix
+          </button>
+        </div>
+
+        <!-- Date Navigation (Shown only in Map view) -->
+        <div id="ops-date-nav" class="flex items-center justify-between border border-stitch-platinum border-opacity-5 p-2 bg-stitch-midnight bg-opacity-40 select-none">
+          <button id="ops-date-prev" class="p-1.5 text-stitch-muted hover:text-stitch-gold transition-colors flex items-center justify-center" title="Prev 7 Days">
+            <span class="material-symbols-outlined text-sm">chevron_left</span>
+          </button>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-xs text-stitch-gold">calendar_today</span>
+            <input type="date" id="ops-selected-date" class="bg-transparent border-0 p-0 text-xs font-mono font-bold text-stitch-platinum focus:ring-0 w-28 text-center" value="2026-06-18">
+          </div>
+          <button id="ops-date-next" class="p-1.5 text-stitch-muted hover:text-stitch-gold transition-colors flex items-center justify-center" title="Next 7 Days">
+            <span class="material-symbols-outlined text-sm">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- 1. Sanctuary Map 7-Day Board -->
+        <div id="room-ops-map-list" class="flex flex-col gap-3">
+          <!-- 7-Day Grid Container -->
+          <div class="glass-panel p-3 bg-opacity-40 border-opacity-10">
+            <div class="flex flex-col gap-1.5 select-none" id="ops-board-grid">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+          
+          <!-- Inspection Details Panel -->
+          <div id="ops-board-detail" class="glass-panel p-4 bg-opacity-40 border-opacity-10 min-h-[90px] flex flex-col justify-center">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- 2. Original Villa Override Grid -->
+        <div id="room-ops-grid" class="grid grid-cols-2 gap-4 hidden">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+      <!-- 6. POS Panel -->
+      <section id="pos-panel" class="tab-panel flex flex-col gap-4 hidden">
+        <div>
+          <div class="text-[9px] tracking-[0.2em] uppercase text-stitch-gold font-bold mb-1">Point of Sale</div>
+          <h2 class="text-xl font-serif font-bold text-stitch-platinum">Quick Checkout</h2>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[10px] uppercase tracking-widest text-stitch-muted font-bold">Product Catalog</h3>
+            <div id="pos-cart-count" class="hidden bg-stitch-gold text-stitch-dark text-[9px] font-bold px-2 py-0.5 rounded-full">0 items</div>
+          </div>
+          <!-- Category Filter Tabs -->
+          <div id="pos-category-tabs" class="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <!-- Injected by JS -->
+          </div>
+          <!-- Product Tiles -->
+          <div id="pos-product-grid" class="grid grid-cols-2 gap-2.5">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div id="pos-cart-section" class="hidden flex flex-col gap-3">
+          <h3 class="text-[10px] uppercase tracking-widest text-stitch-muted font-bold border-b border-stitch-platinum border-opacity-5 pb-1">Cart</h3>
+          <div id="pos-cart-items" class="flex flex-col gap-1.5">
+            <!-- Injected by JS -->
+          </div>
+          <div class="flex justify-between items-center border-t border-stitch-platinum border-opacity-10 pt-2">
+            <span class="text-xs font-bold text-stitch-platinum uppercase tracking-wider">Total</span>
+            <span id="pos-cart-total" class="text-base font-mono font-bold text-stitch-gold">₱0.00</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="pos-clear-cart" class="py-2.5 border border-stitch-platinum border-opacity-20 text-stitch-muted text-[10px] font-bold uppercase tracking-wider hover:border-opacity-40 transition">
+              Clear Cart
+            </button>
+            <button id="pos-checkout-btn" class="py-2.5 bg-stitch-gold text-stitch-dark text-[10px] font-bold uppercase tracking-widest transition hover:bg-opacity-90">
+              Checkout
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent POS Transactions -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-[10px] uppercase tracking-widest text-stitch-muted font-bold border-b border-stitch-platinum border-opacity-5 pb-1">Recent Sales</h3>
+          <div id="pos-recent-sales" class="flex flex-col gap-2">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- POS Checkout Modal -->
+      <div id="pos-checkout-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-60 backdrop-blur-sm flex items-end">
+        <div class="w-full bg-stitch-midnight border-t border-stitch-platinum border-opacity-10 p-5 flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold font-serif text-stitch-platinum">Confirm Checkout</h3>
+            <button id="pos-modal-close" class="text-stitch-muted hover:text-stitch-platinum">
+              <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+          </div>
+          <div class="text-[10px] uppercase tracking-widest text-stitch-muted font-bold">Checkout Type</div>
+          <div class="flex gap-2">
+            <button id="pos-type-direct" class="flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border bg-stitch-gold text-stitch-dark border-stitch-gold transition pos-type-btn">Direct (Cash/Card)</button>
+            <button id="pos-type-room" class="flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border border-stitch-platinum border-opacity-20 text-stitch-muted transition pos-type-btn">Charge to Room</button>
+          </div>
+          <!-- Room select (shown only for room charge) -->
+          <div id="pos-room-select-wrapper" class="hidden flex flex-col gap-1.5">
+            <label class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Select Villa / Guest</label>
+            <select id="pos-room-select" class="w-full bg-stitch-dark border border-stitch-platinum border-opacity-20 text-stitch-platinum text-xs py-2 px-2 focus:border-stitch-gold focus:ring-0">
+              <!-- Injected by JS -->
+            </select>
+          </div>
+          <div class="flex justify-between items-center bg-stitch-dark border border-stitch-platinum border-opacity-10 px-4 py-3">
+            <span class="text-xs text-stitch-muted font-semibold">Order Total</span>
+            <span id="pos-modal-total" class="text-base font-mono font-bold text-stitch-gold">₱0.00</span>
+          </div>
+          <button id="pos-confirm-checkout" class="w-full py-3 bg-stitch-mint text-stitch-dark font-bold text-xs uppercase tracking-widest transition hover:bg-opacity-90">
+            Confirm Sale
+          </button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Bottom Tab Navigation -->
+    <nav class="absolute bottom-0 left-0 right-0 h-16 border-t border-stitch-platinum border-opacity-5 bg-stitch-midnight flex items-center justify-around z-20 transition duration-300">
+      <button class="tab-btn active flex flex-col items-center justify-center text-stitch-muted hover:text-stitch-platinum" data-tab="movements">
+        <span class="material-symbols-outlined text-[22px]">calendar_today</span>
+        <span class="text-[8px] uppercase tracking-widest font-bold mt-1">Today</span>
+      </button>
+      <button class="tab-btn flex flex-col items-center justify-center text-stitch-muted hover:text-stitch-platinum" data-tab="bookings">
+        <span class="material-symbols-outlined text-[22px]">add_box</span>
+        <span class="text-[8px] uppercase tracking-widest font-bold mt-1">Reserve</span>
+      </button>
+      <button class="tab-btn flex flex-col items-center justify-center text-stitch-muted hover:text-stitch-platinum relative" data-tab="verification">
+        <span class="material-symbols-outlined text-[22px]">verified</span>
+        <span class="text-[8px] uppercase tracking-widest font-bold mt-1">Verify</span>
+      </button>
+      <button class="tab-btn flex flex-col items-center justify-center text-stitch-muted hover:text-stitch-platinum" data-tab="ledger">
+        <span class="material-symbols-outlined text-[22px]">wallet</span>
+        <span class="text-[8px] uppercase tracking-widest font-bold mt-1">Ledger</span>
+      </button>
+      <button class="tab-btn flex flex-col items-center justify-center text-stitch-muted hover:text-stitch-platinum" data-tab="pos">
+        <span class="material-symbols-outlined text-[22px]">point_of_sale</span>
+        <span class="text-[8px] uppercase tracking-widest font-bold mt-1">POS</span>
+      </button>
+      <button class="tab-btn flex flex-col items-center justify-center text-stitch-muted hover:text-stitch-platinum" data-tab="room-ops">
+        <span class="material-symbols-outlined text-[22px]">bed</span>
+        <span class="text-[8px] uppercase tracking-widest font-bold mt-1">Rooms</span>
+      </button>
+    </nav>
+
+    <!-- AI Copilot Floating Action Button -->
+    <button id="copilot-fab" class="absolute bottom-[72px] right-4 z-30 w-12 h-12 bg-stitch-gold text-stitch-dark flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95" aria-label="Open AI Copilot">
+      <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+    </button>
+
+    <!-- AI Copilot Full-Screen Overlay Panel -->
+    <div id="copilot-overlay" class="absolute inset-0 z-40 flex flex-col bg-stitch-dark translate-y-full transition-transform duration-300 ease-out">
+
+      <!-- Copilot Header -->
+      <div class="h-16 shrink-0 border-b border-stitch-platinum border-opacity-5 flex items-center justify-between px-5 bg-stitch-midnight bg-opacity-80 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-stitch-gold flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-stitch-dark text-[18px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-stitch-platinum leading-none">Amalfi Copilot</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-stitch-mint shadow-mint-pulse"></span>
+              <span class="text-[8px] uppercase tracking-[0.15em] text-stitch-mint font-bold">RAG Engine Active</span>
+            </div>
+          </div>
+        </div>
+        <button id="copilot-close" class="w-8 h-8 flex items-center justify-center text-stitch-muted hover:text-stitch-platinum transition">
+          <span class="material-symbols-outlined text-xl">keyboard_arrow_down</span>
+        </button>
+      </div>
+
+      <!-- RAG Status Chips -->
+      <div class="shrink-0 flex gap-2 px-4 py-2.5 overflow-x-auto no-scrollbar border-b border-stitch-platinum border-opacity-5 bg-stitch-midnight bg-opacity-40">
+        <div class="shrink-0 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-stitch-mint bg-stitch-mint bg-opacity-10 border border-stitch-mint border-opacity-25 px-2.5 py-1">
+          <span class="h-1 w-1 rounded-full bg-stitch-mint"></span>Reservations
+        </div>
+        <div class="shrink-0 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-stitch-mint bg-stitch-mint bg-opacity-10 border border-stitch-mint border-opacity-25 px-2.5 py-1">
+          <span class="h-1 w-1 rounded-full bg-stitch-mint"></span>Ledger
+        </div>
+        <div class="shrink-0 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-stitch-mint bg-stitch-mint bg-opacity-10 border border-stitch-mint border-opacity-25 px-2.5 py-1">
+          <span class="h-1 w-1 rounded-full bg-stitch-mint"></span>Maintenance
+        </div>
+        <div class="shrink-0 flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-stitch-mint bg-stitch-mint bg-opacity-10 border border-stitch-mint border-opacity-25 px-2.5 py-1">
+          <span class="h-1 w-1 rounded-full bg-stitch-mint"></span>Knowledgebase
+        </div>
+      </div>
+
+      <!-- Suggested Queries -->
+      <div id="copilot-suggestions" class="shrink-0 px-4 pt-3 pb-2 flex flex-col gap-2">
+        <p class="text-[9px] uppercase tracking-widest text-stitch-muted font-bold">Suggested Queries</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button class="copilot-suggestion-btn text-left p-2.5 border border-stitch-platinum border-opacity-10 bg-stitch-midnight bg-opacity-40 text-[10px] text-stitch-muted leading-snug transition hover:border-stitch-gold hover:text-stitch-platinum active:scale-[0.98]" data-prompt="Which villas are occupied and what is our current occupancy rate?">
+            Occupancy rate &amp; which villas are in use?
+          </button>
+          <button class="copilot-suggestion-btn text-left p-2.5 border border-stitch-platinum border-opacity-10 bg-stitch-midnight bg-opacity-40 text-[10px] text-stitch-muted leading-snug transition hover:border-stitch-gold hover:text-stitch-platinum active:scale-[0.98]" data-prompt="What is the status of active maintenance holds?">
+            Active maintenance holds status?
+          </button>
+          <button class="copilot-suggestion-btn text-left p-2.5 border border-stitch-platinum border-opacity-10 bg-stitch-midnight bg-opacity-40 text-[10px] text-stitch-muted leading-snug transition hover:border-stitch-gold hover:text-stitch-platinum active:scale-[0.98]" data-prompt="Analyze current H1 revenue pacing, cashflow and EBITDA margins.">
+            H1 revenue pacing &amp; EBITDA?
+          </button>
+          <button class="copilot-suggestion-btn text-left p-2.5 border border-stitch-platinum border-opacity-10 bg-stitch-midnight bg-opacity-40 text-[10px] text-stitch-muted leading-snug transition hover:border-stitch-gold hover:text-stitch-platinum active:scale-[0.98]" data-prompt="What are the current amenity service rates and check-in policies?">
+            Amenity rates &amp; resort policies?
+          </button>
+        </div>
+      </div>
+
+      <!-- Message Stream -->
+      <div id="mobile-copilot-stream" class="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3 custom-scrollbar">
+        <!-- Welcome message -->
+        <div class="bg-stitch-midnight border border-stitch-gold border-opacity-25 p-3.5 self-start max-w-[90%]">
+          <div class="flex items-center gap-1.5 mb-2">
+            <span class="material-symbols-outlined text-[14px] text-stitch-gold" style="font-variation-settings: 'FILL' 1;">psychology</span>
+            <span class="text-[10px] font-bold text-stitch-gold uppercase tracking-wider">Operations Copilot AI</span>
+          </div>
+          <p class="text-[11px] text-stitch-platinum leading-relaxed">Welcome, Manager. I'm your Amalfi Copilot — synced with reservations, folios, maintenance logs, and the resort knowledgebase. Ask me anything about operations.</p>
+          <span class="text-[8px] text-stitch-muted block text-right mt-2 font-mono">Ready</span>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="copilot-typing" class="hidden px-4 pb-1">
+        <div class="flex items-center gap-2 text-[10px] text-stitch-muted">
+          <div class="flex gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-stitch-gold animate-bounce" style="animation-delay:0ms"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-stitch-gold animate-bounce" style="animation-delay:150ms"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-stitch-gold animate-bounce" style="animation-delay:300ms"></span>
+          </div>
+          <span>Copilot is thinking…</span>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="shrink-0 border-t border-stitch-platinum border-opacity-5 p-3 bg-stitch-midnight bg-opacity-80">
+        <form id="mobile-copilot-form" class="flex gap-2">
+          <input
+            type="text"
+            id="mobile-copilot-input"
+            placeholder="Ask about reservations, rates, ops…"
+            autocomplete="off"
+            class="flex-1 bg-stitch-dark border border-stitch-platinum border-opacity-15 text-stitch-platinum text-[11px] py-2.5 px-3 focus:border-stitch-gold focus:ring-0 placeholder:text-stitch-muted transition"
+          >
+          <button type="submit" class="w-11 h-11 bg-stitch-gold text-stitch-dark flex items-center justify-center shrink-0 transition hover:bg-opacity-90 active:scale-95">
+            <span class="material-symbols-outlined text-[20px]">send</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="app.js?v=1.0.2"></script>
+</body>
+</html>

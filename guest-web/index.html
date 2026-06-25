@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Amalfi Resort - Luxury Guest Portal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css?v=1.0.2">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "rgb(var(--stitch-bg-midnight-rgb) / <alpha-value>)",
+            "on-error": "#690005",
+            "secondary-fixed-dim": "rgb(var(--stitch-text-muted-rgb) / <alpha-value>)",
+            "on-surface": "rgb(var(--stitch-text-platinum-rgb) / <alpha-value>)",
+            "surface": "rgb(var(--stitch-bg-sidebar-rgb) / <alpha-value>)",
+            "outline": "rgb(var(--stitch-text-platinum-rgb) / 0.08)",
+            "background": "rgb(var(--stitch-bg-dark-rgb) / <alpha-value>)",
+            "on-surface-variant": "rgb(var(--stitch-text-muted-rgb) / <alpha-value>)",
+            "primary": "rgb(var(--stitch-text-platinum-rgb) / <alpha-value>)",
+            "surface-dim": "rgb(var(--stitch-bg-dark-rgb) / <alpha-value>)",
+            "surface-variant": "rgb(var(--stitch-text-platinum-rgb) / 0.08)",
+            "surface-tint": "rgb(var(--stitch-accent-gold-rgb) / <alpha-value>)",
+            "surface-container-high": "rgb(var(--stitch-bg-midnight-rgb) / <alpha-value>)",
+            "primary-container": "rgb(var(--stitch-bg-dark-rgb) / <alpha-value>)",
+            "on-secondary-container": "rgb(var(--stitch-text-muted-rgb) / <alpha-value>)",
+            "error-container": "#93000a",
+            "inverse-on-surface": "rgb(var(--stitch-text-platinum-rgb) / <alpha-value>)",
+            "on-primary": "rgb(var(--stitch-bg-dark-rgb) / <alpha-value>)",
+            "on-primary-container": "rgb(var(--stitch-text-muted-rgb) / <alpha-value>)",
+            "surface-bright": "rgb(var(--stitch-bg-midnight-rgb) / <alpha-value>)",
+            "tertiary": "rgb(var(--stitch-accent-gold-rgb) / <alpha-value>)",
+            "secondary-container": "rgb(var(--stitch-text-platinum-rgb) / 0.08)",
+            "tertiary-container": "rgb(var(--stitch-bg-midnight-rgb) / <alpha-value>)",
+            "on-background": "rgb(var(--stitch-text-platinum-rgb) / <alpha-value>)",
+            "secondary": "rgb(var(--stitch-text-muted-rgb) / <alpha-value>)",
+            "mint-active": "rgb(var(--stitch-accent-mint-rgb) / <alpha-value>)",
+            "alert-red": "rgb(var(--stitch-alert-red-rgb) / <alpha-value>)",
+            "alert-orange": "rgb(var(--stitch-alert-orange-rgb) / <alpha-value>)",
+            "dark-obsidian": "#0B0C10"
+          },
+          "borderRadius": {
+            "DEFAULT": "0px",
+            "lg": "0px",
+            "xl": "0px",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-sm": "8px",
+            "stack-lg": "64px",
+            "margin-mobile": "20px",
+            "gutter": "24px",
+            "unit": "4px",
+            "stack-md": "24px",
+            "margin-desktop": "80px"
+          },
+          "fontFamily": {
+            "headline-sm": ["Playfair Display"],
+            "body-md": ["Hanken Grotesk"],
+            "body-lg": ["Hanken Grotesk"],
+            "display-lg": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "mono-data": ["Space Grotesk"],
+            "label-caps": ["Hanken Grotesk"],
+            "display-lg-mobile": ["Playfair Display"]
+          },
+          "fontSize": {
+            "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
+            "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+            "mono-data": ["14px", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "600" }],
+            "display-lg-mobile": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md select-none">
+
+  <!-- Header Nav -->
+  <header class="fixed top-0 left-0 right-0 z-50 transition duration-300 border-b border-outline backdrop-blur-md bg-background bg-opacity-40">
+    <div class="max-w-[1760px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 h-24 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2 sm:gap-4 no-underline">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 select-none flex items-center justify-center shrink-0">
+          <img src="../amalfi_logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
+        </div>
+        <div class="flex flex-col">
+          <h1 class="font-display-lg text-lg sm:text-xl md:text-2xl text-on-surface font-semibold tracking-wide leading-tight whitespace-nowrap">Amalfi Resort</h1>
+          <span class="font-label-caps text-[8px] sm:text-[10px] text-tertiary tracking-widest leading-none mt-0.5">Luxury Concierge</span>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-10">
+        <a href="#villas" class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition duration-200">Suites</a>
+        <a href="#experiences" class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition duration-200">Experiences</a>
+        <a href="#policy" class="font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition duration-200">Policy</a>
+      </nav>
+
+      <!-- Right Nav Options (Theme Switch + Book CTA + Hamburger Toggle) -->
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <!-- Floating Theme Toggle -->
+        <button id="theme-toggle-btn" class="flex items-center justify-center p-2.5 bg-surface-container/60 border border-outline hover:border-tertiary text-on-surface-variant hover:text-tertiary transition-colors focus:outline-none" aria-label="Toggle Theme">
+          <span id="theme-icon" class="material-symbols-outlined text-lg">light_mode</span>
+        </button>
+
+        <a href="#villas" class="hidden sm:inline-block px-5 py-2.5 border border-tertiary bg-transparent hover:bg-tertiary hover:text-background text-tertiary font-label-caps text-[11px] uppercase tracking-widest transition duration-300">
+          Book Suite
+        </a>
+
+        <!-- Hamburger Toggle Button -->
+        <button id="menu-toggle-btn" class="flex items-center justify-center p-2.5 bg-surface-container/60 border border-outline hover:border-tertiary text-on-surface-variant hover:text-tertiary transition-colors focus:outline-none" aria-label="Open Menu">
+          <span id="menu-icon" class="material-symbols-outlined text-lg">menu</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Side Navigation Drawer -->
+  <div id="side-nav-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+  <div id="side-nav" class="fixed top-0 bottom-0 right-0 w-80 bg-background bg-opacity-95 backdrop-blur-lg border-l border-outline z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col p-8 invisible">
+    <!-- Close Button -->
+    <button id="close-side-nav-btn" class="absolute top-6 right-6 h-10 w-10 border border-outline hover:border-tertiary hover:text-tertiary flex items-center justify-center text-on-surface-variant transition duration-200 focus:outline-none">
+      <span class="material-symbols-outlined text-[20px]">close</span>
+    </button>
+
+    <!-- Sidebar Header / Brand -->
+    <div class="flex items-center gap-3 mt-8 mb-12 pb-6 border-b border-outline">
+      <div class="w-10 h-10 select-none flex items-center justify-center">
+        <img src="../amalfi_logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
+      </div>
+      <div class="flex flex-col text-left">
+        <span class="font-display-lg text-base text-on-surface font-semibold tracking-wide leading-none">Amalfi Resort</span>
+        <span class="font-label-caps text-[8px] text-tertiary tracking-widest leading-none mt-1">POSITANO</span>
+      </div>
+    </div>
+
+    <!-- Vertical stack of premium links/buttons (Breeze Pattern) -->
+    <div class="flex flex-col gap-4 flex-1">
+      <a href="#villas" class="side-nav-link border border-outline hover:border-tertiary hover:text-tertiary bg-surface-container/40 py-3.5 text-center font-label-caps text-xs uppercase tracking-widest text-on-surface transition duration-200">
+        Units
+      </a>
+      <a href="#experiences" class="side-nav-link border border-outline hover:border-tertiary hover:text-tertiary bg-surface-container/40 py-3.5 text-center font-label-caps text-xs uppercase tracking-widest text-on-surface transition duration-200">
+        Special
+      </a>
+      <a href="#" class="side-nav-link border border-outline hover:border-tertiary hover:text-tertiary bg-surface-container/40 py-3.5 text-center font-label-caps text-xs uppercase tracking-widest text-on-surface transition duration-200" onclick="window.scrollTo({top: document.querySelector('.collage-media-wrapper').offsetTop - 120, behavior: 'smooth'}); return false;">
+        Reels
+      </a>
+      <a href="#experiences" class="side-nav-link border border-outline hover:border-tertiary hover:text-tertiary bg-surface-container/40 py-3.5 text-center font-label-caps text-xs uppercase tracking-widest text-on-surface transition duration-200">
+        Experience
+      </a>
+      <a href="#villas" class="side-nav-link border border-tertiary hover:bg-tertiary hover:text-background text-tertiary py-3.5 text-center font-label-caps text-xs uppercase tracking-widest transition duration-300">
+        Rebooking
+      </a>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="mt-auto pt-6 border-t border-outline flex flex-col gap-2 text-[9px] text-on-surface-variant uppercase tracking-wider font-bold text-left">
+      <span>&copy; 2026 AMALFI RESORT</span>
+      <span>Positano, Amalfi Coast</span>
+    </div>
+  </div>
+
+  <!-- Hero & Availability Section (Asymmetrical Grid) -->
+  <section class="relative min-h-screen flex flex-col justify-center items-center pt-32 pb-24 bg-[url('../amalfi_backdrop.png')] bg-cover bg-center border-b border-outline">
+    <!-- Theme-aware backdrop overlay -->
+    <div class="absolute inset-0 bg-background bg-opacity-70 dark:bg-opacity-80 z-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background z-0"></div>
+
+    <div class="relative z-10 max-w-[1760px] mx-auto px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center fade-in-load min-w-0">
+      <!-- Left Column: Editorial Headline -->
+      <div class="lg:col-span-7 text-left flex flex-col items-start">
+        <div class="font-label-caps text-xs text-tertiary tracking-[0.3em] font-bold uppercase mb-4">Bespoke Italian Sanctuary</div>
+        <h2 class="font-display-lg italic text-4xl sm:text-5xl md:text-6xl lg:text-[76px] font-light tracking-wide text-on-surface mb-6 leading-[1.08] font-pop-shadow">
+          The Sanctuary of <br class="hidden md:inline"><span class="font-normal not-italic text-tertiary">Amalfi Coast</span>
+        </h2>
+        <p class="max-w-xl font-body-lg text-on-surface-variant leading-relaxed text-sm md:text-base mb-8">
+          A hyper-exclusive retreat where discrete service meets architectural purity. Enjoy private helipads, custom micro-climates, personal butlers, and yacht charters along the coast.
+        </p>
+      </div>
+
+      <!-- Right Column: Availability Selector Card -->
+      <div class="lg:col-span-5 w-full">
+        <div class="glass-panel p-8 bg-surface-container/95 border-outline bg-opacity-90">
+          <h3 class="font-headline-sm text-on-surface mb-6 text-left border-b border-outline pb-3">Check Availability</h3>
+          
+          <div class="flex flex-col gap-5 text-left mb-6">
+            <div class="flex flex-col gap-2">
+              <label for="checkin" class="font-label-caps text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Check-In Date</label>
+              <input type="date" id="checkin" class="mono-input w-full bg-background/50 border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300">
+            </div>
+            
+            <div class="flex flex-col gap-2">
+              <label for="checkout" class="font-label-caps text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Check-Out Date</label>
+              <input type="date" id="checkout" class="mono-input w-full bg-background/50 border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300">
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="guests-count" class="font-label-caps text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Total Guests</label>
+              <select id="guests-count" class="w-full bg-background/50 border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300">
+                <option value="1">1 Guest</option>
+                <option value="2" selected>2 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="6">6 Guests</option>
+                <option value="8">8 Guests</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="search-btn" class="w-full py-4 bg-tertiary hover:bg-opacity-95 text-background font-label-caps font-bold text-xs uppercase tracking-widest transition duration-300 shadow">
+            Search Available Suites
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Welcome Section (Asymmetrical Grid Collage) -->
+  <section class="max-w-[1760px] mx-auto px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 py-24 relative z-10 animate-fade-in">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full min-w-0">
+      <!-- Left Column: Copy & Badges -->
+      <div class="lg:col-span-5 text-left">
+        <span class="font-label-caps text-xs text-tertiary tracking-[0.2em] font-bold uppercase mb-4 block">Before you choose your stay</span>
+        <h2 class="font-display-lg text-4xl md:text-5xl lg:text-6xl font-light tracking-wide text-on-surface mb-6 leading-tight">
+          Simple moments <br class="hidden md:inline"><span class="italic text-tertiary">by the sea.</span>
+        </h2>
+        <div class="w-20 h-[1px] bg-tertiary opacity-60 mb-8"></div>
+        <p class="font-body-lg text-on-surface-variant text-sm md:text-base leading-relaxed mb-8 max-w-[560px]">
+          Amalfi Resort is a welcoming luxury sanctuary on the coast, made for private escapes, family gatherings, and slow beachfront days. Settle in, wander toward the water, and let the rhythm of the tide shape the rest of your stay.
+        </p>
+        
+        <!-- Highlights Box -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 border border-outline bg-surface-container bg-opacity-20 p-4 shadow-sm max-w-[560px] divide-y sm:divide-y-0 sm:divide-x divide-outline gap-3 sm:gap-0">
+          <!-- Highlight Item 1 -->
+          <div class="flex items-center gap-3 pb-3 sm:pb-0 sm:pr-3">
+            <span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">beach_access</span>
+            <div class="flex flex-col">
+              <span class="font-label-caps text-[9px] text-tertiary uppercase tracking-wider font-bold">Beach</span>
+              <span class="text-[9px] text-on-surface-variant font-medium mt-0.5 leading-none">Private Coast</span>
+            </div>
+          </div>
+          <!-- Highlight Item 2 -->
+          <div class="flex items-center gap-3 py-3 sm:py-0 sm:px-3">
+            <span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">wb_sunny</span>
+            <div class="flex flex-col">
+              <span class="font-label-caps text-[9px] text-tertiary uppercase tracking-wider font-bold">Sunset</span>
+              <span class="text-[9px] text-on-surface-variant font-medium mt-0.5 leading-none">Golden Views</span>
+            </div>
+          </div>
+          <!-- Highlight Item 3 -->
+          <div class="flex items-center gap-3 pt-3 sm:pt-0 sm:pl-3">
+            <span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">photo_camera</span>
+            <div class="flex flex-col">
+              <span class="font-label-caps text-[9px] text-tertiary uppercase tracking-wider font-bold">Memories</span>
+              <span class="text-[9px] text-on-surface-variant font-medium mt-0.5 leading-none">Easy Escape</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Media Collage -->
+      <div class="lg:col-span-7 w-full collage-media-wrapper">
+        <div class="collage-container">
+          <figure class="collage-tile tile-main">
+            <img src="../amalfi_pool.png" alt="Amalfi Pool Walkway" />
+          </figure>
+          <figure class="collage-tile tile-sunset">
+            <img src="../amalfi_terrace.png" alt="Amalfi Sunset Terrace" />
+          </figure>
+          <figure class="collage-tile tile-pool">
+            <img src="../amalfi_yacht.png" alt="Amalfi Riva Yacht" />
+          </figure>
+          <figure class="collage-tile tile-courtyard">
+            <img src="../amalfi_gardens.png" alt="Amalfi Gardens Walkway" />
+          </figure>
+          <figure class="collage-tile tile-wide">
+            <img src="../amalfi_backdrop.png" alt="Amalfi Cliffside Coast" />
+          </figure>
+          <figure class="collage-tile tile-bottom">
+            <img src="../amalfi_bedroom.png" alt="Amalfi Suite Bedroom" />
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typographic Transitionary Quote -->
+  <section class="w-full bg-surface-container/20 py-24 border-y border-outline text-center relative z-10">
+    <div class="max-w-4xl mx-auto px-6">
+      <span class="font-label-caps text-xs text-tertiary tracking-[0.35em] font-bold uppercase mb-4 block">Dolce Far Niente</span>
+      <h3 class="font-display-lg italic text-2xl md:text-4xl text-on-surface leading-relaxed font-light font-pop-shadow max-w-3xl mx-auto">
+        "To live in Amalfi is to experience time moving slower, suspended in the glassmorphic blue of the sea."
+      </h3>
+      <div class="w-12 h-[1px] bg-tertiary opacity-40 mx-auto mt-6"></div>
+      <div class="font-mono-data text-[10px] md:text-xs text-on-surface-variant tracking-[0.2em] uppercase font-semibold mt-2">
+        Positano Coastline &bull; Italy
+      </div>
+    </div>
+  </section>
+
+  <!-- Suites Section (Asymmetrical Layout) -->
+  <section id="villas" class="max-w-[1760px] mx-auto px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 py-32 relative z-10 scroll-mt-10">
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start w-full min-w-0">
+      <!-- Left Column: Editorial Kicker and Info -->
+      <aside class="xl:col-span-4 flex flex-col text-left">
+        <span class="font-label-caps text-xs text-tertiary tracking-[0.3em] font-bold mb-3">Bespoke Stays</span>
+        <h2 class="font-display-lg italic text-4xl sm:text-5xl md:text-6xl font-light tracking-wide text-on-surface leading-tight">Stay The Night</h2>
+        <div class="w-16 h-[1px] bg-tertiary opacity-50 my-6"></div>
+        <p class="text-sm md:text-base text-on-surface-variant leading-relaxed mb-8">
+          Relax in thoughtfully designed suites just steps from the Tyrrhenian Sea. Whether you are traveling as a couple, with family, or hosting a private event, our accommodations offer absolute privacy and elite features.
+        </p>
+        
+        <div class="flex flex-col gap-6 mt-4">
+          <!-- Highlight Item 1 -->
+          <div class="grid grid-cols-[44px_1fr] gap-3 text-left">
+            <div class="h-11 w-11 border border-outline flex items-center justify-center bg-surface-container bg-opacity-40 text-tertiary">
+              <span class="material-symbols-outlined text-lg">house</span>
+            </div>
+            <div>
+              <h4 class="text-xs md:text-sm uppercase font-bold tracking-wider text-on-surface">Beachfront Sanctuary</h4>
+              <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed mt-1">Wake up to sea breeze and stunning Positano shoreline vistas.</p>
+            </div>
+          </div>
+
+          <!-- Highlight Item 2 -->
+          <div class="grid grid-cols-[44px_1fr] gap-3 text-left">
+            <div class="h-11 w-11 border border-outline flex items-center justify-center bg-surface-container bg-opacity-40 text-tertiary">
+              <span class="material-symbols-outlined text-lg">hotel</span>
+            </div>
+            <div>
+              <h4 class="text-xs md:text-sm uppercase font-bold tracking-wider text-on-surface">Thoughtful Amenities</h4>
+              <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed mt-1">Enjoy in-suite thermal spas, micro-climates, and organic provisions.</p>
+            </div>
+          </div>
+
+          <!-- Highlight Item 3 -->
+          <div class="grid grid-cols-[44px_1fr] gap-3 text-left">
+            <div class="h-11 w-11 border border-outline flex items-center justify-center bg-surface-container bg-opacity-40 text-tertiary">
+              <span class="material-symbols-outlined text-lg">support_agent</span>
+            </div>
+            <div>
+              <h4 class="text-xs md:text-sm uppercase font-bold tracking-wider text-on-surface">Warm Italian Hospitality</h4>
+              <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed mt-1">Our 24/7 dedicated butler team is here to manage all custom itineraries.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Column: Grid Layout -->
+      <div id="villas-grid" class="xl:col-span-8 min-w-0 overflow-x-auto snap-x snap-mandatory flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 pb-6 no-scrollbar">
+        <!-- Injected by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Subtle Section Divider -->
+  <div class="w-full border-b border-outline"></div>
+
+  <!-- Luxury Experiences -->
+  <section id="experiences" class="bg-surface-container py-32 border-y border-outline relative z-10 transition duration-300">
+    <div class="max-w-[1760px] mx-auto px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+          <div class="font-label-caps text-xs text-tertiary tracking-[0.3em] font-bold mb-3">Optional Incidental Amenities</div>
+          <h2 class="font-display-lg italic text-3xl md:text-5xl font-light tracking-wide text-on-surface">Resort Add-on Services</h2>
+        </div>
+        <div class="w-16 h-[1px] bg-tertiary bg-opacity-50 md:hidden"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full min-w-0">
+        <!-- Card 1 -->
+        <div class="glass-panel p-8 bg-background bg-opacity-40 border-outline flex flex-col justify-between min-h-[250px]">
+          <div>
+            <div class="font-label-caps text-xs text-tertiary font-bold mb-4 font-mono">01</div>
+            <h3 class="font-headline-sm text-on-surface mb-2 font-serif">Private Pool Cabana</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Reserve your own shaded pool cabana for the duration of your stay with towel service and refreshments.
+            </p>
+          </div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱2,000 / Stay</div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass-panel p-8 bg-background bg-opacity-40 border-outline flex flex-col justify-between min-h-[250px]">
+          <div>
+            <div class="font-label-caps text-xs text-tertiary font-bold mb-4 font-mono">02</div>
+            <h3 class="font-headline-sm text-on-surface mb-2 font-serif">All-Day Drinks Package</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Enjoy unlimited soft drinks, juices, coffee, and beer from the resort bar throughout the day.
+            </p>
+          </div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱1,500 / Day</div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass-panel p-8 bg-background bg-opacity-40 border-outline flex flex-col justify-between min-h-[250px]">
+          <div>
+            <div class="font-label-caps text-xs text-tertiary font-bold mb-4 font-mono">03</div>
+            <h3 class="font-headline-sm text-on-surface mb-2 font-serif">Airport / Port Shuttle</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Door-to-door transfer service from the airport or seaport to the resort and back on check-out.
+            </p>
+          </div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱500 / Trip</div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="glass-panel p-8 bg-background bg-opacity-40 border-outline flex flex-col justify-between min-h-[250px]">
+          <div>
+            <div class="font-label-caps text-xs text-tertiary font-bold mb-4 font-mono">04</div>
+            <h3 class="font-headline-sm text-on-surface mb-2 font-serif">In-Room Massage</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              60-minute relaxing Swedish or hot-stone massage delivered to your villa by our certified therapists.
+            </p>
+          </div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱2,000 / Session</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Booking Modal -->
+  <div id="booking-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 backdrop-blur-md p-6 hidden">
+    <!-- Modal Card -->
+    <div class="glass-panel relative w-full max-w-4xl bg-surface-container bg-opacity-95 p-8 border border-outline grid grid-cols-1 md:grid-cols-12 gap-8 max-h-[90vh] overflow-y-auto z-10 text-on-surface">
+      
+      <!-- Close Button -->
+      <button id="close-modal-btn" class="absolute top-5 right-5 h-10 w-10 border border-outline hover:border-tertiary hover:text-tertiary flex items-center justify-center text-on-surface-variant transition duration-200 focus:outline-none">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+
+      <!-- Left Side: Interactive Forms (Step based) -->
+      <div class="col-span-1 md:col-span-7 flex flex-col justify-center">
+        <!-- Kicker -->
+        <div class="font-label-caps text-[9px] tracking-[0.2em] uppercase text-tertiary font-bold mb-2">Exclusive Reservation</div>
+        <h2 id="modal-villa-name" class="font-display-lg text-3xl font-bold text-on-surface mb-2">Amalfi Vista Suite</h2>
+        <div id="modal-villa-rate" class="font-mono-data text-xs text-tertiary mb-6">$8,278.57 / Night</div>
+        
+        <form id="booking-form" onsubmit="return false;" class="flex-1 flex flex-col">
+          
+          <!-- Step 1: Guest Info -->
+          <div id="step-1" class="flex flex-col gap-5 flex-1">
+            <h3 class="font-label-caps text-xs uppercase tracking-widest text-on-surface font-bold border-b border-outline pb-2">Step 1: Guest Details</h3>
+            
+            <div class="flex flex-col gap-2">
+              <label for="guest-name" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Primary Guest Full Name</label>
+              <input type="text" id="guest-name" placeholder="Lord Marcus Harrington" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300" required>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label for="guest-email" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Email Address</label>
+                <input type="email" id="guest-email" placeholder="marcus@harrington.co.uk" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300">
+              </div>
+              <div class="flex flex-col gap-2">
+                <label for="guest-phone" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Contact Number</label>
+                <input type="text" id="guest-phone" placeholder="+44 20 7946 0958" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300">
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="guest-count" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Verify Guests Count</label>
+              <input type="number" id="guest-count" min="1" max="10" value="2" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 transition duration-300">
+            </div>
+
+            <!-- Next Button -->
+            <button type="button" id="to-step-2" class="mt-6 py-3.5 bg-tertiary hover:bg-opacity-95 text-background font-label-caps font-bold text-xs uppercase tracking-widest transition duration-300 shadow">
+              Select Optional Add-ons
+            </button>
+          </div>
+
+          <!-- Step 2: Resort Add-ons -->
+          <div id="step-2" class="flex flex-col gap-5 flex-1 hidden">
+            <h3 class="font-label-caps text-xs uppercase tracking-widest text-on-surface font-bold border-b border-outline pb-2">Step 2: Optional Add-ons</h3>
+            
+            <div class="flex flex-col gap-3">
+              <!-- Cabana CB -->
+              <label class="flex items-center gap-4 p-4 border border-outline hover:border-tertiary hover:border-opacity-30 bg-background bg-opacity-30 cursor-pointer transition">
+                <input type="checkbox" value="cabana" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-on-surface">Private Pool Cabana</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">Exclusive shaded cabana with towel service for the full stay (+₱2,000)</div>
+                </div>
+              </label>
+
+              <!-- Drinks CB -->
+              <label class="flex items-center gap-4 p-4 border border-outline hover:border-tertiary hover:border-opacity-30 bg-background bg-opacity-30 cursor-pointer transition">
+                <input type="checkbox" value="drinks" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-on-surface">All-Day Drinks Package</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">Unlimited soft drinks, juices, coffee & beer from the resort bar (+₱1,500)</div>
+                </div>
+              </label>
+
+              <!-- Shuttle CB -->
+              <label class="flex items-center gap-4 p-4 border border-outline hover:border-tertiary hover:border-opacity-30 bg-background bg-opacity-30 cursor-pointer transition">
+                <input type="checkbox" value="shuttle" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-on-surface">Airport / Port Shuttle</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">Round-trip transfer from airport or seaport to the resort (+₱500)</div>
+                </div>
+              </label>
+
+              <!-- Massage CB -->
+              <label class="flex items-center gap-4 p-4 border border-outline hover:border-tertiary hover:border-opacity-30 bg-background bg-opacity-30 cursor-pointer transition">
+                <input type="checkbox" value="massage" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
+                <div class="flex-1">
+                  <div class="text-xs font-bold text-on-surface">In-Room Massage</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">60-min Swedish or hot-stone massage in your villa by certified therapists (+₱2,000)</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- Nav Buttons -->
+            <div class="grid grid-cols-2 gap-4 mt-6">
+              <button type="button" id="back-to-step-1" class="py-3 border border-outline hover:border-tertiary hover:text-tertiary text-on-surface-variant font-bold text-xs uppercase tracking-widest transition duration-300">
+                Back
+              </button>
+              <button type="button" id="to-step-3" class="py-3 bg-tertiary hover:bg-opacity-95 text-background font-label-caps font-bold text-xs uppercase tracking-widest transition duration-300">
+                Proceed to Payment
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Payment Verification -->
+          <div id="step-3" class="flex flex-col gap-5 flex-1 hidden">
+            <h3 class="font-label-caps text-xs uppercase tracking-widest text-on-surface font-bold border-b border-outline pb-2">Step 3: Secure Deposit</h3>
+            
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              Please transfer a minimum 50% deposit via Gcash or Bank Transfer to hold this elite villa booking. Upload a clear screenshot of the transaction below.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <!-- QR Code Mock -->
+              <div class="flex flex-col items-center justify-center p-4 border border-outline bg-background bg-opacity-30">
+                <div class="h-32 w-32 bg-white flex items-center justify-center p-2 mb-3">
+                  <!-- Simulated QR -->
+                  <div class="w-full h-full border border-black flex flex-col items-center justify-center text-[10px] text-black font-mono font-bold leading-tight">
+                    <span>AMALFI QR</span>
+                    <span class="text-[7px]">SCAN TO PAY</span>
+                  </div>
+                </div>
+                <div class="text-[9px] text-on-surface-variant uppercase tracking-wider font-bold">Secure Merchant Account</div>
+                <div class="text-[9px] text-on-surface font-mono mt-0.5">Reference: ALF-GATEWAY-290</div>
+              </div>
+
+              <!-- Upload fields -->
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                  <label for="receipt-upload" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Upload Payment Slip</label>
+                  <input type="file" id="receipt-upload" accept="image/*" class="w-full text-xs text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:border file:border-outline file:bg-background file:text-tertiary file:text-xs file:font-semibold hover:file:bg-opacity-80">
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <label for="ref-no" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Transaction Reference #</label>
+                  <input type="text" id="ref-no" placeholder="Gcash Ref or Bank Trx ID" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 focus:border-opacity-100 transition duration-300" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nav Buttons -->
+            <div class="grid grid-cols-2 gap-4 mt-6">
+              <button type="button" id="back-to-step-2" class="py-3 border border-outline hover:border-tertiary hover:text-tertiary text-on-surface-variant font-bold text-xs uppercase tracking-widest transition duration-300">
+                Back
+              </button>
+              <button type="button" id="submit-booking-btn" class="py-3 bg-tertiary hover:bg-opacity-95 text-background font-label-caps font-bold text-xs uppercase tracking-widest transition duration-300 shadow">
+                Submit Reservation
+              </button>
+            </div>
+          </div>
+
+          <!-- Success Screen -->
+          <div id="step-success" class="flex flex-col items-center justify-center text-center gap-6 py-8 hidden">
+            <div class="h-16 w-16 rounded-full border border-mint-active flex items-center justify-center bg-mint-active bg-opacity-5">
+              <span class="material-symbols-outlined text-mint-active text-3xl">check</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-display-lg font-bold text-on-surface mb-2">Reservation Submitted</h3>
+              <p class="text-xs text-on-surface-variant max-w-sm mx-auto leading-relaxed">
+                Your luxury booking has been received and is currently <span class="text-tertiary font-bold">Pending Verification</span> by the Resort butler.
+              </p>
+            </div>
+            <div class="p-4 border border-outline bg-background bg-opacity-30 w-full max-w-xs">
+              <div class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Your Booking Reference</div>
+              <div id="success-ref-no" class="text-lg font-mono font-bold tracking-widest text-on-surface mt-1">ALF-2026-9011</div>
+            </div>
+            <button type="button" onclick="window.location.reload();" class="mt-4 px-6 py-2.5 border border-outline hover:border-tertiary hover:text-tertiary text-xs uppercase tracking-widest transition duration-200">
+              Close Window
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Right Side: Order Summary -->
+      <div class="col-span-1 md:col-span-5 bg-background bg-opacity-30 p-6 border border-outline flex flex-col">
+        <h3 class="font-label-caps text-xs uppercase tracking-widest text-on-surface font-bold border-b border-outline pb-2 mb-6">Reservation Folio</h3>
+        
+        <div class="flex-1 flex flex-col gap-4">
+          <div class="flex justify-between text-xs text-on-surface-variant">
+            <span>Nightly Rate:</span>
+            <span id="summary-base-rate" class="mono-input text-on-surface font-semibold">$8,278.57 / Night</span>
+          </div>
+
+          <div class="flex justify-between text-xs text-on-surface-variant">
+            <span>Stay Duration:</span>
+            <span id="summary-nights" class="text-on-surface font-semibold font-bold">1 Night</span>
+          </div>
+
+          <div class="flex justify-between text-xs text-on-surface-variant border-b border-outline pb-3">
+            <span>Lodging Subtotal:</span>
+            <span id="summary-base-total" class="mono-input text-on-surface font-semibold">$8,278.57</span>
+          </div>
+
+          <!-- Addons items -->
+          <div class="flex flex-col gap-1 border-b border-outline pb-3">
+            <span class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">Requested Add-ons</span>
+            <div id="summary-addons-list" class="flex flex-col gap-1">
+              <div class="text-[10px] text-on-surface-variant italic">No services selected</div>
+            </div>
+          </div>
+
+          <!-- Total charges -->
+          <div class="mt-auto pt-6 flex flex-col gap-2">
+            <div class="flex justify-between items-end">
+              <span class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Estimated Charges</span>
+              <span id="summary-total" class="text-2xl font-mono font-bold text-tertiary">$8,278.57</span>
+            </div>
+            <div class="text-[9px] text-on-surface-variant italic leading-normal mt-2">
+              * Charges will be calculated in USD. Balance due does not include security deposit or localized VAT.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer id="policy" class="bg-background border-t border-outline py-20 relative z-10 transition duration-300">
+    <div class="max-w-[1760px] mx-auto px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 text-left">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16 w-full min-w-0">
+        
+        <!-- Left Block: Brand Identity -->
+        <div class="col-span-1 md:col-span-6 flex flex-col gap-6">
+          <h2 class="font-display-lg text-4xl md:text-5xl font-semibold tracking-wider text-on-surface uppercase leading-none">
+            AMALFI<span class="text-tertiary">.</span>
+          </h2>
+          <p class="text-xs text-on-surface-variant tracking-wider uppercase font-bold m-0">
+            Cliffs &bull; Sunset &bull; Sanctuary &bull; Memories
+          </p>
+          <p class="text-xs text-on-surface-variant max-w-md leading-relaxed m-0 font-medium">
+            Via dei Mulini 12, 84017 Positano (SA), Italy
+          </p>
+          <a href="https://maps.google.com" target="_blank" class="text-tertiary hover:underline font-label-caps text-xs tracking-wider uppercase font-bold self-start mt-2">
+            Get Directions =&gt;
+          </a>
+        </div>
+
+        <!-- Right Block: Directories (Quick Links & Connect/Official Website) -->
+        <div class="col-span-1 md:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-8 w-full min-w-0">
+          <!-- Column 1: Quick Links -->
+          <div class="flex flex-col gap-4">
+            <h4 class="font-label-caps text-xs uppercase tracking-[0.15em] text-tertiary font-bold">Quick Links</h4>
+            <ul class="flex flex-col gap-3 text-xs font-semibold text-on-surface-variant p-0 m-0 list-none">
+              <li><a href="#villas" class="hover:text-tertiary transition">Our Suites</a></li>
+              <li><a href="#experiences" class="hover:text-tertiary transition">The Experience</a></li>
+              <li><a href="#policy" class="hover:text-tertiary transition">Before You Arrive</a></li>
+              <li><a href="#policy" class="hover:text-tertiary transition">Refund Policy</a></li>
+              <li><a href="#policy" class="hover:text-tertiary transition">Cancellation &amp; Rebooking</a></li>
+              <li><a href="#villas" class="hover:text-tertiary transition">Send Inquiry</a></li>
+              <li><a href="#villas" class="hover:text-tertiary transition">Book Private Reserve</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Connect & Official Website -->
+          <div class="flex flex-col gap-8">
+            <div class="flex flex-col gap-4">
+              <h4 class="font-label-caps text-xs uppercase tracking-[0.15em] text-tertiary font-bold">Connect With Us</h4>
+              <ul class="flex flex-col gap-3 text-xs font-semibold text-on-surface-variant p-0 m-0 list-none">
+                <li><a href="#" class="hover:text-tertiary transition">Facebook</a></li>
+                <li><a href="#" class="hover:text-tertiary transition">Instagram</a></li>
+                <li><a href="#" class="hover:text-tertiary transition">Tripadvisor</a></li>
+              </ul>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <h4 class="font-label-caps text-xs uppercase tracking-[0.15em] text-tertiary font-bold">Official Website</h4>
+              <a href="#" class="text-tertiary hover:underline text-xs font-mono font-bold tracking-wider">
+                www.amalfi-resort-positano.it
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sub-Footer -->
+      <div class="border-t border-outline pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-on-surface-variant uppercase tracking-wider font-bold w-full min-w-0">
+        <span>Copyright 2026 Amalfi Resort. All rights reserved.</span>
+        <span>Positano (SA), Italy</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js?v=1.0.2"></script>
+</body>
+</html>

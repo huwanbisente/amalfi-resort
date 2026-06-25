@@ -1,0 +1,212 @@
+/* Root Variables & Token Overrides for Amalfi Mobile Butler App */
+:root {
+  /* Mediterranean Light Mode (Muted Warm Stone) - RGB Channels - DEFAULT */
+  --stitch-bg-dark-rgb: 249 246 240; /* Warm alabaster / ivory sand */
+  --stitch-bg-midnight-rgb: 239 236 230; /* Soft sun-baked stone plaster */
+  --stitch-text-platinum-rgb: 10 17 40; /* Deep Aegean navy */
+  --stitch-text-muted-rgb: 85 93 107; /* Muted stone grey */
+  --stitch-accent-gold-rgb: 181 142 46; /* Warm Roman gold accent */
+  --stitch-accent-mint-rgb: 30 107 59; /* Tuscan cypress green */
+  --stitch-alert-red-rgb: 176 58 11; /* Classic terracotta clay red */
+  --stitch-alert-orange-rgb: 194 106 5; /* Mediterranean citrus orange */
+
+  --stitch-bg-sidebar-rgb: var(--stitch-bg-midnight-rgb);
+
+  /* Mapped standard variables for native CSS usage */
+  --stitch-bg-dark: rgb(var(--stitch-bg-dark-rgb));
+  --stitch-bg-midnight: rgb(var(--stitch-bg-midnight-rgb));
+  --stitch-text-platinum: rgb(var(--stitch-text-platinum-rgb));
+  --stitch-text-muted: rgb(var(--stitch-text-muted-rgb));
+  --stitch-accent-gold: rgb(var(--stitch-accent-gold-rgb));
+  --stitch-accent-mint: rgb(var(--stitch-accent-mint-rgb));
+  --stitch-alert-red: rgb(var(--stitch-alert-red-rgb));
+  --stitch-alert-orange: rgb(var(--stitch-alert-orange-rgb));
+  
+  --stitch-border-glass: rgba(var(--stitch-text-platinum-rgb), 0.08);
+  --stitch-border-glass-hover: rgba(var(--stitch-text-platinum-rgb), 0.16);
+  --stitch-bg-glass: rgba(var(--stitch-bg-midnight-rgb), 0.75);
+  
+  --stitch-scrollbar-track: rgba(var(--stitch-text-platinum-rgb), 0.05);
+  --stitch-scrollbar-thumb: rgba(var(--stitch-text-platinum-rgb), 0.15);
+  
+  --stitch-transition-smooth: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --calendar-indicator-invert: 0;
+}
+
+/* Mediterranean Dark Mode (Deep Sea & Terracotta Sun) - OVERRIDES */
+.dark, html.dark {
+  /* RGB Channels */
+  --stitch-bg-dark-rgb: 7 13 25; /* Deep maritime obsidian */
+  --stitch-bg-midnight-rgb: 15 26 45; /* Maritime navy panels */
+  --stitch-text-platinum-rgb: 230 236 245; /* Alabaster blue-white text */
+  --stitch-text-muted-rgb: 142 155 176; /* Soft sea-mist grey */
+  --stitch-accent-gold-rgb: 229 193 88; /* Warm sandy gold */
+  --stitch-accent-mint-rgb: 46 234 146; /* Seafoam vibrant green */
+  --stitch-alert-red-rgb: 230 74 25; /* Deep terracotta red */
+  --stitch-alert-orange-rgb: 245 124 0; /* Warm citrus orange */
+
+  --stitch-bg-sidebar-rgb: var(--stitch-bg-dark-rgb);
+  
+  --stitch-border-glass: rgba(var(--stitch-text-platinum-rgb), 0.08);
+  --stitch-border-glass-hover: rgba(var(--stitch-text-platinum-rgb), 0.16);
+  --stitch-bg-glass: rgba(var(--stitch-bg-midnight-rgb), 0.75);
+  
+  --stitch-scrollbar-track: rgba(var(--stitch-bg-dark-rgb), 0.4);
+  --stitch-scrollbar-thumb: rgba(var(--stitch-text-platinum-rgb), 0.15);
+  --calendar-indicator-invert: 1;
+}
+
+
+/* Base resets for Mobile App Simulation */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  max-width: 100%;
+}
+body {
+  background-color: #02050B; /* Extra dark outer frame */
+  color: var(--stitch-text-platinum);
+  font-family: 'Hanken Grotesk', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+html:not(.dark) body {
+  background-color: #E2DDD5; /* Light frame background */
+}
+
+/* Simulate phone viewport framing */
+.phone-viewport {
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  max-height: 880px;
+  background-color: var(--stitch-bg-dark);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.4s ease;
+}
+
+html:not(.dark) .phone-viewport {
+  border: 1px solid rgba(10, 17, 40, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(10, 17, 40, 0.12);
+}
+
+@media (min-width: 440px) {
+  .phone-viewport {
+    border-radius: 40px;
+    height: 92vh;
+    border: 8px solid #1E2330; /* Phone bezel */
+  }
+}
+
+/* Glassmorphic Cards */
+.glass-panel {
+  background-color: var(--stitch-bg-glass);
+  border: 1px solid var(--stitch-border-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 0px !important;
+  transition: var(--stitch-transition-smooth);
+}
+
+html:not(.dark) .glass-panel {
+  box-shadow: 0 8px 20px 0 rgba(10, 17, 40, 0.04);
+}
+
+.glass-panel:hover {
+  border-color: var(--stitch-border-glass-hover);
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Scrollbar for inner components if needed */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(7, 13, 25, 0.1);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(230, 236, 245, 0.08);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--stitch-accent-gold);
+}
+
+/* Tab indicator */
+.tab-btn {
+  transition: var(--stitch-transition-smooth);
+}
+.tab-btn.active {
+  color: var(--stitch-accent-gold) !important;
+}
+
+/* Pulsing indicators */
+@keyframes activePulse {
+  0% { box-shadow: 0 0 0 0 rgba(46, 234, 146, 0.35); }
+  70% { box-shadow: 0 0 0 6px rgba(46, 234, 146, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(46, 234, 146, 0); }
+}
+.shadow-mint-pulse {
+  animation: activePulse 2s infinite;
+}
+
+/* Blur Ledger Filter */
+.blur-filter {
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Custom Segmented Control styling */
+.segmented-control-option input[type="radio"]:checked + span {
+  background-color: var(--stitch-accent-gold);
+  color: var(--stitch-bg-dark) !important;
+}
+
+/* Theme toggle switch in mobile header */
+.mobile-theme-switch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--stitch-border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--stitch-transition-smooth);
+}
+.mobile-theme-switch:hover {
+  border-color: var(--stitch-accent-gold);
+}
+
+/* Custom premium date input calendar picker indicator */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(var(--calendar-indicator-invert, 0));
+  cursor: pointer;
+  opacity: 0.65;
+  transition: var(--stitch-transition-smooth);
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+

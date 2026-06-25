@@ -1,0 +1,348 @@
+/* Root Variables & Token Overrides for Amalfi Guest Portal */
+:root {
+  /* Mediterranean Light Mode (Muted Warm Stone) - RGB Channels - DEFAULT */
+  --stitch-bg-dark-rgb: 249 246 240; /* Warm alabaster / ivory sand */
+  --stitch-bg-midnight-rgb: 239 236 230; /* Soft sun-baked stone plaster */
+  --stitch-text-platinum-rgb: 10 17 40; /* Aegean navy */
+  --stitch-text-muted-rgb: 85 93 107; /* Muted stone grey */
+  --stitch-accent-gold-rgb: 181 142 46; /* Warm Roman gold accent */
+  --stitch-accent-mint-rgb: 30 107 59; /* Tuscan cypress green */
+  --stitch-alert-red-rgb: 176 58 11; /* Classic terracotta clay red */
+  --stitch-alert-orange-rgb: 194 106 5; /* Mediterranean citrus orange */
+
+  --stitch-bg-sidebar-rgb: var(--stitch-bg-midnight-rgb);
+
+  /* Mapped standard variables for native CSS usage */
+  --stitch-bg-dark: rgb(var(--stitch-bg-dark-rgb));
+  --stitch-bg-midnight: rgb(var(--stitch-bg-midnight-rgb));
+  --stitch-text-platinum: rgb(var(--stitch-text-platinum-rgb));
+  --stitch-text-muted: rgb(var(--stitch-text-muted-rgb));
+  --stitch-accent-gold: rgb(var(--stitch-accent-gold-rgb));
+  --stitch-accent-mint: rgb(var(--stitch-accent-mint-rgb));
+  --stitch-alert-red: rgb(var(--stitch-alert-red-rgb));
+  --stitch-alert-orange: rgb(var(--stitch-alert-orange-rgb));
+  
+  --stitch-border-glass: rgba(var(--stitch-text-platinum-rgb), 0.08);
+  --stitch-border-glass-hover: rgba(var(--stitch-text-platinum-rgb), 0.16);
+  --stitch-bg-glass: rgba(var(--stitch-bg-midnight-rgb), 0.75);
+  
+  --stitch-scrollbar-track: rgba(var(--stitch-text-platinum-rgb), 0.05);
+  --stitch-scrollbar-thumb: rgba(var(--stitch-text-platinum-rgb), 0.15);
+  --stitch-card-hover-border: rgba(var(--stitch-accent-gold-rgb), 0.4);
+  
+  --stitch-transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --stitch-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --hero-overlay: linear-gradient(to bottom, rgba(var(--stitch-bg-dark-rgb), 0.4) 0%, rgba(var(--stitch-bg-dark-rgb), 0.98) 100%);
+}
+
+/* Mediterranean Dark Mode (Deep Sea & Terracotta Sun) - OVERRIDES */
+.dark, html.dark {
+  /* RGB Channels */
+  --stitch-bg-dark-rgb: 7 13 25; /* Deep maritime obsidian */
+  --stitch-bg-midnight-rgb: 15 26 45; /* Maritime navy panels */
+  --stitch-text-platinum-rgb: 230 236 245; /* Alabaster blue-white text */
+  --stitch-text-muted-rgb: 142 155 176; /* Soft sea-mist grey */
+  --stitch-accent-gold-rgb: 229 193 88; /* Warm sandy gold */
+  --stitch-accent-mint-rgb: 46 234 146; /* Seafoam vibrant green */
+  --stitch-alert-red-rgb: 230 74 25; /* Deep terracotta red */
+  --stitch-alert-orange-rgb: 245 124 0; /* Warm citrus orange */
+
+  --stitch-bg-sidebar-rgb: var(--stitch-bg-dark-rgb);
+  
+  --stitch-border-glass: rgba(var(--stitch-text-platinum-rgb), 0.08);
+  --stitch-border-glass-hover: rgba(var(--stitch-text-platinum-rgb), 0.16);
+  --stitch-bg-glass: rgba(var(--stitch-bg-midnight-rgb), 0.65);
+  
+  --stitch-scrollbar-track: rgba(var(--stitch-bg-dark-rgb), 0.4);
+  --stitch-scrollbar-thumb: rgba(var(--stitch-text-platinum-rgb), 0.15);
+  --stitch-card-hover-border: rgba(var(--stitch-accent-gold-rgb), 0.4);
+  
+  --hero-overlay: linear-gradient(to bottom, rgba(var(--stitch-bg-dark-rgb), 0.7) 0%, rgba(var(--stitch-bg-dark-rgb), 0.95) 100%);
+}
+
+
+/* Base resets & smooth transitions */
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+body {
+  background-color: var(--stitch-bg-dark);
+  color: var(--stitch-text-platinum);
+  font-family: 'Hanken Grotesk', sans-serif;
+  position: relative;
+  min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Luxury Background Aura */
+body::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(181, 142, 46, 0.06) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.dark body::before {
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: 10%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(46, 234, 146, 0.02) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Glassmorphic Panels */
+.glass-panel {
+  background-color: var(--stitch-bg-glass);
+  border: 1px solid var(--stitch-border-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 16px 36px 0 rgba(10, 17, 40, 0.06), 0 4px 10px 0 rgba(10, 17, 40, 0.02);
+  border-radius: 0px !important; /* Strict sharp corners for premium architectural layout */
+  transition: var(--stitch-transition-smooth);
+}
+
+.dark .glass-panel {
+  box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.22);
+}
+
+.glass-panel:hover {
+  border-color: var(--stitch-border-glass-hover);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--stitch-scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--stitch-scrollbar-thumb);
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--stitch-accent-gold);
+}
+
+/* Pulsing Status indicator */
+@keyframes activePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(46, 234, 146, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(46, 234, 146, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(46, 234, 146, 0);
+  }
+}
+.shadow-mint-pulse {
+  animation: activePulse 2s infinite;
+}
+
+/* Gold shimmer on hover */
+.hover-border-gold:hover {
+  border-color: var(--stitch-accent-gold) !important;
+}
+
+/* Monospace inputs */
+.mono-input {
+  font-family: 'Space Grotesk', monospace;
+}
+
+/* Zoom Image container */
+.img-zoom-container {
+  overflow: hidden;
+  position: relative;
+}
+.img-zoom-container img {
+  transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.img-zoom-container:hover img {
+  transform: scale(1.04);
+}
+
+/* Fade in elements */
+.fade-in-load {
+  opacity: 0;
+  animation: fadeInEffect 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes fadeInEffect {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Editorial line decorations */
+.editorial-line {
+  position: relative;
+}
+.editorial-line::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background-color: var(--stitch-accent-gold);
+  opacity: 0.6;
+}
+
+/* Theme toggle button styling */
+.theme-switch-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--stitch-border-glass);
+  background-color: var(--stitch-bg-glass);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--stitch-transition-smooth);
+}
+.theme-switch-btn:hover {
+  border-color: var(--stitch-accent-gold);
+  color: var(--stitch-accent-gold);
+}
+
+/* Premium Grid Collage for Welcome Section */
+.collage-media-wrapper {
+  overflow: hidden;
+  border: 1px solid var(--stitch-border-glass);
+  background-color: var(--stitch-bg-midnight);
+  box-shadow: 0 16px 36px 0 rgba(10, 17, 40, 0.08);
+  transition: var(--stitch-transition-smooth);
+}
+
+.collage-container {
+  display: grid;
+  height: 520px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 3px;
+  background-color: var(--stitch-border-glass);
+}
+
+@media (min-width: 768px) {
+  .collage-container {
+    height: 480px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+}
+
+.collage-tile {
+  margin: 0;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--stitch-bg-dark);
+  position: relative;
+}
+
+.collage-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.collage-tile:hover img {
+  transform: scale(1.04);
+}
+
+/* Tile positions */
+.tile-main {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+@media (min-width: 768px) {
+  .tile-main {
+    grid-column: 1 / span 3;
+    grid-row: 1 / span 3;
+  }
+}
+
+.tile-sunset {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+@media (min-width: 768px) {
+  .tile-sunset {
+    grid-column: 4 / span 1;
+    grid-row: 1 / span 3;
+  }
+}
+
+.tile-pool {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+@media (min-width: 768px) {
+  .tile-pool {
+    grid-column: 5 / span 2;
+    grid-row: 1 / span 1;
+  }
+}
+
+.tile-courtyard {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+@media (min-width: 768px) {
+  .tile-courtyard {
+    grid-column: 5 / span 2;
+    grid-row: 2 / span 1;
+  }
+}
+
+.tile-wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+@media (min-width: 768px) {
+  .tile-wide {
+    grid-column: 1 / span 3;
+    grid-row: 4 / span 1;
+  }
+}
+
+.tile-bottom {
+  grid-column: span 4;
+  grid-row: span 1;
+}
+@media (min-width: 768px) {
+  .tile-bottom {
+    grid-column: 4 / span 3;
+    grid-row: 3 / span 2;
+  }
+}
+

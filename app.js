@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: "Villa 6", name: "Sunset Pavilion", category: "Large Luxury Villa", nightlyRate: 10525 }
   ];
 
-  const reservations = [
+  const DEFAULT_RESERVATIONS = [
     {
       id: "loren",
       guest: "Sophia Loren",
@@ -25,7 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: true,
       addonChef: false,
-      folio: "62,150.00",
+      posCharges: [
+        { id: "chg-1", name: "Local Beer (2x)", amount: 360, date: "June 19, 2026" },
+        { id: "chg-2", name: "Bottled Water (500ml)", amount: 50, date: "June 19, 2026" }
+      ],
+      folio: "62,560.00",
       startOffset: 0,
       duration: 7,
       isBlockout: false
@@ -44,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "95,400.00",
       startOffset: 4,
       duration: 5,
@@ -63,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "42,100.00",
       startOffset: 6,
       duration: 4,
@@ -82,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "35,000.00",
       startOffset: 1,
       duration: 4,
@@ -101,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "52,800.00",
       startOffset: 3,
       duration: 6,
@@ -120,12 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "28,500.00",
       startOffset: 5,
       duration: 3,
       isBlockout: false
     },
-    // Blockouts
     {
       id: "block-villa-2",
       guest: "Housekeeping: In Progress",
@@ -140,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "0.00",
       startOffset: 0,
       duration: 2,
@@ -159,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       addonYacht: false,
       addonSpa: false,
       addonChef: false,
+      posCharges: [],
       folio: "0.00",
       startOffset: 0,
       duration: 3,
@@ -166,45 +176,224 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  const DEFAULT_PRODUCTS = [
+    { id: "p-1", name: "Local Craft Beer", price: 180, category: "Food & Beverage", stock: 120 },
+    { id: "p-2", name: "Club Sandwich with Fries", price: 380, category: "Food & Beverage", stock: 50 },
+    { id: "p-3", name: "Soda Can (Coke/Sprite)", price: 90, category: "Food & Beverage", stock: 150 },
+    { id: "p-4", name: "Burger & Fries Combo", price: 420, category: "Food & Beverage", stock: 40 },
+    { id: "p-5", name: "Bottled Water (500ml)", price: 50, category: "Food & Beverage", stock: 200 },
+    { id: "p-6", name: "Sunscreen Lotion", price: 450, category: "Boutique & Retail", stock: 35 },
+    { id: "p-7", name: "Resort Souvenir T-Shirt", price: 650, category: "Boutique & Retail", stock: 60 },
+    { id: "p-8", name: "Pool Float Rental", price: 200, category: "Experiences & Services", stock: 15 }
+  ];
+
+  // â”€â”€ DEPARTMENT MAP â”€â”€ drives cascading dropdowns & P&L grouping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const DEPT_MAP = {
+    "Rooms & Housekeeping": {
+      subcategories: [
+        { name: "Laundry & Linen Service",       category: "variable" },
+        { name: "Room Supplies (Toiletries)",     category: "variable" },
+        { name: "Housekeeping Wages",             category: "variable" },
+        { name: "Room Repairs & Upkeep",          category: "variable" },
+        { name: "Deep Cleaning Service",          category: "variable" },
+        { name: "Bedding & Linen Replacement",    category: "variable" }
+      ]
+    },
+    "Food & Beverage": {
+      subcategories: [
+        { name: "Food Inventory Restocking",      category: "variable" },
+        { name: "Beverage Restocking",            category: "variable" },
+        { name: "Kitchen Wages",                  category: "variable" },
+        { name: "Kitchen Equipment Repairs",      category: "variable" },
+        { name: "Kitchen Gas / LPG",              category: "variable" },
+        { name: "Dining Supplies & Tableware",    category: "variable" }
+      ]
+    },
+    "Staffing & Payroll": {
+      subcategories: [
+        { name: "Regular Salaries",               category: "fixed" },
+        { name: "Overtime Pay",                   category: "variable" },
+        { name: "SSS / PhilHealth / HDMF",        category: "fixed" },
+        { name: "Contractual / Part-Time",        category: "variable" },
+        { name: "Staff Benefits & Allowances",    category: "variable" }
+      ]
+    },
+    "Utilities": {
+      subcategories: [
+        { name: "Electricity",                    category: "variable" },
+        { name: "Water & Sewage",                 category: "variable" },
+        { name: "Internet & Telecom",             category: "fixed" },
+        { name: "Generator Fuel",                 category: "variable" },
+        { name: "LPG / Cooking Gas",              category: "variable" }
+      ]
+    },
+    "Maintenance & Facilities": {
+      subcategories: [
+        { name: "General Repairs",                category: "variable" },
+        { name: "Pool Maintenance",               category: "variable" },
+        { name: "Landscaping & Grounds",          category: "variable" },
+        { name: "Pest Control",                   category: "variable" },
+        { name: "Security Services",              category: "fixed" }
+      ]
+    },
+    "Marketing & Admin": {
+      subcategories: [
+        { name: "Digital Marketing & Ads",        category: "variable" },
+        { name: "OTA / Booking Platform Fees",    category: "variable" },
+        { name: "Office Supplies",                category: "variable" },
+        { name: "Software & Subscriptions",       category: "fixed" },
+        { name: "Print & Signage",                category: "variable" }
+      ]
+    },
+    "Fixed Overheads": {
+      subcategories: [
+        { name: "Property Insurance",             category: "fixed" },
+        { name: "Business Taxes & Permits",       category: "fixed" },
+        { name: "Franchise / Management Fees",    category: "fixed" },
+        { name: "Loan Interest",                  category: "fixed" },
+        { name: "Depreciation & Amortization",    category: "fixed" },
+        { name: "Income Tax Provision",           category: "fixed" }
+      ]
+    }
+  };
+
+  // â”€â”€ DEFAULT STAFF ROSTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const DEFAULT_STAFF = [
+    { id: "staff-1", name: "Housekeeper 1",       position: "Head Housekeeper",  department: "Rooms & Housekeeping", basicSalary: 18000, isActive: true },
+    { id: "staff-2", name: "Housekeeper 2",       position: "Housekeeper",        department: "Rooms & Housekeeping", basicSalary: 14000, isActive: true },
+    { id: "staff-3", name: "Front Desk Officer",  position: "Front Desk",         department: "Admin",               basicSalary: 16500, isActive: true },
+    { id: "staff-4", name: "Cook / Kitchen Staff",position: "Cook",               department: "Food & Beverage",     basicSalary: 17000, isActive: true },
+    { id: "staff-5", name: "Maintenance Staff",   position: "Maintenance",        department: "Maintenance & Facilities", basicSalary: 15500, isActive: true },
+    { id: "staff-6", name: "Security Guard",      position: "Security",           department: "Staffing & Payroll",  basicSalary: 14800, isActive: true },
+    { id: "staff-7", name: "Resort Manager",      position: "Manager",            department: "Admin",               basicSalary: 35000, isActive: true }
+  ];
+
+  // â”€â”€ DEFAULT EXPENSES v3 (departmental schema) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const DEFAULT_EXPENSES = [
+    { id: "exp-1",  date: "2026-06-05", vendor: "Payroll Run - June H1",        description: "Regular Salaries - June H1",        department: "Staffing & Payroll",     subcategory: "Regular Salaries",           category: "fixed",    amount: 131800, paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-2",  date: "2026-06-05", vendor: "Payroll Run - June H1",        description: "SSS / PhilHealth / HDMF - June H1",  department: "Staffing & Payroll",     subcategory: "SSS / PhilHealth / HDMF",    category: "fixed",    amount: 14200,  paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-3",  date: "2026-06-10", vendor: "Meralco",                       description: "Electricity Bill - June",             department: "Utilities",              subcategory: "Electricity",                category: "variable", amount: 10900,  paymentMethod: "Corporate Card", recurrence: "Monthly" },
+    { id: "exp-4",  date: "2026-06-10", vendor: "Local Water District",          description: "Water & Sewage - June",              department: "Utilities",              subcategory: "Water & Sewage",             category: "variable", amount: 3200,   paymentMethod: "Corporate Card", recurrence: "Monthly" },
+    { id: "exp-5",  date: "2026-06-11", vendor: "Shell Gasoline",                description: "Generator Fuel Refill",              department: "Utilities",              subcategory: "Generator Fuel",             category: "variable", amount: 8500,   paymentMethod: "Cash",          recurrence: "One-Time" },
+    { id: "exp-6",  date: "2026-06-12", vendor: "Sun Laundry Services",          description: "Weekly Laundry & Linen Service",     department: "Rooms & Housekeeping",   subcategory: "Laundry & Linen Service",    category: "variable", amount: 6800,   paymentMethod: "Cash",          recurrence: "Weekly" },
+    { id: "exp-7",  date: "2026-06-12", vendor: "SM Supermarket",                description: "Room Toiletries & Supplies",         department: "Rooms & Housekeeping",   subcategory: "Room Supplies (Toiletries)", category: "variable", amount: 4200,   paymentMethod: "Corporate Card", recurrence: "Monthly" },
+    { id: "exp-8",  date: "2026-06-13", vendor: "Fresh Mart Produce",            description: "Food Inventory Restocking",          department: "Food & Beverage",        subcategory: "Food Inventory Restocking",  category: "variable", amount: 28400,  paymentMethod: "Corporate Card", recurrence: "Weekly" },
+    { id: "exp-9",  date: "2026-06-13", vendor: "Beverage Depot",                description: "Beer, Wine & Soft Drinks Restock",  department: "Food & Beverage",        subcategory: "Beverage Restocking",        category: "variable", amount: 15200,  paymentMethod: "Corporate Card", recurrence: "Weekly" },
+    { id: "exp-10", date: "2026-06-14", vendor: "HVAC Solutions Co.",            description: "Aircon Unit Repair - Villa 4",       department: "Maintenance & Facilities",subcategory: "General Repairs",            category: "variable", amount: 12400,  paymentMethod: "Bank Transfer", recurrence: "One-Time" },
+    { id: "exp-11", date: "2026-06-14", vendor: "AquaClean Pool Services",       description: "Pool Chemical Treatment & Filter",  department: "Maintenance & Facilities",subcategory: "Pool Maintenance",           category: "variable", amount: 4500,   paymentMethod: "Cash",          recurrence: "Monthly" },
+    { id: "exp-12", date: "2026-06-15", vendor: "Meta Ads / Facebook",           description: "Social Media Marketing - June",     department: "Marketing & Admin",      subcategory: "Digital Marketing & Ads",   category: "variable", amount: 8500,   paymentMethod: "Corporate Card", recurrence: "Monthly" },
+    { id: "exp-13", date: "2026-06-15", vendor: "Booking.com",                   description: "OTA Commission Fees - June",         department: "Marketing & Admin",      subcategory: "OTA / Booking Platform Fees",category: "variable", amount: 6800,   paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-14", date: "2026-06-01", vendor: "PhilAm Insurance",              description: "Property Insurance Premium",        department: "Fixed Overheads",        subcategory: "Property Insurance",         category: "fixed",    amount: 8500,   paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-15", date: "2026-06-01", vendor: "Bureau of Internal Revenue",    description: "Income Tax Provision - Q2",         department: "Fixed Overheads",        subcategory: "Income Tax Provision",       category: "fixed",    amount: 25000,  paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-16", date: "2026-06-01", vendor: "BDO Home Loan",                 description: "Mortgage / Loan Interest - June",   department: "Fixed Overheads",        subcategory: "Loan Interest",              category: "fixed",    amount: 5400,   paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-17", date: "2026-06-01", vendor: "Accounting Write-Down",         description: "Depreciation & Amortization",       department: "Fixed Overheads",        subcategory: "Depreciation & Amortization",category: "fixed",    amount: 14000,  paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-18", date: "2026-06-01", vendor: "Management Agreement",          description: "Franchise / Management Fee",        department: "Fixed Overheads",        subcategory: "Franchise / Management Fees",category: "fixed",    amount: 12000,  paymentMethod: "Bank Transfer", recurrence: "Monthly" },
+    { id: "exp-19", date: "2026-06-16", vendor: "PLDT Fiber",                    description: "Internet & Telephone - June",       department: "Utilities",              subcategory: "Internet & Telecom",         category: "fixed",    amount: 3500,   paymentMethod: "Corporate Card", recurrence: "Monthly" },
+    { id: "exp-20", date: "2026-06-16", vendor: "GreenScape Landscaping",        description: "Landscaping & Garden Upkeep",       department: "Maintenance & Facilities",subcategory: "Landscaping & Grounds",      category: "variable", amount: 3800,   paymentMethod: "Cash",          recurrence: "Monthly" }
+  ];
+
+  const DEFAULT_POS_SALES = [
+    { id: "sale-1", date: "2026-06-19", guest: "Sophia Loren", villa: "Villa 1", items: [{ name: "Local Craft Beer", price: 180, qty: 2 }, { name: "Bottled Water (500ml)", price: 50, qty: 1 }], total: 410, checkoutType: "room", resId: "loren" },
+    { id: "sale-2", date: "2026-06-19", guest: "Walk-in Guest", villa: "N/A", items: [{ name: "Club Sandwich with Fries", price: 380, qty: 4 }], total: 1520, checkoutType: "direct", paymentMethod: "Cash" }
+  ];
+
+  // Seed / Load logic
+  if (!localStorage.getItem('amalfi_reservations')) {
+    localStorage.setItem('amalfi_reservations', JSON.stringify(DEFAULT_RESERVATIONS));
+  }
+  let reservations = JSON.parse(localStorage.getItem('amalfi_reservations'));
+
+  if (!localStorage.getItem('amalfi_products_v2')) {
+    localStorage.setItem('amalfi_products_v2', JSON.stringify(DEFAULT_PRODUCTS));
+    localStorage.removeItem('amalfi_products'); // Clean up old key
+  }
+  let products = JSON.parse(localStorage.getItem('amalfi_products_v2'));
+
+  // Migrate to v3 schema â€” always use amalfi_expenses_v3
+  if (!localStorage.getItem('amalfi_expenses_v3')) {
+    localStorage.setItem('amalfi_expenses_v3', JSON.stringify(DEFAULT_EXPENSES));
+    localStorage.removeItem('amalfi_expenses_v2');
+    localStorage.removeItem('amalfi_expenses');
+  }
+  let expenses = JSON.parse(localStorage.getItem('amalfi_expenses_v3'));
+
+  // Staff & Payroll data
+  if (!localStorage.getItem('amalfi_staff')) {
+    localStorage.setItem('amalfi_staff', JSON.stringify(DEFAULT_STAFF));
+  }
+  let staff = JSON.parse(localStorage.getItem('amalfi_staff'));
+
+  if (!localStorage.getItem('amalfi_payroll_runs')) {
+    localStorage.setItem('amalfi_payroll_runs', JSON.stringify([]));
+  }
+  let payrollRuns = JSON.parse(localStorage.getItem('amalfi_payroll_runs'));
+
+  if (!localStorage.getItem('amalfi_pos_sales_v2')) {
+    localStorage.setItem('amalfi_pos_sales_v2', JSON.stringify(DEFAULT_POS_SALES));
+    localStorage.removeItem('amalfi_pos_sales'); // Clean up old key
+  }
+  let posSales = JSON.parse(localStorage.getItem('amalfi_pos_sales_v2'));
+
+  // Sync helpers
+  function saveReservations() {
+    localStorage.setItem('amalfi_reservations', JSON.stringify(reservations));
+  }
+  function saveProducts() {
+    localStorage.setItem('amalfi_products_v2', JSON.stringify(products));
+  }
+  function saveExpenses() {
+    localStorage.setItem('amalfi_expenses_v3', JSON.stringify(expenses));
+  }
+  function saveStaff() {
+    localStorage.setItem('amalfi_staff', JSON.stringify(staff));
+  }
+  function savePayrollRuns() {
+    localStorage.setItem('amalfi_payroll_runs', JSON.stringify(payrollRuns));
+  }
+  function savePosSales() {
+    localStorage.setItem('amalfi_pos_sales_v2', JSON.stringify(posSales));
+  }
+
   let ganttStartDate = new Date("2026-06-18");
   const operationalStartDate = new Date("2026-06-18");
   let currentLedgerTab = 'active';
+  let activeExpenseTab = 'all';
 
   const specialBookings = [
     {
       id: "SB-401",
       guest: "George Clooney",
-      amenity: "Private Yacht Charter",
-      details: "80ft Riva Flybridge Capri tour, private chef sunset dinner",
+      amenity: "Pool Cabana Reservation",
+      details: "Luxury pool cabana with refreshments and fresh fruits",
       date: "June 23, 2026",
-      folio: "8,500.00",
+      folio: "1,500.00",
       status: "Confirmed"
     },
     {
       id: "SB-402",
       guest: "Lord Marcus Harrington",
-      amenity: "Sommelier Wine Reserve",
-      details: "Stocking 1 bottle of Sassicaia 2016 wine in Villa 6 Acc.",
+      amenity: "Premium Drinks Package",
+      details: "Welcome drinks package and local snacks stocked in Villa 6 Acc.",
       date: "June 24, 2026",
-      folio: "1,860.00",
+      folio: "1,500.00",
       status: "Pending verification"
     },
     {
       id: "SB-403",
       guest: "Sophia Loren",
-      amenity: "Helicopter Arrival Transfer",
-      details: "Coordination of custom flight path and helipad landing clearance",
+      amenity: "Airport Shuttle Service",
+      details: "Coordination of priority resort shuttle transfer from airport",
       date: "June 18, 2026",
-      folio: "4,500.00",
+      folio: "1,200.00",
       status: "Cleared"
     },
     {
       id: "SB-404",
       guest: "Lady Gaga",
-      amenity: "Private Beach Sauna & Skipper",
-      details: "Reservation of Emerald Cove thermal cave and skippered tender",
+      amenity: "Private Beach Sauna",
+      details: "Reservation of Emerald Cove thermal cave and spa wellness kit",
       date: "June 25, 2026",
-      folio: "3,200.00",
+      folio: "1,500.00",
       status: "Scheduled"
     }
   ];
@@ -270,82 +459,105 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggleIcon = document.getElementById('theme-toggle-icon');
   const themeToggleText = document.getElementById('theme-toggle-text');
 
+  // Initialize Theme from localStorage
+  let currentTheme = localStorage.getItem('amalfi_theme') || 'light';
+  document.documentElement.className = currentTheme;
+  updateRootThemeUI(currentTheme);
+
+  function updateRootThemeUI(theme) {
+    if (theme === 'dark') {
+      if (themeToggleIcon) themeToggleIcon.textContent = 'light_mode';
+      if (themeToggleText) themeToggleText.textContent = 'Light Mode';
+      if (typeof Chart !== 'undefined') {
+        Chart.defaults.color = '#8E9BB0';
+      }
+    } else {
+      if (themeToggleIcon) themeToggleIcon.textContent = 'dark_mode';
+      if (themeToggleText) themeToggleText.textContent = 'Dark Mode';
+      if (typeof Chart !== 'undefined') {
+        Chart.defaults.color = '#555D6B';
+      }
+    }
+  }
+
   // Theme Toggle Click Handler
   if (themeToggleBtn && themeToggleIcon && themeToggleText) {
     themeToggleBtn.addEventListener('click', () => {
       const isDarkMode = document.documentElement.classList.toggle('dark');
-      
-      if (isDarkMode) {
-        themeToggleIcon.textContent = 'light_mode';
-        themeToggleText.textContent = 'Light Mode';
-        if (typeof Chart !== 'undefined') {
-          Chart.defaults.color = '#c7c6cb';
-        }
-      } else {
-        themeToggleIcon.textContent = 'dark_mode';
-        themeToggleText.textContent = 'Dark Mode';
-        if (typeof Chart !== 'undefined') {
-          Chart.defaults.color = '#0F1417';
-        }
-      }
-      
-      // Destroy and re-create charts to update text & grid line colors dynamically
-      if (chartRevenueInstance || chartCategoriesInstance || chartChannelsInstance || chartUnitOccupancyInstance || chartUnitAdrInstance || chartUnitRevparInstance || chartExpensesCashflowInstance || chartExpenseCategoriesInstance || chartOperatingMarginInstance || chartSummaryFinancialsInstance || chartSummaryMarginInstance || chartSummaryCategoriesInstance || chartDailyRevenueOccupancyInstance) {
-        if (chartRevenueInstance) {
-          chartRevenueInstance.destroy();
-          chartRevenueInstance = null;
-        }
-        if (chartCategoriesInstance) {
-          chartCategoriesInstance.destroy();
-          chartCategoriesInstance = null;
-        }
-        if (chartChannelsInstance) {
-          chartChannelsInstance.destroy();
-          chartChannelsInstance = null;
-        }
-        if (chartUnitOccupancyInstance) {
-          chartUnitOccupancyInstance.destroy();
-          chartUnitOccupancyInstance = null;
-        }
-        if (chartUnitAdrInstance) {
-          chartUnitAdrInstance.destroy();
-          chartUnitAdrInstance = null;
-        }
-        if (chartUnitRevparInstance) {
-          chartUnitRevparInstance.destroy();
-          chartUnitRevparInstance = null;
-        }
-        if (chartExpensesCashflowInstance) {
-          chartExpensesCashflowInstance.destroy();
-          chartExpensesCashflowInstance = null;
-        }
-        if (chartExpenseCategoriesInstance) {
-          chartExpenseCategoriesInstance.destroy();
-          chartExpenseCategoriesInstance = null;
-        }
-        if (chartOperatingMarginInstance) {
-          chartOperatingMarginInstance.destroy();
-          chartOperatingMarginInstance = null;
-        }
-        if (chartSummaryFinancialsInstance) {
-          chartSummaryFinancialsInstance.destroy();
-          chartSummaryFinancialsInstance = null;
-        }
-        if (chartSummaryMarginInstance) {
-          chartSummaryMarginInstance.destroy();
-          chartSummaryMarginInstance = null;
-        }
-        if (chartSummaryCategoriesInstance) {
-          chartSummaryCategoriesInstance.destroy();
-          chartSummaryCategoriesInstance = null;
-        }
-        if (chartDailyRevenueOccupancyInstance) {
-          chartDailyRevenueOccupancyInstance.destroy();
-          chartDailyRevenueOccupancyInstance = null;
-        }
-        initializeAnalyticsCharts();
-      }
+      const themeValue = isDarkMode ? 'dark' : 'light';
+      localStorage.setItem('amalfi_theme', themeValue);
+      updateRootThemeUI(themeValue);
+      recreateCharts();
     });
+  }
+
+  // Cross-window Theme Sync
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'amalfi_theme') {
+      const newTheme = e.newValue || 'dark';
+      document.documentElement.className = newTheme;
+      updateRootThemeUI(newTheme);
+      recreateCharts();
+    }
+  });
+
+  function recreateCharts() {
+    // Destroy and re-create charts to update text & grid line colors dynamically
+    if (chartRevenueInstance || chartCategoriesInstance || chartChannelsInstance || chartUnitOccupancyInstance || chartUnitAdrInstance || chartUnitRevparInstance || chartExpensesCashflowInstance || chartExpenseCategoriesInstance || chartOperatingMarginInstance || chartSummaryFinancialsInstance || chartSummaryMarginInstance || chartSummaryCategoriesInstance || chartDailyRevenueOccupancyInstance) {
+      if (chartRevenueInstance) {
+        chartRevenueInstance.destroy();
+        chartRevenueInstance = null;
+      }
+      if (chartCategoriesInstance) {
+        chartCategoriesInstance.destroy();
+        chartCategoriesInstance = null;
+      }
+      if (chartChannelsInstance) {
+        chartChannelsInstance.destroy();
+        chartChannelsInstance = null;
+      }
+      if (chartUnitOccupancyInstance) {
+        chartUnitOccupancyInstance.destroy();
+        chartUnitOccupancyInstance = null;
+      }
+      if (chartUnitAdrInstance) {
+        chartUnitAdrInstance.destroy();
+        chartUnitAdrInstance = null;
+      }
+      if (chartUnitRevparInstance) {
+        chartUnitRevparInstance.destroy();
+        chartUnitRevparInstance = null;
+      }
+      if (chartExpensesCashflowInstance) {
+        chartExpensesCashflowInstance.destroy();
+        chartExpensesCashflowInstance = null;
+      }
+      if (chartExpenseCategoriesInstance) {
+        chartExpenseCategoriesInstance.destroy();
+        chartExpenseCategoriesInstance = null;
+      }
+      if (chartOperatingMarginInstance) {
+        chartOperatingMarginInstance.destroy();
+        chartOperatingMarginInstance = null;
+      }
+      if (chartSummaryFinancialsInstance) {
+        chartSummaryFinancialsInstance.destroy();
+        chartSummaryFinancialsInstance = null;
+      }
+      if (chartSummaryMarginInstance) {
+        chartSummaryMarginInstance.destroy();
+        chartSummaryMarginInstance = null;
+      }
+      if (chartSummaryCategoriesInstance) {
+        chartSummaryCategoriesInstance.destroy();
+        chartSummaryCategoriesInstance = null;
+      }
+      if (chartDailyRevenueOccupancyInstance) {
+        chartDailyRevenueOccupancyInstance.destroy();
+        chartDailyRevenueOccupancyInstance = null;
+      }
+      initializeAnalyticsCharts();
+    }
   }
 
   // Cache original ledger values
@@ -441,6 +653,17 @@ document.addEventListener('DOMContentLoaded', () => {
         viewTitle.textContent = "AI Operations Copilot";
         breadcrumbs.textContent = "AMALFI RESORT / OPERATIONS BRAIN";
         break;
+      case 'pos':
+        viewTitle.textContent = "Point of Sale (POS)";
+        breadcrumbs.textContent = "AMALFI RESORT / POS & ACCOUNTING";
+        if (typeof renderPosTerminal === 'function') renderPosTerminal();
+        if (typeof populateRoomSelect === 'function') populateRoomSelect();
+        break;
+      case 'expenses':
+        viewTitle.textContent = "Expense Tracker";
+        breadcrumbs.textContent = "AMALFI RESORT / POS & ACCOUNTING";
+        if (typeof renderExpensesTable === 'function') renderExpensesTable();
+        break;
     }
   }
 
@@ -451,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       document.querySelectorAll('.ledger-maskable').forEach(el => {
         if (isObscured) {
-          el.textContent = '••,•••.••';
+          el.textContent = 'â€¢â€¢,â€¢â€¢â€¢.â€¢â€¢';
         } else {
           el.textContent = el.getAttribute('data-original');
         }
@@ -621,6 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (harringtonRes) {
         harringtonRes.bookingStatus = "Checked In";
         harringtonRes.paymentStatus = "PARTIAL";
+        saveReservations();
       }
 
       // Update Harrington's Special Booking status
@@ -642,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
         item.innerHTML = `
           <div class="absolute -left-[29px] top-1.5 w-2 h-2 bg-mint-active shadow-[0_0_6px_#39FF14]"></div>
           <div class="flex flex-col">
-            <span class="font-mono-data text-mint-active text-xs">16:50 • FRONT DESK</span>
+            <span class="font-mono-data text-mint-active text-xs">16:50 â€¢ FRONT DESK</span>
             <h4 class="font-body-lg text-body-lg text-on-surface mt-1">Harrington Deposit Approved & Villa 6 Checked-In</h4>
             <p class="font-body-md text-on-surface-variant mt-1 text-sm">Credit Suisse slip verified. Folio state set to OPEN. Digital key issued.</p>
           </div>
@@ -819,10 +1043,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let addonSum = 0;
-    if (document.getElementById('edit-booking-addon-wine').checked) addonSum += 43600;
-    if (document.getElementById('edit-booking-addon-yacht').checked) addonSum += 12500;
-    if (document.getElementById('edit-booking-addon-spa').checked) addonSum += 4200;
-    if (document.getElementById('edit-booking-addon-chef').checked) addonSum += 1500;
+    if (document.getElementById('edit-booking-addon-wine').checked) addonSum += 1500;
+    if (document.getElementById('edit-booking-addon-yacht').checked) addonSum += 1500;
+    if (document.getElementById('edit-booking-addon-spa').checked) addonSum += 1500;
+    if (document.getElementById('edit-booking-addon-chef').checked) addonSum += 1200;
     
     const total = Math.max(0, baseRate - discountAmount) + addonSum;
     document.getElementById('edit-booking-folio').value = total.toLocaleString('en-US', {
@@ -1024,7 +1248,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (type === 'flat' || type === 'percent') {
         discountValContainer.classList.remove('hidden');
         promoContainer.classList.add('hidden');
-        discountValLabel.textContent = type === 'flat' ? 'Discount Amount (₱)' : 'Discount Percentage (%)';
+        discountValLabel.textContent = type === 'flat' ? 'Discount Amount (â‚±)' : 'Discount Percentage (%)';
         discountValInput.placeholder = type === 'flat' ? '5,000.00' : '10';
       } else if (type === 'promo') {
         discountValContainer.classList.add('hidden');
@@ -1151,7 +1375,8 @@ document.addEventListener('DOMContentLoaded', () => {
           res.discountValue = discountValue;
           res.promoCode = promoCode;
           res.discountAmount = discountAmount;
-          res.folio = folio;
+          res.posCharges = res.posCharges || [];
+          updateFolio(res);
           res.startOffset = startOffset;
           res.duration = duration;
           res.isBlockout = isBlockout;
@@ -1159,7 +1384,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         // Add Mode
         const newId = "res-" + Date.now();
-        reservations.push({
+        const newRes = {
           id: newId,
           guest: guest,
           villa: room,
@@ -1178,12 +1403,16 @@ document.addEventListener('DOMContentLoaded', () => {
           discountValue: discountValue,
           promoCode: promoCode,
           discountAmount: discountAmount,
+          posCharges: [],
           folio: folio,
           startOffset: startOffset,
           duration: duration,
           isBlockout: isBlockout
-        });
+        };
+        updateFolio(newRes);
+        reservations.push(newRes);
       }
+      saveReservations();
       
       // Re-render
       renderLedgerTable();
@@ -1209,6 +1438,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = reservations.findIndex(r => r.id === rowId);
       if (idx !== -1) {
         reservations.splice(idx, 1);
+        saveReservations();
         renderLedgerTable();
         renderGanttChart();
         renderMaintenanceBlockouts();
@@ -1305,12 +1535,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initializeAnalyticsCharts() {
     if (typeof Chart === 'undefined') return;
+    const val = getPLValues();
 
     const isDark = document.documentElement.classList.contains('dark');
     const textColor = isDark ? '#c7c6cb' : '#0F1417';
     const gridColor = isDark ? 'rgba(227, 232, 236, 0.04)' : 'rgba(15, 20, 23, 0.06)';
     const doughnutBorderColor = isDark ? '#0f1417' : '#FFFFFF';
-    const doughnutBgColor = isDark ? ['#D4AF37', '#1F2833', '#919095', '#39FF14'] : ['#D4AF37', '#E3E8EC', '#8C909F', '#0D7A0D'];
+    const doughnutBgColor = isDark ? ['#D4AF37', '#1F2833', '#919095', '#39FF14', '#FF8C00'] : ['#D4AF37', '#E3E8EC', '#8C909F', '#0D7A0D', '#E28743'];
 
     Chart.defaults.color = textColor;
     Chart.defaults.font.family = "'Hanken Grotesk', sans-serif";
@@ -1328,15 +1559,15 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [
               {
-                label: 'Revenues (₱)',
-                data: [240000, 295000, 340000, 325000, 380000, 412850],
+                label: 'Revenues (â‚±)',
+                data: [240000, 295000, 340000, 325000, 380000, val.grossRevenue],
                 backgroundColor: 'rgba(214, 175, 55, 0.75)',
                 borderColor: '#D4AF37',
                 borderWidth: 1
               },
               {
-                label: 'Operating Expenses (₱)',
-                data: [110000, 135000, 150000, 145000, 170000, 185300],
+                label: 'Operating Expenses (â‚±)',
+                data: [110000, 135000, 150000, 145000, 170000, val.totalCOGS + val.totalSGA],
                 backgroundColor: isDark ? 'rgba(199, 198, 203, 0.2)' : 'rgba(15, 20, 23, 0.15)',
                 borderColor: '#8C909F',
                 borderWidth: 1
@@ -1354,13 +1585,15 @@ document.addEventListener('DOMContentLoaded', () => {
               y: {
                 grid: { color: gridColor },
                 ticks: {
-                  callback: function(value) { return '₱' + (value / 1000) + 'k'; }
+                  callback: function(value) { return 'â‚±' + (value / 1000) + 'k'; }
                 }
               }
             }
           }
         });
       } else {
+        chartSummaryFinancialsInstance.data.datasets[0].data[5] = val.grossRevenue;
+        chartSummaryFinancialsInstance.data.datasets[1].data[5] = val.totalCOGS + val.totalSGA;
         chartSummaryFinancialsInstance.update();
       }
     }
@@ -1373,7 +1606,7 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
               label: 'EBITDA Margin (%)',
-              data: [49.2, 49.2, 50.6, 50.2, 50.3, 43.4],
+              data: [49.2, 49.2, 50.6, 50.2, 50.3, val.ebitdaPct],
               borderColor: '#D4AF37',
               backgroundColor: 'rgba(214, 175, 55, 0.05)',
               borderWidth: 2,
@@ -1403,6 +1636,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       } else {
+        chartSummaryMarginInstance.data.datasets[0].data[5] = val.ebitdaPct;
         chartSummaryMarginInstance.update();
       }
     }
@@ -1412,9 +1646,9 @@ document.addEventListener('DOMContentLoaded', () => {
         chartSummaryCategoriesInstance = new Chart(sumCatCtx, {
           type: 'doughnut',
           data: {
-            labels: ['Suites', 'Dining', 'Experiences', 'Spa'],
+            labels: ['Suites', 'Dining', 'Experiences', 'Spa', 'Retail'],
             datasets: [{
-              data: [70, 15, 10, 5],
+              data: [val.roomsBase, val.fbRevenues, val.yachtRevenues, val.spaRevenues, val.otherRevenues],
               backgroundColor: doughnutBgColor,
               borderColor: doughnutBorderColor,
               borderWidth: 3
@@ -1430,6 +1664,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       } else {
+        chartSummaryCategoriesInstance.data.labels = ['Suites', 'Dining', 'Experiences', 'Spa', 'Retail'];
+        chartSummaryCategoriesInstance.data.datasets[0].data = [val.roomsBase, val.fbRevenues, val.yachtRevenues, val.spaRevenues, val.otherRevenues];
         chartSummaryCategoriesInstance.update();
       }
     }
@@ -1456,8 +1692,8 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [
               {
-                label: 'Suites Base Rates (₱)',
-                data: [180000, 220000, 250000, 240000, 270000, 284500],
+                label: 'Suites Base Rates (â‚±)',
+                data: [180000, 220000, 250000, 240000, 270000, val.roomsBase],
                 borderColor: '#D4AF37',
                 backgroundColor: goldGradient,
                 fill: true,
@@ -1467,8 +1703,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 pointRadius: 4
               },
               {
-                label: 'Incidentals & Services (₱)',
-                data: [60000, 75000, 90000, 85000, 110000, 128350],
+                label: 'Incidentals & Services (â‚±)',
+                data: [60000, 75000, 90000, 85000, 110000, val.fbRevenues + val.yachtRevenues + val.spaRevenues + val.otherRevenues],
                 borderColor: isDark ? '#39FF14' : '#0D7A0D',
                 backgroundColor: mintGradient,
                 fill: true,
@@ -1490,13 +1726,15 @@ document.addEventListener('DOMContentLoaded', () => {
               y: {
                 grid: { color: gridColor },
                 ticks: {
-                  callback: function(value) { return '₱' + (value / 1000) + 'k'; }
+                  callback: function(value) { return 'â‚±' + (value / 1000) + 'k'; }
                 }
               }
             }
           }
         });
       } else {
+        chartRevenueInstance.data.datasets[0].data[5] = val.roomsBase;
+        chartRevenueInstance.data.datasets[1].data[5] = val.fbRevenues + val.yachtRevenues + val.spaRevenues + val.otherRevenues;
         chartRevenueInstance.update();
       }
     }
@@ -1506,9 +1744,9 @@ document.addEventListener('DOMContentLoaded', () => {
         chartCategoriesInstance = new Chart(catCtx, {
           type: 'doughnut',
           data: {
-            labels: ['Suites', 'Dining', 'Experiences', 'Spa'],
+            labels: ['Suites', 'Dining', 'Experiences', 'Spa', 'Retail'],
             datasets: [{
-              data: [70, 15, 10, 5],
+              data: [val.roomsBase, val.fbRevenues, val.yachtRevenues, val.spaRevenues, val.otherRevenues],
               backgroundColor: doughnutBgColor,
               borderColor: doughnutBorderColor,
               borderWidth: 3
@@ -1524,6 +1762,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       } else {
+        chartCategoriesInstance.data.labels = ['Suites', 'Dining', 'Experiences', 'Spa', 'Retail'];
+        chartCategoriesInstance.data.datasets[0].data = [val.roomsBase, val.fbRevenues, val.yachtRevenues, val.spaRevenues, val.otherRevenues];
         chartCategoriesInstance.update();
       }
     }
@@ -1563,7 +1803,7 @@ document.addEventListener('DOMContentLoaded', () => {
             datasets: [
               {
                 type: 'bar',
-                label: 'Room Revenue (₱)',
+                label: 'Room Revenue (â‚±)',
                 data: [12000, 15000, 18500, 16000, 22000, 24500, 19000, 28000, 31000, 29000, 35000, 38000, 42000, 37000, 45000],
                 backgroundColor: 'rgba(214, 175, 55, 0.75)',
                 borderColor: '#D4AF37',
@@ -1597,7 +1837,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 position: 'left',
                 grid: { color: gridColor },
                 ticks: {
-                  callback: function(value) { return '₱' + (value / 1000) + 'k'; }
+                  callback: function(value) { return 'â‚±' + (value / 1000) + 'k'; }
                 }
               },
               y1: {
@@ -1669,7 +1909,7 @@ document.addEventListener('DOMContentLoaded', () => {
           data: {
             labels: ['Villa 1', 'Villa 2', 'Villa 3', 'Villa 4', 'Villa 5', 'Villa 6'],
             datasets: [{
-              label: 'ADR (₱)',
+              label: 'ADR (â‚±)',
               data: [3200, 3500, 3800, 4200, 6500, 7200],
               backgroundColor: ['#919095', '#919095', '#919095', '#919095', '#D4AF37', '#D4AF37'],
               borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
@@ -1687,7 +1927,7 @@ document.addEventListener('DOMContentLoaded', () => {
               x: {
                 grid: { color: gridColor },
                 ticks: {
-                  callback: function(value) { return '₱' + value.toLocaleString(); }
+                  callback: function(value) { return 'â‚±' + value.toLocaleString(); }
                 }
               },
               y: { grid: { color: gridColor } }
@@ -1706,7 +1946,7 @@ document.addEventListener('DOMContentLoaded', () => {
           data: {
             labels: ['Villa 1', 'Villa 2', 'Villa 3', 'Villa 4', 'Villa 5', 'Villa 6'],
             datasets: [{
-              label: 'RevPAR (₱)',
+              label: 'RevPAR (â‚±)',
               data: [2624, 2730, 3230, 3108, 5915, 6336],
               backgroundColor: ['#D4AF37', '#D4AF37', '#D4AF37', '#D4AF37', '#8C909F', '#8C909F'],
               borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
@@ -1724,7 +1964,7 @@ document.addEventListener('DOMContentLoaded', () => {
               y: {
                 grid: { color: gridColor },
                 ticks: {
-                  callback: function(value) { return '₱' + value.toLocaleString(); }
+                  callback: function(value) { return 'â‚±' + value.toLocaleString(); }
                 }
               }
             }
@@ -1749,24 +1989,24 @@ document.addEventListener('DOMContentLoaded', () => {
             datasets: [
               {
                 type: 'bar',
-                label: 'Revenues (₱)',
-                data: [240000, 295000, 340000, 325000, 380000, 412850],
+                label: 'Revenues (â‚±)',
+                data: [240000, 295000, 340000, 325000, 380000, val.grossRevenue],
                 backgroundColor: 'rgba(214, 175, 55, 0.75)',
                 borderColor: '#D4AF37',
                 borderWidth: 1
               },
               {
                 type: 'bar',
-                label: 'Operating Expenses (₱)',
-                data: [110000, 135000, 150000, 145000, 170000, 185300],
+                label: 'Operating Expenses (â‚±)',
+                data: [110000, 135000, 150000, 145000, 170000, val.totalCOGS + val.totalSGA],
                 backgroundColor: isDark ? 'rgba(199, 198, 203, 0.2)' : 'rgba(15, 20, 23, 0.15)',
                 borderColor: '#8C909F',
                 borderWidth: 1
               },
               {
                 type: 'line',
-                label: 'Net Cashflow (₱)',
-                data: [130000, 160000, 190000, 180000, 210000, 227550],
+                label: 'Net Cashflow (â‚±)',
+                data: [130000, 160000, 190000, 180000, 210000, val.grossRevenue - (val.totalCOGS + val.totalSGA)],
                 borderColor: isDark ? '#39FF14' : '#0D7A0D',
                 pointBackgroundColor: isDark ? '#39FF14' : '#0D7A0D',
                 borderWidth: 2.5,
@@ -1786,13 +2026,16 @@ document.addEventListener('DOMContentLoaded', () => {
               y: {
                 grid: { color: gridColor },
                 ticks: {
-                  callback: function(value) { return '₱' + (value / 1000) + 'k'; }
+                  callback: function(value) { return 'â‚±' + (value / 1000) + 'k'; }
                 }
               }
             }
           }
         });
       } else {
+        chartExpensesCashflowInstance.data.datasets[0].data[5] = val.grossRevenue;
+        chartExpensesCashflowInstance.data.datasets[1].data[5] = val.totalCOGS + val.totalSGA;
+        chartExpensesCashflowInstance.data.datasets[2].data[5] = val.grossRevenue - (val.totalCOGS + val.totalSGA);
         chartExpensesCashflowInstance.update();
       }
     }
@@ -1802,9 +2045,9 @@ document.addEventListener('DOMContentLoaded', () => {
         chartExpenseCategoriesInstance = new Chart(expenseCategoriesCtx, {
           type: 'polarArea',
           data: {
-            labels: ['Salaries', 'Utilities', 'Sommelier', 'Yacht Ops', 'Spa Supplies'],
+            labels: ['Salaries', 'Utilities', 'Snacks & Food', 'General Ops', 'Spa Supplies'],
             datasets: [{
-              data: [87200, 10900, 43600, 32700, 10900],
+              data: [val.sgaSalaries, val.sgaUtilities, val.cogsWine, val.sgaYachtCrew + val.cogsFuel, val.cogsSpa + val.sgaSpaStaff],
               backgroundColor: [
                 'rgba(140, 144, 159, 0.7)',
                 'rgba(74, 85, 104, 0.7)',
@@ -1832,6 +2075,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       } else {
+        chartExpenseCategoriesInstance.data.datasets[0].data = [
+          val.sgaSalaries,
+          val.sgaUtilities,
+          val.cogsWine,
+          val.sgaYachtCrew + val.cogsFuel,
+          val.cogsSpa + val.sgaSpaStaff
+        ];
         chartExpenseCategoriesInstance.update();
       }
     }
@@ -1844,7 +2094,7 @@ document.addEventListener('DOMContentLoaded', () => {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
               label: 'EBITDA Margin (%)',
-              data: [54.2, 54.2, 55.9, 55.4, 55.3, 55.1],
+              data: [54.2, 54.2, 55.9, 55.4, 55.3, val.ebitdaPct],
               borderColor: '#D4AF37',
               backgroundColor: 'rgba(214, 175, 55, 0.05)',
               borderWidth: 2,
@@ -1874,6 +2124,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       } else {
+        chartOperatingMarginInstance.data.datasets[0].data[5] = val.ebitdaPct;
         chartOperatingMarginInstance.update();
       }
     }
@@ -1912,7 +2163,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnExportCsv) {
     btnExportCsv.addEventListener('click', () => {
       const activeReservations = reservations.filter(res => !res.isBlockout);
-      const headers = ["Reservation ID", "Guest Name", "Villa", "Villa Name", "Booking Dates", "Date Created", "Booking Status", "Payment Status", "Folio Value (₱)"];
+      const headers = ["Reservation ID", "Guest Name", "Villa", "Villa Name", "Booking Dates", "Date Created", "Booking Status", "Payment Status", "Folio Value (â‚±)"];
       const rows = activeReservations.map(res => [
         res.id,
         res.guest,
@@ -1947,6 +2198,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnExportPdf.addEventListener('click', () => {
       const printWindow = window.open('', '_blank');
       const activeReservations = reservations.filter(res => !res.isBlockout);
+      const val = getPLValues();
+      const fmt = (v) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const pct = (p) => p.toFixed(1) + '%';
 
       const htmlContent = `
         <!DOCTYPE html>
@@ -2104,7 +2358,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
               <tr>
                 <td><strong>Accounting Method:</strong> Accrual</td>
-                <td class="text-right"><strong>Currency:</strong> PHP (₱)</td>
+                <td class="text-right"><strong>Currency:</strong> PHP (â‚±)</td>
               </tr>
             </table>
           </div>
@@ -2114,50 +2368,56 @@ document.addEventListener('DOMContentLoaded', () => {
             <thead>
               <tr>
                 <th>Account Category</th>
-                <th class="text-right" style="width: 18%;">June 2026 (₱)</th>
+                <th class="text-right" style="width: 18%;">June 2026 (â‚±)</th>
                 <th class="text-right" style="width: 12%;">June %</th>
-                <th class="text-right" style="width: 20%;">YTD Total (₱)</th>
+                <th class="text-right" style="width: 20%;">YTD Total (â‚±)</th>
                 <th class="text-right" style="width: 12%;">YTD %</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- REVENUES -->
+                    <!-- REVENUES -->
               <tr class="category-header">
                 <td colspan="5">Operating Revenues</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Rooms Base Rates</td>
-                <td class="text-right">284,500.00</td>
-                <td class="text-right">68.9%</td>
-                <td class="text-right">1,204,500.00</td>
-                <td class="text-right">70.4%</td>
+                <td class="text-right">${fmt(val.roomsBase)}</td>
+                <td class="text-right">${pct(val.roomsBasePct)}</td>
+                <td class="text-right">${fmt(val.ytdRooms)}</td>
+                <td class="text-right">${pct(val.ytdRoomsPct)}</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">Food, Wine & Sommelier Services</td>
-                <td class="text-right">64,200.00</td>
-                <td class="text-right">15.5%</td>
-                <td class="text-right">244,200.00</td>
-                <td class="text-right">14.3%</td>
+                <td style="padding-left: 20px;">Food &amp; Beverage Operations</td>
+                <td class="text-right">${fmt(val.fbRevenues)}</td>
+                <td class="text-right">${pct(val.fbRevenuesPct)}</td>
+                <td class="text-right">${fmt(val.ytdFB)}</td>
+                <td class="text-right">${pct(val.ytdFBPct)}</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">Guest Yacht Experience & Amenities</td>
-                <td class="text-right">48,500.00</td>
-                <td class="text-right">11.7%</td>
-                <td class="text-right">198,500.00</td>
-                <td class="text-right">11.6%</td>
+                <td style="padding-left: 20px;">Guest Activity &amp; Equipment Rentals</td>
+                <td class="text-right">${fmt(val.yachtRevenues)}</td>
+                <td class="text-right">${pct(val.yachtRevenuesPct)}</td>
+                <td class="text-right">${fmt(val.ytdYacht)}</td>
+                <td class="text-right">${pct(val.ytdYachtPct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Spa & Wellness Programs</td>
-                <td class="text-right">15,650.00</td>
-                <td class="text-right">3.8%</td>
-                <td class="text-right">62,800.00</td>
-                <td class="text-right">3.7%</td>
+                <td class="text-right">${fmt(val.spaRevenues)}</td>
+                <td class="text-right">${pct(val.spaRevenuesPct)}</td>
+                <td class="text-right">${fmt(val.ytdSpa)}</td>
+                <td class="text-right">${pct(val.ytdSpaPct)}</td>
               </tr>
+              ${val.otherRevenues > 0 ? `
+              <tr>
+                <td style="padding-left: 20px;">Boutique & Retail POS Sales</td>
+                <td class="text-right">${fmt(val.otherRevenues)}</td>
+                <td class="text-right">${pct(val.otherRevenuesPct)}</td>
+                <td class="text-right">${fmt(val.ytdOther)}</td>
+                <td class="text-right">${pct(val.ytdOtherPct)}</td>
+              </tr>
+              ` : ''}
               <tr class="total-row">
                 <td style="text-transform: uppercase;">Gross Operating Revenue</td>
-                <td class="text-right">412,850.00</td>
+                <td class="text-right">${fmt(val.grossRevenue)}</td>
                 <td class="text-right">100.0%</td>
-                <td class="text-right">1,710,000.00</td>
+                <td class="text-right">${fmt(val.ytdGrossRevenue)}</td>
                 <td class="text-right">100.0%</td>
               </tr>
               
@@ -2166,41 +2426,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td colspan="5" style="padding-top: 15px;">Cost of Goods Sold (COGS)</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">Sommelier Wine Stocking Costs</td>
-                <td class="text-right">43,600.00</td>
-                <td class="text-right">10.6%</td>
-                <td class="text-right">163,600.00</td>
-                <td class="text-right">9.6%</td>
+                <td style="padding-left: 20px;">F&amp;B Supplies &amp; Consumables</td>
+                <td class="text-right">${fmt(val.cogsWine)}</td>
+                <td class="text-right">${pct(val.cogsWinePct)}</td>
+                <td class="text-right">${fmt(val.ytdCogsWine)}</td>
+                <td class="text-right">${pct(val.ytdCogsWinePct)}</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">Yacht Fuel & Consumables</td>
-                <td class="text-right">12,500.00</td>
-                <td class="text-right">3.0%</td>
-                <td class="text-right">42,500.00</td>
-                <td class="text-right">2.5%</td>
+                <td style="padding-left: 20px;">Resort Utilities &amp; Fuel</td>
+                <td class="text-right">${fmt(val.cogsFuel)}</td>
+                <td class="text-right">${pct(val.cogsFuelPct)}</td>
+                <td class="text-right">${fmt(val.ytdCogsFuel)}</td>
+                <td class="text-right">${pct(val.ytdCogsFuelPct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Spa & Wellness Materials</td>
-                <td class="text-right">4,200.00</td>
-                <td class="text-right">1.0%</td>
-                <td class="text-right">15,200.00</td>
-                <td class="text-right">0.9%</td>
+                <td class="text-right">${fmt(val.cogsSpa)}</td>
+                <td class="text-right">${pct(val.cogsSpaPct)}</td>
+                <td class="text-right">${fmt(val.ytdCogsSpa)}</td>
+                <td class="text-right">${pct(val.ytdCogsSpaPct)}</td>
               </tr>
               <tr class="total-row">
                 <td style="text-transform: uppercase;">Total Cost of Goods Sold</td>
-                <td class="text-right">60,300.00</td>
-                <td class="text-right">14.6%</td>
-                <td class="text-right">221,300.00</td>
-                <td class="text-right">12.9%</td>
+                <td class="text-right">${fmt(val.totalCOGS)}</td>
+                <td class="text-right">${pct(val.totalCOGSPct)}</td>
+                <td class="text-right">${fmt(val.ytdTotalCOGS)}</td>
+                <td class="text-right">${pct(val.ytdTotalCOGSPct)}</td>
               </tr>
 
               <!-- GROSS PROFIT -->
               <tr class="total-row" style="background: #F7FAFC;">
                 <td style="text-transform: uppercase; font-weight: 700;">Gross Profit</td>
-                <td class="text-right font-bold">352,550.00</td>
-                <td class="text-right font-bold">85.4%</td>
-                <td class="text-right font-bold">1,488,700.00</td>
-                <td class="text-right font-bold">87.1%</td>
+                <td class="text-right font-bold">${fmt(val.grossProfit)}</td>
+                <td class="text-right font-bold">${pct(val.grossProfitPct)}</td>
+                <td class="text-right font-bold">${fmt(val.ytdGrossProfit)}</td>
+                <td class="text-right font-bold">${pct(val.ytdGrossProfitPct)}</td>
               </tr>
               
               <!-- SGA -->
@@ -2209,61 +2469,61 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Staff Salaries & Benefits</td>
-                <td class="text-right">87,200.00</td>
-                <td class="text-right">21.1%</td>
-                <td class="text-right">387,200.00</td>
-                <td class="text-right">22.6%</td>
+                <td class="text-right">${fmt(val.sgaSalaries)}</td>
+                <td class="text-right">${pct(val.sgaSalariesPct)}</td>
+                <td class="text-right">${fmt(val.ytdSgaSalaries)}</td>
+                <td class="text-right">${pct(val.ytdSgaSalariesPct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Utilities, Infrastructure & IT</td>
-                <td class="text-right">10,900.00</td>
-                <td class="text-right">2.6%</td>
-                <td class="text-right">48,900.00</td>
-                <td class="text-right">2.9%</td>
+                <td class="text-right">${fmt(val.sgaUtilities)}</td>
+                <td class="text-right">${pct(val.sgaUtilitiesPct)}</td>
+                <td class="text-right">${fmt(val.ytdSgaUtilities)}</td>
+                <td class="text-right">${pct(val.ytdSgaUtilitiesPct)}</td>
               </tr>
               <tr>
-                <td style="padding-left: 20px;">Yacht Crewing & Operations Maintenance</td>
-                <td class="text-right">20,200.00</td>
-                <td class="text-right">4.9%</td>
-                <td class="text-right">80,200.00</td>
-                <td class="text-right">4.7%</td>
+                <td style="padding-left: 20px;">Operations Wages &amp; Overhead Maintenance</td>
+                <td class="text-right">${fmt(val.sgaYachtCrew)}</td>
+                <td class="text-right">${pct(val.sgaYachtCrewPct)}</td>
+                <td class="text-right">${fmt(val.ytdSgaYachtCrew)}</td>
+                <td class="text-right">${pct(val.ytdSgaYachtCrewPct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Spa & Wellness Operations Staffing</td>
-                <td class="text-right">6,700.00</td>
-                <td class="text-right">1.6%</td>
-                <td class="text-right">25,700.00</td>
-                <td class="text-right">1.5%</td>
+                <td class="text-right">${fmt(val.sgaSpaStaff)}</td>
+                <td class="text-right">${pct(val.sgaSpaStaffPct)}</td>
+                <td class="text-right">${fmt(val.ytdSgaSpaStaff)}</td>
+                <td class="text-right">${pct(val.ytdSgaSpaStaffPct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Maintenance & Facility Upkeep</td>
-                <td class="text-right">12,400.00</td>
-                <td class="text-right">3.0%</td>
-                <td class="text-right">45,600.00</td>
-                <td class="text-right">2.7%</td>
+                <td class="text-right">${fmt(val.sgaMaintenance)}</td>
+                <td class="text-right">${pct(val.sgaMaintenancePct)}</td>
+                <td class="text-right">${fmt(val.ytdSgaMaintenance)}</td>
+                <td class="text-right">${pct(val.ytdSgaMaintenancePct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Administration, Guest Acquisition & Marketing</td>
-                <td class="text-right">15,300.00</td>
-                <td class="text-right">3.7%</td>
-                <td class="text-right">65,200.00</td>
-                <td class="text-right">3.8%</td>
+                <td class="text-right">${fmt(val.sgaMarketing)}</td>
+                <td class="text-right">${pct(val.sgaMarketingPct)}</td>
+                <td class="text-right">${fmt(val.ytdSgaMarketing)}</td>
+                <td class="text-right">${pct(val.ytdSgaMarketingPct)}</td>
               </tr>
               <tr class="total-row">
                 <td style="text-transform: uppercase;">Total SGA Expenses</td>
-                <td class="text-right" style="color: #C53030;">152,700.00</td>
-                <td class="text-right">37.0%</td>
-                <td class="text-right" style="color: #C53030;">652,800.00</td>
-                <td class="text-right">38.2%</td>
+                <td class="text-right" style="color: #C53030;">${fmt(val.totalSGA)}</td>
+                <td class="text-right">${pct(val.totalSGAPct)}</td>
+                <td class="text-right" style="color: #C53030;">${fmt(val.ytdTotalSGA)}</td>
+                <td class="text-right">${pct(val.ytdTotalSGAPct)}</td>
               </tr>
               
               <!-- EBITDA -->
               <tr class="noi-row" style="background: #F7FAFC;">
                 <td style="text-transform: uppercase; font-weight: 700; color: #1A365D;">Gross Operating Profit (EBITDA)</td>
-                <td class="text-right font-bold" style="color: #1A365D;">199,850.00</td>
-                <td class="text-right font-bold" style="color: #1A365D;">48.4%</td>
-                <td class="text-right font-bold" style="color: #1A365D;">835,900.00</td>
-                <td class="text-right font-bold" style="color: #1A365D;">48.9%</td>
+                <td class="text-right font-bold" style="color: #1A365D;">${fmt(val.ebitda)}</td>
+                <td class="text-right font-bold" style="color: #1A365D;">${pct(val.ebitdaPct)}</td>
+                <td class="text-right font-bold" style="color: #1A365D;">${fmt(val.ytdEbitda)}</td>
+                <td class="text-right font-bold" style="color: #1A365D;">${pct(val.ytdEbitdaPct)}</td>
               </tr>
 
               <!-- FIXED CHARGES -->
@@ -2272,33 +2532,33 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Property Insurance & Taxes</td>
-                <td class="text-right">8,500.00</td>
-                <td class="text-right">2.1%</td>
-                <td class="text-right">51,000.00</td>
-                <td class="text-right">3.0%</td>
+                <td class="text-right">${fmt(val.fixedInsurance)}</td>
+                <td class="text-right">${pct(val.fixedInsurancePct)}</td>
+                <td class="text-right">${fmt(val.ytdFixedInsurance)}</td>
+                <td class="text-right">${pct(val.ytdFixedInsurancePct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Management & Brand Franchise Fees</td>
-                <td class="text-right">12,000.00</td>
-                <td class="text-right">2.9%</td>
-                <td class="text-right">72,000.00</td>
-                <td class="text-right">4.2%</td>
+                <td class="text-right">${fmt(val.fixedFees)}</td>
+                <td class="text-right">${pct(val.fixedFeesPct)}</td>
+                <td class="text-right">${fmt(val.ytdFixedFees)}</td>
+                <td class="text-right">${pct(val.ytdFixedFeesPct)}</td>
               </tr>
               <tr class="total-row">
                 <td style="text-transform: uppercase;">Total Fixed Charges</td>
-                <td class="text-right">20,500.00</td>
-                <td class="text-right">5.0%</td>
-                <td class="text-right">123,000.00</td>
-                <td class="text-right">7.2%</td>
+                <td class="text-right">${fmt(val.totalFixed)}</td>
+                <td class="text-right">${pct(val.totalFixedPct)}</td>
+                <td class="text-right">${fmt(val.ytdTotalFixed)}</td>
+                <td class="text-right">${pct(val.ytdTotalFixedPct)}</td>
               </tr>
 
               <!-- NOI -->
               <tr class="noi-row" style="background: #F7FAFC;">
                 <td style="text-transform: uppercase; font-weight: 700;">Net Operating Income (NOI)</td>
-                <td class="text-right font-bold">179,350.00</td>
-                <td class="text-right font-bold">43.4%</td>
-                <td class="text-right font-bold">712,900.00</td>
-                <td class="text-right font-bold">41.7%</td>
+                <td class="text-right font-bold">${fmt(val.noi)}</td>
+                <td class="text-right font-bold">${pct(val.noiPct)}</td>
+                <td class="text-right font-bold">${fmt(val.ytdNoi)}</td>
+                <td class="text-right font-bold">${pct(val.ytdNoiPct)}</td>
               </tr>
 
               <!-- NON-OPERATING -->
@@ -2307,33 +2567,33 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Mortgage & Debt Interest Expense</td>
-                <td class="text-right">5,400.00</td>
-                <td class="text-right">1.3%</td>
-                <td class="text-right">32,400.00</td>
-                <td class="text-right">1.9%</td>
+                <td class="text-right">${fmt(val.nonOpMortgage)}</td>
+                <td class="text-right">${pct(val.nonOpMortgagePct)}</td>
+                <td class="text-right">${fmt(val.ytdNonOpMortgage)}</td>
+                <td class="text-right">${pct(val.ytdNonOpMortgagePct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Depreciation & Capital Amortization</td>
-                <td class="text-right">14,000.00</td>
-                <td class="text-right">3.4%</td>
-                <td class="text-right">84,000.00</td>
-                <td class="text-right">4.9%</td>
+                <td class="text-right">${fmt(val.nonOpDepr)}</td>
+                <td class="text-right">${pct(val.nonOpDeprPct)}</td>
+                <td class="text-right">${fmt(val.ytdNonOpDepr)}</td>
+                <td class="text-right">${pct(val.ytdNonOpDeprPct)}</td>
               </tr>
               <tr>
                 <td style="padding-left: 20px;">Corporate Taxes</td>
-                <td class="text-right">25,000.00</td>
-                <td class="text-right">6.1%</td>
-                <td class="text-right">120,000.00</td>
-                <td class="text-right">7.0%</td>
+                <td class="text-right">${fmt(val.nonOpTaxes)}</td>
+                <td class="text-right">${pct(val.nonOpTaxesPct)}</td>
+                <td class="text-right">${fmt(val.ytdNonOpTaxes)}</td>
+                <td class="text-right">${pct(val.ytdNonOpTaxesPct)}</td>
               </tr>
 
               <!-- NET INCOME -->
               <tr class="net-income-row">
                 <td style="text-transform: uppercase;">Net Income</td>
-                <td class="text-right">134,950.00</td>
-                <td class="text-right">32.7%</td>
-                <td class="text-right">476,500.00</td>
-                <td class="text-right">27.9%</td>
+                <td class="text-right">${fmt(val.netIncome)}</td>
+                <td class="text-right">${pct(val.netIncomePct)}</td>
+                <td class="text-right">${fmt(val.ytdNetIncome)}</td>
+                <td class="text-right">${pct(val.ytdNetIncomePct)}</td>
               </tr>
             </tbody>
           </table>
@@ -2347,7 +2607,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <th>Dates</th>
                 <th>Booking Status</th>
                 <th>Payment Status</th>
-                <th class="text-right">Folio (₱)</th>
+                <th class="text-right">Folio (â‚±)</th>
               </tr>
             </thead>
             <tbody>
@@ -2358,7 +2618,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td>${res.dates}</td>
                   <td>${res.bookingStatus}</td>
                   <td>${res.paymentStatus}</td>
-                  <td class="text-right"><strong>₱${res.folio}</strong></td>
+                  <td class="text-right"><strong>â‚±${res.folio}</strong></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -2935,17 +3195,17 @@ document.addEventListener('DOMContentLoaded', () => {
         villa: res.villa,
         description: "Lodging Base Rate Charge",
         type: "Room Charges",
-        amount: `₱${res.baseRate.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+        amount: `â‚±${res.baseRate.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
         status: res.paymentStatus === 'FULL' ? 'Settled' : 'Pending',
         resId: res.id
       });
       
       // 2. Add-on transactions
       const addons = [
-        { key: 'addonWine', label: 'Sommelier Wine Stocking', price: 43600 },
-        { key: 'addonYacht', label: 'Yacht Charter Experience', price: 12500 },
-        { key: 'addonSpa', label: 'Spa & Wellness Program', price: 4200 },
-        { key: 'addonChef', label: 'Private Chef Dining', price: 1500 }
+        { key: 'addonWine', label: 'Welcome Drink Package', price: 1500 },
+        { key: 'addonYacht', label: 'Pool Cabana Rental', price: 1500 },
+        { key: 'addonSpa', label: 'Massage Treatment', price: 1500 },
+        { key: 'addonChef', label: 'Dinner Buffet Package', price: 1200 }
       ];
       
       addons.forEach(addon => {
@@ -2960,16 +3220,58 @@ document.addEventListener('DOMContentLoaded', () => {
             villa: res.villa,
             description: addon.label,
             type: "Services",
-            amount: `₱${addon.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+            amount: `â‚±${addon.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
             status: res.paymentStatus === 'FULL' ? 'Settled' : 'Pending',
             resId: res.id
           });
         }
       });
+
+      // 3. POS Room-Charged items
+      if (res.posCharges && res.posCharges.length > 0) {
+        res.posCharges.forEach(charge => {
+          txList.push({
+            timestamp: charge.date.includes(':') ? charge.date : `${charge.date} 05:00 PM`,
+            guest: res.guest,
+            villa: res.villa,
+            description: `Room Charge: ${charge.name}`,
+            type: "POS Charge",
+            amount: `â‚±${charge.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+            status: res.paymentStatus === 'FULL' ? 'Settled' : 'Pending',
+            resId: res.id
+          });
+        });
+      }
+    });
+
+    // 4. POS Direct Walk-in cashier sales
+    posSales.forEach(sale => {
+      let displayDate = sale.date;
+      if (sale.date.includes('-')) {
+        const [y, m, d] = sale.date.split('-');
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        displayDate = `${monthNames[parseInt(m) - 1]} ${parseInt(d)}, ${y}`;
+      }
+      const itemDesc = sale.items.map(it => `${it.name} (${it.qty}x)`).join(', ');
+      
+      txList.push({
+        timestamp: `${displayDate} 04:00 PM`,
+        guest: sale.guest || "Walk-in Guest",
+        villa: sale.villa || "N/A",
+        description: `Direct Sale: ${itemDesc}`,
+        type: "POS Direct",
+        amount: `â‚±${sale.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+        status: "Settled",
+        resId: sale.resId || null
+      });
     });
     
     // Sort transactions by date (descending)
-    return txList.reverse();
+    txList.sort((a, b) => {
+      return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+    
+    return txList;
   }
 
   // --- REDESIGNED OVERVIEW HUB HELPERS ---
@@ -3000,7 +3302,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Obscure if privacy mode is active
       const isObscured = privacyCheckbox ? privacyCheckbox.checked : false;
       if (isObscured) {
-        overviewReceivablesVal.textContent = '••,•••.••';
+        overviewReceivablesVal.textContent = 'â€¢â€¢,â€¢â€¢â€¢.â€¢â€¢';
       }
     }
 
@@ -3155,7 +3457,7 @@ document.addEventListener('DOMContentLoaded', () => {
           btnExportCsv.click();
         } else {
           const activeReservations = reservations.filter(res => !res.isBlockout);
-          const headers = ["Reservation ID", "Guest Name", "Villa", "Villa Name", "Booking Dates", "Date Created", "Booking Status", "Payment Status", "Folio Value (₱)"];
+          const headers = ["Reservation ID", "Guest Name", "Villa", "Villa Name", "Booking Dates", "Date Created", "Booking Status", "Payment Status", "Folio Value (â‚±)"];
           const rows = activeReservations.map(res => [
             res.id,
             res.guest,
@@ -3360,7 +3662,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="py-4 px-4 ledger-created">${res.created}</td>
           <td class="py-4 px-4 ledger-booking-status"><span class="${bookingColor} text-xs font-bold border px-2 py-0.5">${res.bookingStatus.toUpperCase()}</span></td>
           <td class="py-4 px-4 ledger-payment-status" ${harringtonStatusId}><span class="${paymentColor} text-xs font-bold border px-2 py-0.5">${res.paymentStatus}</span></td>
-          <td class="py-4 pl-4 text-right font-mono-data text-tertiary">₱<span class="ledger-maskable ledger-folio" ${harringtonValId}>${res.folio}</span></td>
+          <td class="py-4 pl-4 text-right font-mono-data text-tertiary">â‚±<span class="ledger-maskable ledger-folio" ${harringtonValId}>${res.folio}</span></td>
         `;
         
         row.addEventListener('click', () => {
@@ -3373,13 +3675,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Re-apply original folio masking variables
     document.querySelectorAll('.ledger-maskable').forEach(el => {
-      el.setAttribute('data-original', el.textContent.trim().replace('₱', ''));
+      el.setAttribute('data-original', el.textContent.trim().replace('â‚±', ''));
     });
     
     const isObscured = privacyCheckbox ? privacyCheckbox.checked : false;
     document.querySelectorAll('.ledger-maskable').forEach(el => {
       if (isObscured) {
-        el.textContent = '••,•••.••';
+        el.textContent = 'â€¢â€¢,â€¢â€¢â€¢.â€¢â€¢';
       } else {
         el.textContent = el.getAttribute('data-original');
       }
@@ -3413,7 +3715,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <td class="py-4 px-4 font-label-caps text-tertiary sb-amenity text-xs">${sb.amenity}</td>
         <td class="py-4 px-4 text-xs">${sb.date}</td>
         <td class="py-4 px-4 sb-details text-xs max-w-xs truncate">${sb.details}</td>
-        <td class="py-4 px-4 font-mono-data text-tertiary text-xs">₱<span class="ledger-maskable">${sb.folio}</span></td>
+        <td class="py-4 px-4 font-mono-data text-tertiary text-xs">â‚±<span class="ledger-maskable">${sb.folio}</span></td>
         <td class="py-4 pl-4 text-right sb-status"><span class="${statusColor} text-xs font-bold border px-2 py-0.5">${sb.status}</span></td>
       `;
       
@@ -3421,7 +3723,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sb.status === 'Pending verification') {
           alert(`Special booking ${sb.id} is pending verification. Please clear deposit slip in Receipt Verifications tab.`);
         } else {
-          alert(`Special booking details:\nGuest: ${sb.guest}\nService: ${sb.amenity}\nDetails: ${sb.details}\nFolio: ₱${sb.folio}\nStatus: ${sb.status}`);
+          alert(`Special booking details:\nGuest: ${sb.guest}\nService: ${sb.amenity}\nDetails: ${sb.details}\nFolio: â‚±${sb.folio}\nStatus: ${sb.status}`);
         }
       });
       
@@ -3597,7 +3899,7 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (discType === 'flat' || discType === 'percent') {
             valContainer.classList.remove('hidden');
             promoContainer.classList.add('hidden');
-            document.getElementById('discount-value-label').textContent = discType === 'flat' ? 'Discount Amount (₱)' : 'Discount Percentage (%)';
+            document.getElementById('discount-value-label').textContent = discType === 'flat' ? 'Discount Amount (â‚±)' : 'Discount Percentage (%)';
             document.getElementById('edit-booking-discount-value').placeholder = discType === 'flat' ? '5,000.00' : '10';
           } else if (discType === 'promo') {
             valContainer.classList.add('hidden');
@@ -3617,8 +3919,40 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnSubmitBooking) {
         btnSubmitBooking.textContent = "Save Changes";
       }
+
+      // Render POS Billed Charges for this reservation
+      const posTableBody = document.querySelector('#booking-pos-charges-table tbody');
+      const posTotalEl = document.getElementById('booking-pos-charges-total');
+      if (posTableBody && posTotalEl) {
+        posTableBody.innerHTML = '';
+        res.posCharges = res.posCharges || [];
+        
+        let posSum = 0;
+        if (res.posCharges.length === 0) {
+          posTableBody.innerHTML = '<tr><td colspan="3" class="py-3 text-center text-xs text-on-surface-variant italic">No POS billed charges for this stay.</td></tr>';
+        } else {
+          res.posCharges.forEach(charge => {
+            posSum += charge.amount;
+            const row = document.createElement('tr');
+            row.className = "border-b border-secondary/5";
+            row.innerHTML = `
+              <td class="py-2 pr-2 font-mono-data text-[10px] text-on-surface-variant">${charge.date}</td>
+              <td class="py-2 px-2 font-semibold text-on-surface text-xs">${charge.name}</td>
+              <td class="py-2 pl-2 text-right font-mono-data text-tertiary">â‚±${charge.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            `;
+            posTableBody.appendChild(row);
+          });
+        }
+        posTotalEl.textContent = `â‚±${posSum.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      }
     } else {
       // ADD MODE
+      const posTableBody = document.querySelector('#booking-pos-charges-table tbody');
+      const posTotalEl = document.getElementById('booking-pos-charges-total');
+      if (posTableBody && posTotalEl) {
+        posTableBody.innerHTML = '<tr><td colspan="3" class="py-3 text-center text-xs text-on-surface-variant italic">No POS billed charges for this stay.</td></tr>';
+        posTotalEl.textContent = "â‚±0.00";
+      }
       document.getElementById('edit-booking-row-id').value = "";
       document.getElementById('edit-booking-guest').value = "";
       
@@ -3948,7 +4282,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startStr = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const endStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     
-    label.textContent = `${startStr} — ${endStr}`;
+    label.textContent = `${startStr} â€” ${endStr}`;
   }
 
   // Hook Date Navigation Event Listeners
@@ -4101,10 +4435,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res) {
         return `**RAG Match: Sophia Loren Stay Record**
         - **Villa Assigned**: ${res.villaName} (${res.villa})
-        - **Folio Total**: ₱${parseFloat(res.folio.replace(/,/g, '')).toLocaleString('en-US', {minimumFractionDigits: 2})}
+        - **Folio Total**: â‚±${parseFloat(res.folio.replace(/,/g, '')).toLocaleString('en-US', {minimumFractionDigits: 2})}
         - **Payment Status**: ${res.paymentStatus === 'PARTIAL' ? 'PARTIAL (deposit paid, balance due)' : res.paymentStatus}
         - **Stay Dates**: ${res.dates} (${res.duration} nights)
-        - **Add-on Services**: ${res.addonSpa ? 'Spa & Wellness (₱4,200.00)' : 'None'}
+        - **Add-on Services**: ${res.addonSpa ? 'Spa & Wellness (â‚±4,200.00)' : 'None'}
         - **Operational Note**: Checked In. Sommelier wine logs show she has requested room dining access for breakfast.`;
       }
     }
@@ -4116,9 +4450,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return `**RAG Match: Lord Harrington Stay Record**
         - **Villa Assigned**: ${res.villaName} (${res.villa})
         - **Dates of Stay**: ${res.dates} (${res.duration} nights)
-        - **Folio Total**: ₱${parseFloat(res.folio.replace(/,/g, '')).toLocaleString('en-US', {minimumFractionDigits: 2})}
+        - **Folio Total**: â‚±${parseFloat(res.folio.replace(/,/g, '')).toLocaleString('en-US', {minimumFractionDigits: 2})}
         - **Payment Status**: ${res.paymentStatus} (Wire Transfer pending verifications)
-        - **Add-on Services**: Wine & Sommelier Pre-stock (₱1,860.00)
+        - **Add-on Services**: Wine & Sommelier Pre-stock (â‚±1,860.00)
         - **Operational Status**: Checked In. Front desk is awaiting supervisor wire validation to confirm clearance.`;
       }
     }
@@ -4130,7 +4464,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `**RAG Match: George Clooney Stay Record**
         - **Villa Assigned**: ${res.villaName} (${res.villa})
         - **Dates of Stay**: ${res.dates} (${res.duration} nights)
-        - **Folio Total**: ₱${parseFloat(res.folio.replace(/,/g, '')).toLocaleString('en-US', {minimumFractionDigits: 2})}
+        - **Folio Total**: â‚±${parseFloat(res.folio.replace(/,/g, '')).toLocaleString('en-US', {minimumFractionDigits: 2})}
         - **Booking Status**: ${res.bookingStatus} (Confirmed check-in scheduled for tomorrow)
         - **Payment Status**: ${res.paymentStatus} (Fully settled upfront)`;
       }
@@ -4171,34 +4505,34 @@ document.addEventListener('DOMContentLoaded', () => {
         .filter(r => !r.isBlockout && (r.paymentStatus === 'PARTIAL' || r.paymentStatus === 'UNPAID'))
         .reduce((sum, r) => sum + parseFloat(r.folio.replace(/,/g, '')), 0);
       return `**RAG Match: H1 Operations & Revenue Audit Summary**
-      - **Active Receivables Ledger (Folios)**: **₱${totalReceivables.toLocaleString('en-US', {minimumFractionDigits: 2})}**
-      - **ADR Pacing**: ₱4,733.33 (YTD +12.4% MoM)
-      - **RevPAR**: ₱4,007.16 (YTD +8.2% MoM)
+      - **Active Receivables Ledger (Folios)**: **â‚±${totalReceivables.toLocaleString('en-US', {minimumFractionDigits: 2})}**
+      - **ADR Pacing**: â‚±4,733.33 (YTD +12.4% MoM)
+      - **RevPAR**: â‚±4,007.16 (YTD +8.2% MoM)
       - **EBITDA Profit Margin**: **48.6%** (Pacing on track for YTD H1 Targets)
       - **Revenue Streams**:
-        - Suite Lodging: 75% allocation
-        - Amenity Add-ons (Yacht/Chef/Spa): 25% allocation`;
+        - Suite Lodging: 85% allocation
+        - Amenity Add-ons (Cabana/Drinks/Spa): 15% allocation`;
     }
 
     // 7. Knowledgebase & Amenity Rates
-    if (q.includes('rules') || q.includes('knowledge') || q.includes('rate') || q.includes('rates') || q.includes('price') || q.includes('pricing') || q.includes('yacht') || q.includes('sommelier') || q.includes('chef') || q.includes('spa')) {
+    if (q.includes('rules') || q.includes('knowledge') || q.includes('rate') || q.includes('rates') || q.includes('price') || q.includes('pricing') || q.includes('cabana') || q.includes('drinks') || q.includes('buffet') || q.includes('spa')) {
       return `**RAG Match: Knowledge Monitor Accommodations & Amenities Rules**
       - **Standard Operations Policies**:
-        - Check-in: 14:00 (Early check-in fee: ₱2,500.00, subject to availability).
-        - Check-out: 11:00 (Late check-out fee: ₱3,500.00 until 16:00).
-        - Security Deposit: ₱15,000.00 required upon reservation confirmation.
+        - Check-in: 14:00 (Early check-in fee: â‚±2,500.00, subject to availability).
+        - Check-out: 11:00 (Late check-out fee: â‚±3,500.00 until 16:00).
+        - Security Deposit: â‚±15,000.00 required upon reservation confirmation.
       - **Amenity Service Rates**:
-        - **Yacht Charter (Private)**: ₱15,000.00/hour (includes crew and sparkling wine).
-        - **Private Sommelier Wine Tasting**: ₱2,500.00/session.
-        - **Personal Culinary Chef**: ₱8,500.00/meal prep (excludes ingredient folios).
-        - **Luxury Spa Wellness Program**: ₱4,200.00/session.`;
+        - **Pool Cabana Rental**: â‚±1,500.00/day.
+        - **Welcome Drink Package**: â‚±1,500.00/package.
+        - **Dinner Buffet Package**: â‚±1,200.00/guest.
+        - **Massage Treatment**: â‚±1,500.00/session.`;
     }
 
     // 8. Verification slips
     if (q.includes('verification') || q.includes('deposit') || q.includes('wire') || q.includes('swift') || q.includes('slip') || q.includes('auditor')) {
       return `**RAG Match: Front Desk Pending Verifications**
       - **Pending Slips in Queue**: **1**
-      - **Details**: Lord Harrington (Villa 6). SWIFT transfer verification slip submitted for **₱42,100.00** matching deposit folio requirements.
+      - **Details**: Lord Harrington (Villa 6). SWIFT transfer verification slip submitted for **â‚±42,100.00** matching deposit folio requirements.
       - **Action Required**: Operations manager approval required under the "Receipt Verifications" module to release check-in hold.`;
     }
 
@@ -4207,13 +4541,1331 @@ document.addEventListener('DOMContentLoaded', () => {
     I have run a broad vector search across the resort system:
     - **Villas & Map**: 6 total villas (Occupancy rate: **83.0%**). Villa 4 is under an active **Maintenance Hold**.
     - **Roster Flow**: George Clooney is arriving tomorrow at Villa 5 (Sirenuse Suite, Confirmed). Sophia Loren is checked in at Villa 1.
-    - **Ledger Audit**: Receivables are at **₱312,850.00**. Margin pacing remains healthy at **48.6% EBITDA**.
+    - **Ledger Audit**: Receivables are at **â‚±312,850.00**. Margin pacing remains healthy at **48.6% EBITDA**.
     - **Front Desk**: 1 pending SWIFT receipt verification for Lord Harrington.
-    
-    *Tip: You can query specific details like "List all maintenance holds", "What is Sophia Loren's folio?", or "What are the private yacht rates?".*`;
+    - 
+    *Tip: You can query specific details like "List all maintenance holds", "What is Sophia Loren's folio?", or "What are the pool cabana rates?".*`;
   }
 
-  // Trigger initial filter rendering for the overview view
+  // ==========================================
+  // Dynamic Folio & POS Logic
+  // ==========================================
+
+  function updateFolio(res) {
+    let total = res.baseRate || 0;
+    
+    // Apply discount if active
+    let discountAmount = 0;
+    if (res.discountType === 'flat') {
+      discountAmount = res.discountValue || 0;
+    } else if (res.discountType === 'percent') {
+      discountAmount = total * ((res.discountValue || 0) / 100);
+    }
+    
+    total = Math.max(0, total - discountAmount);
+
+    if (res.addonWine) total += 1500;
+    if (res.addonYacht) total += 1500;
+    if (res.addonSpa) total += 1500;
+    if (res.addonChef) total += 1200;
+    
+    if (res.posCharges) {
+      res.posCharges.forEach(charge => {
+        total += charge.amount;
+      });
+    }
+    
+    res.folio = total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  let cart = [];
+
+  // Toggle POS sub tabs
+  window.togglePosSubTab = function(tabName) {
+    const btnSell = document.getElementById('btn-pos-tab-sell');
+    const btnManage = document.getElementById('btn-pos-tab-manage');
+    const paneSell = document.getElementById('pos-pane-sell');
+    const paneManage = document.getElementById('pos-pane-manage');
+    const filters = document.getElementById('pos-category-filters');
+
+    if (tabName === 'sell') {
+      btnSell.className = "px-4 py-1.5 text-xs font-label-caps font-bold transition-all focus:outline-none bg-tertiary text-dark-obsidian";
+      btnManage.className = "px-4 py-1.5 text-xs font-label-caps font-bold transition-all focus:outline-none text-secondary hover:text-on-surface";
+      paneSell.classList.remove('hidden');
+      paneManage.classList.add('hidden');
+      if (filters) filters.classList.remove('hidden');
+      renderPosTerminal();
+    } else {
+      btnManage.className = "px-4 py-1.5 text-xs font-label-caps font-bold transition-all focus:outline-none bg-tertiary text-dark-obsidian";
+      btnSell.className = "px-4 py-1.5 text-xs font-label-caps font-bold transition-all focus:outline-none text-secondary hover:text-on-surface";
+      paneManage.classList.remove('hidden');
+      paneSell.classList.add('hidden');
+      if (filters) filters.classList.add('hidden');
+      renderProductCatalogTable();
+    }
+  };
+
+  // Filter POS products by category
+  let currentPosCategory = 'All';
+  window.filterPosProducts = function(category, buttonEl) {
+    currentPosCategory = category;
+    
+    // Style active category filter buttons
+    const filterButtons = document.querySelectorAll('#pos-category-filters button');
+    filterButtons.forEach(btn => {
+      if (btn === buttonEl) {
+        btn.className = "px-3 py-1 text-xs border border-tertiary bg-tertiary/10 text-tertiary font-medium transition-all";
+      } else {
+        btn.className = "px-3 py-1 text-xs border border-secondary/15 text-secondary hover:text-on-surface hover:border-secondary transition-all";
+      }
+    });
+
+    renderPosTerminal();
+  };
+
+  // Populate active room reservations for charging
+  window.populateRoomSelect = function() {
+    const select = document.getElementById('pos-room-reservation-select');
+    if (!select) return;
+    
+    select.innerHTML = '';
+    const activeRooms = reservations.filter(res => !res.isBlockout && res.bookingStatus === 'Checked In');
+    
+    if (activeRooms.length === 0) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'No active checked-in guests';
+      select.appendChild(opt);
+    } else {
+      activeRooms.forEach(res => {
+        const opt = document.createElement('option');
+        opt.value = res.id;
+        opt.textContent = `${res.guest} (${res.villa} - ${res.villaName})`;
+        select.appendChild(opt);
+      });
+    }
+  };
+
+  // Render Product Grid for Sales
+  window.renderPosTerminal = function() {
+    const container = document.getElementById('pos-pane-sell');
+    if (!container) return;
+
+    container.innerHTML = '';
+    
+    const filteredProducts = currentPosCategory === 'All' 
+      ? products 
+      : products.filter(p => p.category === currentPosCategory);
+
+    if (filteredProducts.length === 0) {
+      container.innerHTML = '<span class="text-xs text-on-surface-variant italic col-span-3 text-center py-8">No products found in this category.</span>';
+      return;
+    }
+
+    filteredProducts.forEach(product => {
+      const card = document.createElement('div');
+      card.className = "glass-panel p-stack-md flex flex-col justify-between gap-4";
+      
+      const stockColor = product.stock > 0 ? "text-mint-active/80" : "text-alert-red/80";
+      const stockText = product.stock > 0 ? `${product.stock} in stock` : "Out of stock";
+      const isDisabled = product.stock <= 0 ? "disabled opacity-40 cursor-not-allowed" : "";
+
+      card.innerHTML = `
+        <div class="flex flex-col gap-1">
+          <span class="text-[10px] text-secondary font-label-caps uppercase">${product.category}</span>
+          <h4 class="text-sm font-semibold text-on-surface">${product.name}</h4>
+          <span class="text-xs ${stockColor} font-mono-data">${stockText}</span>
+        </div>
+        <div class="flex justify-between items-center mt-2 border-t border-secondary/10 pt-2">
+          <span class="font-mono-data text-tertiary font-bold text-sm">â‚±${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+          <button type="button" class="bg-tertiary hover:bg-white text-dark-obsidian text-[10px] font-label-caps font-bold px-3 py-1.5 transition-all ${isDisabled}" onclick="addToCart('${product.id}')">
+            + Add
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  };
+
+  // Render Product Catalog Table for Editing
+  window.renderProductCatalogTable = function() {
+    const tbody = document.querySelector('#pos-catalog-table tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    
+    if (products.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-xs text-on-surface-variant italic">No products in catalog.</td></tr>';
+      return;
+    }
+
+    products.forEach(product => {
+      const row = document.createElement('tr');
+      row.className = "border-b border-secondary/10 hover:bg-surface-variant/30 transition-all";
+      row.innerHTML = `
+        <td class="py-3 pr-4 font-semibold text-on-surface text-xs">${product.name}</td>
+        <td class="py-3 px-4 text-xs text-on-surface-variant">${product.category}</td>
+        <td class="py-3 px-4 text-right font-mono-data text-tertiary text-xs">â‚±${product.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+        <td class="py-3 px-4 text-right font-mono-data text-xs">${product.stock}</td>
+        <td class="py-3 pl-4 text-right text-xs">
+          <button type="button" class="text-alert-red hover:text-white transition-colors" onclick="deleteProduct('${product.id}')">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  };
+
+  // Add Product to Cart
+  window.addToCart = function(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product || product.stock <= 0) return;
+
+    const cartItem = cart.find(item => item.id === productId);
+    if (cartItem) {
+      if (cartItem.qty < product.stock) {
+        cartItem.qty++;
+      } else {
+        alert("Cannot add more. Reached maximum available stock.");
+      }
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        qty: 1
+      });
+    }
+
+    updateCartUI();
+  };
+
+  // Update Cart Quantity
+  window.updateCartQty = function(productId, delta) {
+    const cartItem = cart.find(item => item.id === productId);
+    const product = products.find(p => p.id === productId);
+    if (!cartItem || !product) return;
+
+    if (delta > 0) {
+      if (cartItem.qty < product.stock) {
+        cartItem.qty++;
+      } else {
+        alert("Cannot add more. Reached maximum available stock.");
+      }
+    } else {
+      cartItem.qty--;
+      if (cartItem.qty <= 0) {
+        removeFromCart(productId);
+        return;
+      }
+    }
+
+    updateCartUI();
+  };
+
+  // Remove Item from Cart
+  window.removeFromCart = function(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCartUI();
+  };
+
+  // Update Cart UI
+  window.updateCartUI = function() {
+    const container = document.getElementById('pos-cart-items-container');
+    const countBadge = document.getElementById('pos-cart-count');
+    const subtotalEl = document.getElementById('pos-cart-subtotal');
+    const taxEl = document.getElementById('pos-cart-tax');
+    const totalEl = document.getElementById('pos-cart-total');
+
+    if (!container) return;
+
+    container.innerHTML = '';
+    
+    if (cart.length === 0) {
+      container.innerHTML = '<span class="text-xs text-on-surface-variant italic py-8 text-center w-full">Your cart is empty. Add products to get started.</span>';
+      if (countBadge) countBadge.textContent = "0 items";
+      if (subtotalEl) subtotalEl.textContent = "â‚±0.00";
+      if (taxEl) taxEl.textContent = "â‚±0.00";
+      if (totalEl) totalEl.textContent = "â‚±0.00";
+      return;
+    }
+
+    let subtotal = 0;
+    let totalItems = 0;
+
+    cart.forEach(item => {
+      subtotal += item.price * item.qty;
+      totalItems += item.qty;
+
+      const div = document.createElement('div');
+      div.className = "flex justify-between items-center py-2 border-b border-secondary/5 text-xs";
+      div.innerHTML = `
+        <div class="flex flex-col gap-0.5 max-w-[60%]">
+          <span class="font-semibold text-on-surface">${item.name}</span>
+          <span class="text-[10px] text-on-surface-variant">â‚±${item.price.toLocaleString('en-US', { minimumFractionDigits: 2 })} each</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center border border-secondary/20 p-0.5 bg-surface">
+            <button type="button" class="w-5 h-5 flex items-center justify-center text-secondary hover:text-on-surface transition-colors" onclick="updateCartQty('${item.id}', -1)">-</button>
+            <span class="w-6 text-center font-mono-data text-xs text-on-surface">${item.qty}</span>
+            <button type="button" class="w-5 h-5 flex items-center justify-center text-secondary hover:text-on-surface transition-colors" onclick="updateCartQty('${item.id}', 1)">+</button>
+          </div>
+          <button type="button" class="text-alert-red hover:text-white transition-colors" onclick="removeFromCart('${item.id}')">
+            <span class="material-symbols-outlined text-base">delete</span>
+          </button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+    const tax = subtotal * 0.12; // 12% VAT
+    const grandTotal = subtotal; // Price includes VAT already
+
+    if (countBadge) countBadge.textContent = `${totalItems} items`;
+    if (subtotalEl) subtotalEl.textContent = `â‚±${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    if (taxEl) taxEl.textContent = `â‚±${tax.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    if (totalEl) totalEl.textContent = `â‚±${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+  };
+
+  // Toggle Cart Destination payment controls
+  window.handlePosCheckoutTypeChange = function() {
+    const dest = document.getElementById('pos-checkout-dest').value;
+    const roomSelect = document.getElementById('pos-group-room-select');
+    const paymentMethodSelect = document.getElementById('pos-group-payment-method');
+
+    if (dest === 'room') {
+      roomSelect.classList.remove('hidden');
+      paymentMethodSelect.classList.add('hidden');
+      populateRoomSelect();
+    } else {
+      roomSelect.classList.add('hidden');
+      paymentMethodSelect.classList.remove('hidden');
+    }
+  };
+
+  // Checkout complete handler
+  window.completePosCheckout = function() {
+    if (cart.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
+    const dest = document.getElementById('pos-checkout-dest').value;
+    const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const timestampStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
+    let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+    // Deduct stock
+    cart.forEach(item => {
+      const prod = products.find(p => p.id === item.id);
+      if (prod) {
+        prod.stock = Math.max(0, prod.stock - item.qty);
+      }
+    });
+    saveProducts();
+
+    if (dest === 'room') {
+      // Charge to Villa
+      const resId = document.getElementById('pos-room-reservation-select').value;
+      if (!resId) {
+        alert("Please select a checked-in villa.");
+        return;
+      }
+      
+      const res = reservations.find(r => r.id === resId);
+      if (!res) {
+        alert("Selected reservation not found.");
+        return;
+      }
+
+      res.posCharges = res.posCharges || [];
+      
+      // Add items as POS charges
+      cart.forEach(item => {
+        res.posCharges.push({
+          id: "chg-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
+          name: `${item.name} (${item.qty}x)`,
+          amount: item.price * item.qty,
+          date: `${dateStr} ${timestampStr}`
+        });
+      });
+
+      // Recalculate folio total
+      updateFolio(res);
+      saveReservations();
+
+      // Log transaction as room POS sale
+      posSales.push({
+        id: "sale-" + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        guest: res.guest,
+        villa: res.villa,
+        items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
+        total: total,
+        checkoutType: "room",
+        resId: res.id
+      });
+      savePosSales();
+
+      alert(`Successfully billed â‚±${total.toLocaleString('en-US', { minimumFractionDigits: 2 })} to ${res.guest} (${res.villa}) folio.`);
+
+    } else {
+      // Direct Walk-in Sale
+      const method = document.getElementById('pos-payment-method-select').value;
+      
+      posSales.push({
+        id: "sale-" + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        guest: "Walk-in Guest",
+        villa: "N/A",
+        items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
+        total: total,
+        checkoutType: "direct",
+        paymentMethod: method
+      });
+      savePosSales();
+
+      alert(`Direct sale of â‚±${total.toLocaleString('en-US', { minimumFractionDigits: 2 })} completed successfully via ${method}.`);
+    }
+
+    // Reset cart and UI
+    cart = [];
+    updateCartUI();
+    renderPosTerminal();
+    
+    // Refresh ledger, financials, and charts
+    renderLedgerTable();
+    updateOverviewKPIs();
+    if (typeof updatePLStatement === 'function') updatePLStatement();
+  };
+
+  // Add Product submission handler
+  const addProductForm = document.getElementById('pos-add-product-form');
+  if (addProductForm) {
+    addProductForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('pos-new-name').value;
+      const category = document.getElementById('pos-new-category').value;
+      const price = parseFloat(document.getElementById('pos-new-price').value);
+      const stock = parseInt(document.getElementById('pos-new-stock').value);
+
+      if (!name || isNaN(price) || isNaN(stock)) return;
+
+      const newProd = {
+        id: "p-" + Date.now(),
+        name: name,
+        category: category,
+        price: price,
+        stock: stock
+      };
+
+      products.push(newProd);
+      saveProducts();
+      addProductForm.reset();
+
+      renderProductCatalogTable();
+      renderPosTerminal();
+      alert("Product added successfully.");
+    });
+  }
+
+  // Delete product from catalog
+  window.deleteProduct = function(productId) {
+    if (confirm("Are you sure you want to delete this product from the catalog?")) {
+      products = products.filter(p => p.id !== productId);
+      saveProducts();
+      renderProductCatalogTable();
+      renderPosTerminal();
+    }
+  };
+
+  // ==========================================
+  // Dynamic USALI P&L Calculations
+  // ==========================================
+
+  window.getPLValues = function() {
+    function getCategoryOfItem(itemName) {
+      const prod = products.find(p => p.name === itemName || itemName.includes(p.name));
+      return prod ? prod.category : 'Food & Beverage';
+    }
+
+    function sumPOSByCategory(category, keyword) {
+      let sum = 0;
+      posSales.forEach(sale => {
+        sale.items.forEach(item => {
+          const cat = getCategoryOfItem(item.name);
+          const matchesCat = cat === category;
+          const matchesKw = !keyword || item.name.toLowerCase().includes(keyword.toLowerCase());
+          if (matchesCat && matchesKw) {
+            sum += item.price * item.qty;
+          }
+        });
+      });
+      return sum;
+    }
+
+    // Sum expenses by department (v3 schema)
+    function sumExpByDept(dept) {
+      return expenses
+        .filter(e => e.department === dept)
+        .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+    }
+
+    // Sum expenses by subcategory (for COGS isolation)
+    function sumExpBySubcat(subcat) {
+      return expenses
+        .filter(e => e.subcategory === subcat)
+        .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+    }
+
+
+    const activeReservations = reservations.filter(r => !r.isBlockout && r.bookingStatus !== 'Cancelled');
+    const roomsBase = activeReservations.reduce((sum, r) => sum + (r.baseRate || 0), 0);
+    
+    const wineAddonsCount = activeReservations.filter(r => r.addonWine).length;
+    const chefAddonsCount = activeReservations.filter(r => r.addonChef).length;
+    const fbPOS = sumPOSByCategory('Food & Beverage');
+    const fbRevenues = 18480 + (wineAddonsCount * 1500) + (chefAddonsCount * 1200) + fbPOS;
+
+    const yachtAddonsCount = activeReservations.filter(r => r.addonYacht).length;
+    const yachtPOS = sumPOSByCategory('Experiences & Services', 'Activity') + sumPOSByCategory('Experiences & Services', 'Rental');
+    const yachtRevenues = 12000 + (yachtAddonsCount * 1500) + yachtPOS;
+
+    const spaAddonsCount = activeReservations.filter(r => r.addonSpa).length;
+    const spaPOS = sumPOSByCategory('Experiences & Services', 'Spa');
+    const spaRevenues = 8450 + (spaAddonsCount * 1500) + spaPOS;
+
+    const otherRevenues = sumPOSByCategory('Boutique & Retail');
+
+    const grossRevenue = roomsBase + fbRevenues + yachtRevenues + spaRevenues + otherRevenues;
+
+    // COGS = F&B food/beverage restocking costs
+    const cogsFood = sumExpBySubcat('Food Inventory Restocking');
+    const cogsBeverage = sumExpBySubcat('Beverage Restocking');
+    const totalCOGS = cogsFood + cogsBeverage;
+
+    const grossProfit = grossRevenue - totalCOGS;
+
+    // Operating expenses by department (v3)
+    const expRoomsHousekeeping = sumExpByDept('Rooms & Housekeeping');
+    const expStaffing         = sumExpByDept('Staffing & Payroll');
+    const expUtilities        = sumExpByDept('Utilities');
+    const expMaintenance      = sumExpByDept('Maintenance & Facilities');
+    const expMarketing        = sumExpByDept('Marketing & Admin');
+    // sgaSalaries alias kept for chart backward compat
+    const sgaSalaries    = expStaffing;
+    const sgaUtilities   = expUtilities;
+    const sgaMaintenance = expMaintenance;
+    const sgaMarketing   = expMarketing;
+    const sgaYachtCrew   = 0;
+    const sgaSpaStaff    = 0;
+    const totalSGA = expRoomsHousekeeping + expStaffing + expUtilities + expMaintenance + expMarketing;
+
+    const ebitda = grossProfit - totalSGA;
+
+    // Fixed overhead charges
+    const expFixedOverheads = sumExpByDept('Fixed Overheads');
+    const fixedInsurance = sumExpBySubcat('Property Insurance');
+    const fixedFees      = sumExpBySubcat('Franchise / Management Fees');
+    const totalFixed     = expFixedOverheads;
+
+    const noi = ebitda - totalFixed;
+
+    // Non-operating (embedded in Fixed Overheads for this system)
+    const nonOpMortgage = sumExpBySubcat('Loan Interest');
+    const nonOpDepr     = sumExpBySubcat('Depreciation & Amortization');
+    const nonOpTaxes    = sumExpBySubcat('Income Tax Provision');
+    const totalNonOp    = 0; // Already included in totalFixed above
+
+    const netIncome = noi;
+
+
+    // YTD Calculations
+    const ytdRooms = 320000 + roomsBase;
+    const ytdFB = 60000 + fbRevenues;
+    const ytdYacht = 35000 + yachtRevenues;
+    const ytdSpa = 25000 + spaRevenues;
+    const ytdOther = otherRevenues;
+    const ytdGrossRevenue = ytdRooms + ytdFB + ytdYacht + ytdSpa + ytdOther;
+
+    const ytdCogsWine = 35000 + cogsWine;
+    const ytdCogsFuel = 15000 + cogsFuel;
+    const ytdCogsSpa = 8000 + cogsSpa;
+    const ytdTotalCOGS = ytdCogsWine + ytdCogsFuel + ytdCogsSpa;
+
+    const ytdGrossProfit = ytdGrossRevenue - ytdTotalCOGS;
+
+    const ytdSgaSalaries = 150000 + sgaSalaries;
+    const ytdSgaUtilities = 38000 + sgaUtilities;
+    const ytdSgaYachtCrew = 40000 + sgaYachtCrew;
+    const ytdSgaSpaStaff = 12000 + sgaSpaStaff;
+    const ytdSgaMaintenance = 20000 + sgaMaintenance;
+    const ytdSgaMarketing = 15000 + sgaMarketing;
+    const ytdTotalSGA = ytdSgaSalaries + ytdSgaUtilities + ytdSgaYachtCrew + ytdSgaSpaStaff + ytdSgaMaintenance + ytdSgaMarketing;
+
+    const ytdEbitda = ytdGrossProfit - ytdTotalSGA;
+
+    const ytdFixedInsurance = 42500 + fixedInsurance;
+    const ytdFixedFees = 60000 + fixedFees;
+    const ytdTotalFixed = ytdFixedInsurance + ytdFixedFees;
+
+    const ytdNoi = ytdEbitda - ytdTotalFixed;
+
+    const ytdNonOpMortgage = 27000 + nonOpMortgage;
+    const ytdNonOpDepr = 70000 + nonOpDepr;
+    const ytdNonOpTaxes = 95000 + nonOpTaxes;
+    const ytdTotalNonOp = ytdNonOpMortgage + ytdNonOpDepr + ytdNonOpTaxes;
+
+    const ytdNetIncome = ytdNoi - ytdTotalNonOp;
+
+    return {
+      roomsBase, roomsBasePct: (roomsBase / grossRevenue * 100) || 0,
+      ytdRooms, ytdRoomsPct: (ytdRooms / ytdGrossRevenue * 100) || 0,
+      
+      fbRevenues, fbRevenuesPct: (fbRevenues / grossRevenue * 100) || 0,
+      ytdFB, ytdFBPct: (ytdFB / ytdGrossRevenue * 100) || 0,
+
+      yachtRevenues, yachtRevenuesPct: (yachtRevenues / grossRevenue * 100) || 0,
+      ytdYacht, ytdYachtPct: (ytdYacht / ytdGrossRevenue * 100) || 0,
+
+      spaRevenues, spaRevenuesPct: (spaRevenues / grossRevenue * 100) || 0,
+      ytdSpa, ytdSpaPct: (ytdSpa / ytdGrossRevenue * 100) || 0,
+
+      otherRevenues, otherRevenuesPct: (otherRevenues / grossRevenue * 100) || 0,
+      ytdOther, ytdOtherPct: (ytdOther / ytdGrossRevenue * 100) || 0,
+
+      grossRevenue, grossRevenuePct: 100,
+      ytdGrossRevenue, ytdGrossRevenuePct: 100,
+
+      cogsWine, cogsWinePct: (cogsWine / grossRevenue * 100) || 0,
+      ytdCogsWine, ytdCogsWinePct: (ytdCogsWine / ytdGrossRevenue * 100) || 0,
+
+      cogsFuel, cogsFuelPct: (cogsFuel / grossRevenue * 100) || 0,
+      ytdCogsFuel, ytdCogsFuelPct: (ytdCogsFuel / ytdGrossRevenue * 100) || 0,
+
+      cogsSpa, cogsSpaPct: (cogsSpa / grossRevenue * 100) || 0,
+      ytdCogsSpa, ytdCogsSpaPct: (ytdCogsSpa / ytdGrossRevenue * 100) || 0,
+
+      totalCOGS, totalCOGSPct: (totalCOGS / grossRevenue * 100) || 0,
+      ytdTotalCOGS, ytdTotalCOGSPct: (ytdTotalCOGS / ytdGrossRevenue * 100) || 0,
+
+      grossProfit, grossProfitPct: (grossProfit / grossRevenue * 100) || 0,
+      ytdGrossProfit, ytdGrossProfitPct: (ytdGrossProfit / ytdGrossRevenue * 100) || 0,
+
+      sgaSalaries, sgaSalariesPct: (sgaSalaries / grossRevenue * 100) || 0,
+      ytdSgaSalaries, ytdSgaSalariesPct: (ytdSgaSalaries / ytdGrossRevenue * 100) || 0,
+
+      sgaUtilities, sgaUtilitiesPct: (sgaUtilities / grossRevenue * 100) || 0,
+      ytdSgaUtilities, ytdSgaUtilitiesPct: (ytdSgaUtilities / ytdGrossRevenue * 100) || 0,
+
+      sgaYachtCrew, sgaYachtCrewPct: (sgaYachtCrew / grossRevenue * 100) || 0,
+      ytdSgaYachtCrew, ytdSgaYachtCrewPct: (ytdSgaYachtCrew / ytdGrossRevenue * 100) || 0,
+
+      sgaSpaStaff, sgaSpaStaffPct: (sgaSpaStaff / grossRevenue * 100) || 0,
+      ytdSgaSpaStaff, ytdSgaSpaStaffPct: (ytdSgaSpaStaff / ytdGrossRevenue * 100) || 0,
+
+      sgaMaintenance, sgaMaintenancePct: (sgaMaintenance / grossRevenue * 100) || 0,
+      ytdSgaMaintenance, ytdSgaMaintenancePct: (ytdSgaMaintenance / ytdGrossRevenue * 100) || 0,
+
+      sgaMarketing, sgaMarketingPct: (sgaMarketing / grossRevenue * 100) || 0,
+      ytdSgaMarketing, ytdSgaMarketingPct: (ytdSgaMarketing / ytdGrossRevenue * 100) || 0,
+
+      totalSGA, totalSGAPct: (totalSGA / grossRevenue * 100) || 0,
+      ytdTotalSGA, ytdTotalSGAPct: (ytdTotalSGA / ytdGrossRevenue * 100) || 0,
+
+      ebitda, ebitdaPct: (ebitda / grossRevenue * 100) || 0,
+      ytdEbitda, ytdEbitdaPct: (ytdEbitda / ytdGrossRevenue * 100) || 0,
+
+      fixedInsurance, fixedInsurancePct: (fixedInsurance / grossRevenue * 100) || 0,
+      ytdFixedInsurance, ytdFixedInsurancePct: (ytdFixedInsurance / ytdGrossRevenue * 100) || 0,
+
+      fixedFees, fixedFeesPct: (fixedFees / grossRevenue * 100) || 0,
+      ytdFixedFees, ytdFixedFeesPct: (ytdFixedFees / ytdGrossRevenue * 100) || 0,
+
+      totalFixed, totalFixedPct: (totalFixed / grossRevenue * 100) || 0,
+      ytdTotalFixed, ytdTotalFixedPct: (ytdTotalFixed / ytdGrossRevenue * 100) || 0,
+
+      noi, noiPct: (noi / grossRevenue * 100) || 0,
+      ytdNoi, ytdNoiPct: (ytdNoi / ytdGrossRevenue * 100) || 0,
+
+      nonOpMortgage, nonOpMortgagePct: (nonOpMortgage / grossRevenue * 100) || 0,
+      ytdNonOpMortgage, ytdNonOpMortgagePct: (ytdNonOpMortgage / ytdGrossRevenue * 100) || 0,
+
+      nonOpDepr, nonOpDeprPct: (nonOpDepr / grossRevenue * 100) || 0,
+      ytdNonOpDepr, ytdNonOpDeprPct: (ytdNonOpDepr / ytdGrossRevenue * 100) || 0,
+
+      nonOpTaxes, nonOpTaxesPct: (nonOpTaxes / grossRevenue * 100) || 0,
+      ytdNonOpTaxes, ytdNonOpTaxesPct: (ytdNonOpTaxes / ytdGrossRevenue * 100) || 0,
+
+      totalNonOp, totalNonOpPct: (totalNonOp / grossRevenue * 100) || 0,
+      ytdTotalNonOp, ytdTotalNonOpPct: (ytdTotalNonOp / ytdGrossRevenue * 100) || 0,
+
+      netIncome, netIncomePct: (netIncome / grossRevenue * 100) || 0,
+      ytdNetIncome, ytdNetIncomePct: (ytdNetIncome / ytdGrossRevenue * 100) || 0
+    };
+  };
+
+  window.updatePLStatement = function() {
+    const tbody = document.getElementById('pl-statement-tbody');
+    if (!tbody) return;
+
+    const val = getPLValues();
+
+    tbody.innerHTML = `
+      <!-- OPERATING REVENUES -->
+      <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+        <td class="py-3 pr-4" colspan="5">Operating Revenues</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Rooms Base Rates</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.roomsBase.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.roomsBasePct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdRooms.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdRoomsPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Food &amp; Beverage Operations</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.fbRevenues.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.fbRevenuesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdFB.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdFBPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Experiences &amp; Services Amenities</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.yachtRevenues.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.yachtRevenuesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdYacht.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdYachtPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Spa &amp; Wellness Program</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.spaRevenues.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.spaRevenuesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSpa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSpaPct.toFixed(1)}%</td>
+      </tr>
+      ${val.otherRevenues > 0 ? `
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Boutique &amp; Retail POS Sales</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.otherRevenues.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.otherRevenuesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdOther.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdOtherPct.toFixed(1)}%</td>
+      </tr>` : ''}
+      <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+        <td class="py-2.5 pr-4 text-xs uppercase">Gross Operating Revenue</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-mint-active">â‚±${val.grossRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-mint-active">100.0%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-mint-active">â‚±${val.ytdGrossRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data text-mint-active">100.0%</td>
+      </tr>
+      
+      <!-- COST OF GOODS SOLD -->
+      <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+        <td class="py-3 pr-4 mt-2" colspan="5">Cost of Goods Sold (COGS)</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">F&B Inventory Restocking Costs</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.cogsWine.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.cogsWinePct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdCogsWine.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdCogsWinePct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Facility Utilities &amp; Power Fuel</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.cogsFuel.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.cogsFuelPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdCogsFuel.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdCogsFuelPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Spa &amp; Wellness Materials</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.cogsSpa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.cogsSpaPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdCogsSpa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdCogsSpaPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+        <td class="py-2.5 pr-4 text-xs uppercase">Total Cost of Goods Sold</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">â‚±${val.totalCOGS.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">${val.totalCOGSPct.toFixed(1)}%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">â‚±${val.ytdTotalCOGS.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data text-alert-orange">${val.ytdTotalCOGSPct.toFixed(1)}%</td>
+      </tr>
+ 
+      <!-- GROSS PROFIT -->
+      <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20 text-on-surface">
+        <td class="py-2.5 pr-4 text-xs uppercase">Gross profit</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">â‚±${val.grossProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">${val.grossProfitPct.toFixed(1)}%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">â‚±${val.ytdGrossProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data">${val.ytdGrossProfitPct.toFixed(1)}%</td>
+      </tr>
+      
+      <!-- UNDISTRIBUTED OPERATING EXPENSES -->
+      <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+        <td class="py-3 pr-4 mt-2" colspan="5">Undistributed Operating Expenses (SGA)</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Staff Salaries &amp; Benefits</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.sgaSalaries.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.sgaSalariesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSgaSalaries.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSgaSalariesPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Utilities, Infrastructure &amp; IT</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.sgaUtilities.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.sgaUtilitiesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSgaUtilities.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSgaUtilitiesPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Operations &amp; Security Payroll</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.sgaYachtCrew.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.sgaYachtCrewPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSgaYachtCrew.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSgaYachtCrewPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Spa &amp; Wellness Operations Staffing</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.sgaSpaStaff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.sgaSpaStaffPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSgaSpaStaff.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSgaSpaStaffPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Maintenance &amp; Facility Upkeep</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.sgaMaintenance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.sgaMaintenancePct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSgaMaintenance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSgaMaintenancePct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Administration, Guest Acquisition &amp; Marketing</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.sgaMarketing.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.sgaMarketingPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdSgaMarketing.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdSgaMarketingPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+        <td class="py-2.5 pr-4 text-xs uppercase">Total SGA Expenses</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">â‚±${val.totalSGA.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">${val.totalSGAPct.toFixed(1)}%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-alert-orange">â‚±${val.ytdTotalSGA.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data text-alert-orange">${val.ytdTotalSGAPct.toFixed(1)}%</td>
+      </tr>
+      
+      <!-- EBITDA -->
+      <tr class="border-b border-secondary/15 font-bold bg-tertiary/5 text-tertiary">
+        <td class="py-2.5 pr-4 text-xs uppercase">Gross Operating Profit (EBITDA)</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">â‚±${val.ebitda.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">${val.ebitdaPct.toFixed(1)}%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data text-tertiary">â‚±${val.ytdEbitda.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data text-tertiary">${val.ytdEbitdaPct.toFixed(1)}%</td>
+      </tr>
+
+      <!-- FIXED CHARGES -->
+      <tr class="border-b border-secondary/5 font-semibold bg-surface-variant/10 text-tertiary">
+        <td class="py-3 pr-4 mt-2" colspan="5">Fixed Charges</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Property Insurance &amp; Taxes</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.fixedInsurance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.fixedInsurancePct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdFixedInsurance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdFixedInsurancePct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/5">
+        <td class="py-2 pr-4 pl-4 text-xs text-on-surface-variant">Management &amp; Brand Franchise Fees</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.fixedFees.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 px-4 text-right font-mono-data text-xs text-on-surface-variant">${val.fixedFeesPct.toFixed(1)}%</td>
+        <td class="py-2 px-4 text-right font-mono-data">â‚±${val.ytdFixedFees.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2 pl-4 text-right font-mono-data text-xs text-on-surface-variant">${val.ytdFixedFeesPct.toFixed(1)}%</td>
+      </tr>
+      <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20">
+        <td class="py-2.5 pr-4 text-xs uppercase">Total Fixed Charges</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">â‚±${val.totalFixed.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">${val.totalFixedPct.toFixed(1)}%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">â‚±${val.ytdTotalFixed.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data">${val.ytdTotalFixedPct.toFixed(1)}%</td>
+      </tr>
+
+      <!-- NET OPERATING INCOME -->
+      <tr class="border-b border-secondary/15 font-bold bg-surface-variant/20 text-on-surface">
+        <td class="py-2.5 pr-4 text-xs uppercase">Net Operating Income (NOI)</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">â‚±${val.noi.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">${val.noiPct.toFixed(1)}%</td>
+        <td class="py-2.5 px-4 text-right font-mono-data">â‚±${val.ytdNoi.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="py-2.5 pl-4 text-right font-mono-data">${val.ytdNoiPct.toFixed(1)}%</td>
+      </tr>
+    `;
+  };
+
+  // ==========================================
+  // Expense Tracker Implementation (v3)
+  // ==========================================
+
+  // Set default expense date
+  const expDateInput = document.getElementById('exp-input-date');
+  if (expDateInput) expDateInput.value = '2026-06-20';
+
+  // Populate department dropdown & wire cascade
+  function populateExpenseDeptDropdown() {
+    const deptSel = document.getElementById('exp-input-dept');
+    const subcatSel = document.getElementById('exp-input-subcat');
+    const catDisplay = document.getElementById('exp-input-category-display');
+    if (!deptSel || !subcatSel) return;
+
+    deptSel.innerHTML = Object.keys(DEPT_MAP).filter(d => d !== 'Staffing & Payroll').map(d => `<option value="${d}">${d}</option>`).join('');
+
+    function updateSubcats() {
+      const dept = deptSel.value;
+      const subs = DEPT_MAP[dept]?.subcategories || [];
+      subcatSel.innerHTML = subs.map(s => `<option value="${s.name}" data-class="${s.category}">${s.name}</option>`).join('');
+      updateCatDisplay();
+    }
+
+    function updateCatDisplay() {
+      const selected = subcatSel.options[subcatSel.selectedIndex];
+      if (catDisplay && selected) {
+        const cls = selected.getAttribute('data-class') || 'variable';
+        catDisplay.textContent = cls.charAt(0).toUpperCase() + cls.slice(1);
+        catDisplay.className = `font-label-caps text-[8px] font-bold px-1.5 py-0.5 uppercase tracking-wider select-none pointer-events-none ${cls === 'fixed' ? 'bg-tertiary/10 text-tertiary' : 'bg-secondary/10 text-secondary'}`;
+      }
+    }
+
+    deptSel.addEventListener('change', updateSubcats);
+    subcatSel.addEventListener('change', updateCatDisplay);
+    updateSubcats();
+  }
+  populateExpenseDeptDropdown();
+
+  // Render expenses history table and department KPIs
+  window.renderExpensesTable = function() {
+    const tbody = document.querySelector('#expenses-ledger-table tbody');
+    const metricFixed    = document.getElementById('exp-metric-fixed');
+    const metricVariable = document.getElementById('exp-metric-variable');
+    const metricCombined = document.getElementById('exp-metric-combined');
+    const metricCount    = document.getElementById('exp-metric-combined-count');
+    const deptBars       = document.getElementById('exp-dept-bars');
+
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const query      = (document.getElementById('exp-search-query')?.value || '').toLowerCase();
+    const deptFilter = document.getElementById('exp-filter-dept')?.value || 'All';
+
+    // Totals
+    let totalFixed = 0, totalVariable = 0;
+    const deptTotals = {};
+    expenses.forEach(exp => {
+      const amount = parseFloat(exp.amount) || 0;
+      if (exp.category === 'fixed') totalFixed += amount; else totalVariable += amount;
+      const dept = exp.department || 'Other';
+      deptTotals[dept] = (deptTotals[dept] || 0) + amount;
+    });
+
+    if (metricFixed)    metricFixed.textContent    = totalFixed.toLocaleString('en-US', { minimumFractionDigits: 2 });
+    if (metricVariable) metricVariable.textContent = totalVariable.toLocaleString('en-US', { minimumFractionDigits: 2 });
+    if (metricCombined) metricCombined.textContent = (totalFixed + totalVariable).toLocaleString('en-US', { minimumFractionDigits: 2 });
+    if (metricCount)    metricCount.textContent    = `${expenses.length} expense entries`;
+
+    // Update cost classification badges
+    const badgeAll = document.getElementById('badge-expense-all');
+    const badgeVariable = document.getElementById('badge-expense-variable');
+    const badgeFixed = document.getElementById('badge-expense-fixed');
+    if (badgeAll) badgeAll.textContent = expenses.length;
+    if (badgeVariable) badgeVariable.textContent = expenses.filter(e => e.category === 'variable').length;
+    if (badgeFixed) badgeFixed.textContent = expenses.filter(e => e.category === 'fixed').length;
+
+    // Department breakdown bars
+    if (deptBars) {
+      const grandTotal = totalFixed + totalVariable || 1;
+      const deptColors = {
+        'Rooms & Housekeeping': '#4A90D9', 'Food & Beverage': '#E2A840',
+        'Staffing & Payroll': '#5BAD8F', 'Utilities': '#9B59B6',
+        'Maintenance & Facilities': '#E67E22', 'Marketing & Admin': '#E74C3C',
+        'Fixed Overheads': '#95A5A6'
+      };
+      deptBars.innerHTML = Object.entries(deptTotals).sort((a,b) => b[1]-a[1]).map(([dept, amt]) => {
+        const pct = ((amt / grandTotal) * 100).toFixed(1);
+        const color = deptColors[dept] || '#888';
+        return `<div class="flex items-center gap-2 text-xs">
+          <div class="w-28 shrink-0 font-label-caps text-[9px] uppercase tracking-wider text-on-surface-variant truncate">${dept.split(' ')[0]}</div>
+          <div class="flex-1 h-2 bg-surface-variant rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style="width:${pct}%;background:${color}"></div>
+          </div>
+          <div class="w-20 text-right font-mono-data text-[10px] text-alert-red shrink-0">₱${amt.toLocaleString()}</div>
+          <div class="w-10 text-right font-mono-data text-[9px] text-on-surface-variant shrink-0">${pct}%</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Filter & sort for table
+    const filtered = expenses.filter(exp => {
+      const matchesSearch = (exp.description || '').toLowerCase().includes(query) ||
+                            (exp.vendor || '').toLowerCase().includes(query) ||
+                            (exp.subcategory || '').toLowerCase().includes(query);
+      const matchesDept = deptFilter === 'All' || exp.department === deptFilter;
+      
+      let matchesTab = true;
+      if (activeExpenseTab === 'variable') {
+        matchesTab = (exp.category === 'variable');
+      } else if (activeExpenseTab === 'fixed') {
+        matchesTab = (exp.category === 'fixed');
+      }
+      
+      return matchesSearch && matchesDept && matchesTab;
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Update record count text
+    const recordText = document.getElementById('expense-showing-records-text');
+    if (recordText) {
+      recordText.textContent = `Showing ${filtered.length} of ${expenses.length} records`;
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-xs text-on-surface-variant italic">No matching expenses found.</td></tr>';
+      return;
+    }
+
+    filtered.forEach(exp => {
+      const row = document.createElement('tr');
+      row.className = 'border-b border-secondary/10 hover:bg-surface-variant/30 transition-all';
+      const dateFormatted = new Date(exp.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const catColor = exp.category === 'fixed' ? 'text-tertiary border-tertiary/20' : 'text-secondary border-secondary/20';
+      const recTag = exp.recurrence && exp.recurrence !== 'One-Time'
+        ? `<span class="ml-1 border border-secondary/20 font-label-caps text-[8px] uppercase tracking-wider px-1 text-on-surface-variant">${exp.recurrence}</span>` : '';
+      row.innerHTML = `
+        <td class="py-3 pr-4 font-mono-data text-xs text-on-surface-variant">${dateFormatted}</td>
+        <td class="py-3 px-2 text-xs text-on-surface-variant">${exp.department || 'â€”'}</td>
+        <td class="py-3 px-2 text-xs text-on-surface-variant">${exp.subcategory || exp.type || 'â€”'}</td>
+        <td class="py-3 px-2 font-semibold text-on-surface text-xs">${exp.description}${recTag}<br><span class="text-[9px] text-on-surface-variant font-normal">${exp.vendor || ''}</span></td>
+        <td class="py-3 px-2"><span class="border ${catColor} px-1.5 py-0.5 font-label-caps text-[9px] uppercase tracking-wider font-bold">${exp.category || 'variable'}</span></td>
+        <td class="py-3 px-2 text-right font-mono-data text-alert-red font-bold text-xs">â‚±${parseFloat(exp.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+        <td class="py-3 px-2 text-xs text-on-surface-variant">${exp.paymentMethod || 'â€”'}</td>
+        <td class="py-3 pl-2 text-right text-xs">
+          <button type="button" class="text-alert-red hover:text-white transition-colors" onclick="deleteExpense('${exp.id}')">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  };
+
+  // Expense form submit
+  const expenseForm = document.getElementById('expense-log-form');
+  if (expenseForm) {
+    expenseForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const date   = document.getElementById('exp-input-date').value;
+      const vendor = document.getElementById('exp-input-vendor')?.value || '';
+      const desc   = document.getElementById('exp-input-desc').value;
+      const dept   = document.getElementById('exp-input-dept')?.value || '';
+      const subcatSel = document.getElementById('exp-input-subcat');
+      const subcat = subcatSel ? subcatSel.value : '';
+      const catClass = subcatSel?.options[subcatSel.selectedIndex]?.getAttribute('data-class') || 'variable';
+      const amount = parseFloat(document.getElementById('exp-input-amount').value);
+      const method = document.getElementById('exp-input-method').value;
+      const recurrence = document.getElementById('exp-input-recurrence')?.value || 'One-Time';
+
+      if (!date || !desc || isNaN(amount)) return;
+
+      const newExpense = {
+        id: 'exp-' + Date.now(),
+        date, vendor, description: desc,
+        department: dept, subcategory: subcat,
+        category: catClass, amount, paymentMethod: method, recurrence
+      };
+
+      expenses.push(newExpense);
+      saveExpenses();
+
+      document.getElementById('exp-input-vendor').value = '';
+      document.getElementById('exp-input-desc').value   = '';
+      document.getElementById('exp-input-amount').value = '';
+
+      renderExpensesTable();
+      if (typeof updatePLStatement === 'function') updatePLStatement();
+      const banner = document.createElement('div');
+      banner.className = 'fixed top-4 right-4 z-[999] bg-tertiary text-dark-obsidian text-xs font-bold px-5 py-3 shadow-xl';
+      banner.textContent = 'âœ“ Expense Recorded';
+      document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 2000);
+    });
+  }
+
+  window.deleteExpense = function(expenseId) {
+    if (confirm('Delete this expense record?')) {
+      expenses = expenses.filter(exp => exp.id !== expenseId);
+      saveExpenses();
+      renderExpensesTable();
+      if (typeof updatePLStatement === 'function') updatePLStatement();
+    }
+  };
+
+  const expSearchInput = document.getElementById('exp-search-query');
+  if (expSearchInput) expSearchInput.addEventListener('input', () => renderExpensesTable());
+
+  window.filterExpensesList = function() { renderExpensesTable(); };
+
+  // ==========================================
+  // Payroll Engine
+  // ==========================================
+
+  function computeDeductions(basicSalary) {
+    // SSS 2024: 4.5% employee share (capped at MSC of â‚±35,000 â†’ max â‚±1,575)
+    const sssMSC = Math.min(basicSalary, 35000);
+    const sss = Math.round(sssMSC * 0.045);
+
+    // PhilHealth 2024: 5% total premium; employee pays 2.5% (capped monthly at â‚±2,125)
+    const philhealthBase = Math.min(basicSalary, 85000);
+    const philhealth = Math.round(philhealthBase * 0.025);
+
+    // HDMF 2024: 2% of basic, max â‚±200 employee share
+    const hdmf = Math.min(Math.round(basicSalary * 0.02), 200);
+
+    // BIR 2024 graduated monthly withholding tax (simplified)
+    const taxableMonthly = basicSalary - sss - philhealth - hdmf;
+    let withholding = 0;
+    if (taxableMonthly > 83333) {
+      withholding = 25000 + (taxableMonthly - 83333) * 0.32;
+    } else if (taxableMonthly > 33333) {
+      withholding = 10000 + (taxableMonthly - 33333) * 0.30;
+    } else if (taxableMonthly > 20833) {
+      withholding = 2500 + (taxableMonthly - 20833) * 0.25;
+    } else if (taxableMonthly > 20833 * 0.5) {
+      withholding = (taxableMonthly - 10417) * 0.20;
+    } else {
+      withholding = 0; // exempt â‰¤ â‚±250,000 annual
+    }
+    withholding = Math.max(0, Math.round(withholding));
+
+    return { sss, philhealth, hdmf, withholding };
+  }
+
+  function renderStaffRoster() {
+    const tbody = document.querySelector('#staff-roster-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    staff.forEach(s => {
+      if (!s.isActive) return;
+      const ded = computeDeductions(s.basicSalary);
+      const netPay = s.basicSalary - ded.sss - ded.philhealth - ded.hdmf - ded.withholding;
+      const row = document.createElement('tr');
+      row.className = 'border-b border-secondary/10 hover:bg-surface-variant/20 transition-all';
+      row.innerHTML = `
+        <td class="py-3 px-3 font-semibold text-on-surface text-xs">${s.name}</td>
+        <td class="py-3 px-3 text-xs text-on-surface-variant">${s.position}</td>
+        <td class="py-3 px-3 text-xs text-on-surface-variant">${s.department}</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs">â‚±${s.basicSalary.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs text-on-surface-variant">(â‚±${ded.sss.toLocaleString()})</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs text-on-surface-variant">(â‚±${ded.philhealth.toLocaleString()})</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs text-on-surface-variant">(â‚±${ded.hdmf.toLocaleString()})</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs text-on-surface-variant">(â‚±${ded.withholding.toLocaleString()})</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs font-bold text-mint-active">â‚±${netPay.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right">
+          <button onclick="deleteStaff('${s.id}')" class="text-alert-red text-xs hover:underline">Remove</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    // Summary row
+    const totals = staff.filter(s => s.isActive).reduce((acc, s) => {
+      const d = computeDeductions(s.basicSalary);
+      acc.gross += s.basicSalary;
+      acc.sss += d.sss; acc.ph += d.philhealth; acc.hdmf += d.hdmf; acc.tax += d.withholding;
+      acc.net += s.basicSalary - d.sss - d.philhealth - d.hdmf - d.withholding;
+      return acc;
+    }, { gross: 0, sss: 0, ph: 0, hdmf: 0, tax: 0, net: 0 });
+
+    const summaryRow = document.createElement('tr');
+    summaryRow.className = 'bg-surface-variant/20 font-bold border-t border-secondary/20';
+    summaryRow.innerHTML = `
+      <td colspan="3" class="py-3 px-3 text-xs font-label-caps tracking-wider text-on-surface-variant uppercase">TOTALS</td>
+      <td class="py-3 px-3 text-right font-mono-data text-xs text-on-surface">â‚±${totals.gross.toLocaleString()}</td>
+      <td class="py-3 px-3 text-right font-mono-data text-xs text-alert-red">(â‚±${totals.sss.toLocaleString()})</td>
+      <td class="py-3 px-3 text-right font-mono-data text-xs text-alert-red">(â‚±${totals.ph.toLocaleString()})</td>
+      <td class="py-3 px-3 text-right font-mono-data text-xs text-alert-red">(â‚±${totals.hdmf.toLocaleString()})</td>
+      <td class="py-3 px-3 text-right font-mono-data text-xs text-alert-red">(â‚±${totals.tax.toLocaleString()})</td>
+      <td class="py-3 px-3 text-right font-mono-data text-xs font-bold text-mint-active">â‚±${totals.net.toLocaleString()}</td>
+      <td></td>
+    `;
+    tbody.appendChild(summaryRow);
+
+    // Update summary KPIs
+    const el = id => document.getElementById(id);
+    if (el('payroll-gross')) el('payroll-gross').textContent = totals.gross.toLocaleString('en-US', { minimumFractionDigits: 2 });
+    if (el('payroll-deductions')) el('payroll-deductions').textContent = (totals.sss + totals.ph + totals.hdmf + totals.tax).toLocaleString('en-US', { minimumFractionDigits: 2 });
+    if (el('payroll-net')) el('payroll-net').textContent = totals.net.toLocaleString('en-US', { minimumFractionDigits: 2 });
+    if (el('payroll-headcount')) el('payroll-headcount').textContent = staff.filter(s => s.isActive).length + ' staff';
+  }
+
+  function renderPayrollHistory() {
+    const tbody = document.querySelector('#payroll-history-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (payrollRuns.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-xs text-on-surface-variant italic">No payroll runs yet. Use "Run Payroll" to generate the first run.</td></tr>';
+      return;
+    }
+    const grouped = {};
+    payrollRuns.forEach(r => {
+      if (!grouped[r.month]) grouped[r.month] = { runs: [], total: 0 };
+      grouped[r.month].runs.push(r);
+      grouped[r.month].total += r.netPay;
+    });
+    Object.entries(grouped).sort((a,b) => b[0].localeCompare(a[0])).forEach(([month, data]) => {
+      const grossTotal = data.runs.reduce((s,r) => s + r.grossPay, 0);
+      const dedTotal   = data.runs.reduce((s,r) => s + r.sssDeduction + r.philhealthDeduction + r.hdmfDeduction + r.withholdingTax, 0);
+      const row = document.createElement('tr');
+      row.className = 'border-b border-secondary/10 hover:bg-surface-variant/20 transition-all';
+      row.innerHTML = `
+        <td class="py-3 px-3 font-semibold text-on-surface text-xs">${new Date(month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</td>
+        <td class="py-3 px-3 text-xs text-on-surface-variant">${data.runs.length} employees</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs">â‚±${grossTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs text-alert-red">(â‚±${dedTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })})</td>
+        <td class="py-3 px-3 text-right font-mono-data text-xs font-bold text-mint-active">â‚±${data.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Add staff form
+  const addStaffForm = document.getElementById('add-staff-form');
+  if (addStaffForm) {
+    addStaffForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name     = document.getElementById('staff-input-name').value.trim();
+      const position = document.getElementById('staff-input-position').value.trim();
+      const dept     = document.getElementById('staff-input-dept').value;
+      const salary   = parseFloat(document.getElementById('staff-input-salary').value);
+      if (!name || !position || isNaN(salary)) return;
+      const newStaff = { id: 'staff-' + Date.now(), name, position, department: dept, basicSalary: salary, isActive: true };
+      staff.push(newStaff);
+      saveStaff();
+      addStaffForm.reset();
+      renderStaffRoster();
+    });
+  }
+
+  window.deleteStaff = function(staffId) {
+    if (confirm('Remove this staff member from the roster?')) {
+      staff = staff.map(s => s.id === staffId ? { ...s, isActive: false } : s);
+      saveStaff();
+      renderStaffRoster();
+    }
+  };
+
+  // Run Payroll button
+  const runPayrollBtn = document.getElementById('run-payroll-btn');
+  if (runPayrollBtn) {
+    runPayrollBtn.addEventListener('click', () => {
+      const monthInput = document.getElementById('payroll-month-input')?.value;
+      if (!monthInput) { alert('Please select a payroll month.'); return; }
+
+      const alreadyRan = payrollRuns.some(r => r.month === monthInput);
+      if (alreadyRan) {
+        if (!confirm(`Payroll for ${monthInput} has already been run. Run again and post duplicate entries?`)) return;
+      }
+
+      const activeStaff = staff.filter(s => s.isActive);
+      if (activeStaff.length === 0) { alert('No active staff in the roster.'); return; }
+
+      let grossTotal = 0, netTotal = 0, deductionTotal = 0;
+
+      activeStaff.forEach(s => {
+        const d = computeDeductions(s.basicSalary);
+        const netPay = s.basicSalary - d.sss - d.philhealth - d.hdmf - d.withholding;
+        grossTotal += s.basicSalary;
+        netTotal += netPay;
+        deductionTotal += d.sss + d.philhealth + d.hdmf + d.withholding;
+
+        payrollRuns.push({
+          id: 'pr-' + Date.now() + '-' + s.id,
+          month: monthInput, employeeId: s.id, employeeName: s.name, position: s.position,
+          grossPay: s.basicSalary, sssDeduction: d.sss, philhealthDeduction: d.philhealth,
+          hdmfDeduction: d.hdmf, withholdingTax: d.withholding, netPay,
+          dateProcessed: new Date().toISOString().split('T')[0]
+        });
+      });
+      savePayrollRuns();
+
+      // Auto-post to expenses
+      const payDate = monthInput + '-01';
+      expenses.push({
+        id: 'exp-pr-sal-' + Date.now(),
+        date: payDate, vendor: `Payroll Run â€” ${monthInput}`,
+        description: `Regular Salaries â€” ${new Date(payDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`,
+        department: 'Staffing & Payroll', subcategory: 'Regular Salaries',
+        category: 'fixed', amount: netTotal, paymentMethod: 'Bank Transfer', recurrence: 'Monthly'
+      });
+      expenses.push({
+        id: 'exp-pr-ded-' + Date.now(),
+        date: payDate, vendor: `Payroll Run â€” ${monthInput}`,
+        description: `SSS / PhilHealth / HDMF â€” ${new Date(payDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`,
+        department: 'Staffing & Payroll', subcategory: 'SSS / PhilHealth / HDMF',
+        category: 'fixed', amount: deductionTotal, paymentMethod: 'Bank Transfer', recurrence: 'Monthly'
+      });
+      saveExpenses();
+
+      renderPayrollHistory();
+      renderStaffRoster();
+      renderExpensesTable();
+      if (typeof updatePLStatement === 'function') updatePLStatement();
+
+      alert(`âœ“ Payroll for ${monthInput} processed.\n\nGross: â‚±${grossTotal.toLocaleString()}\nDeductions: â‚±${deductionTotal.toLocaleString()}\nNet Pay: â‚±${netTotal.toLocaleString()}\n\nEntries posted to Expense Tracker.`);
+    });
+  }
+
+  // Wire up view entry
+  const origNavLinks = document.querySelectorAll('.nav-link');
+  origNavLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const view = link.getAttribute('data-view');
+      if (view === 'payroll') {
+        renderStaffRoster();
+        renderPayrollHistory();
+        // Default payroll month to current
+        const pm = document.getElementById('payroll-month-input');
+        if (pm && !pm.value) pm.value = new Date().toISOString().slice(0, 7);
+      }
+    });
+  });
+
+  // Expense Tab Switcher Click Listeners
+  document.querySelectorAll('.expense-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.getAttribute('data-expense-tab');
+      activeExpenseTab = tabName;
+      
+      // Update active tab styling
+      document.querySelectorAll('.expense-tab-btn').forEach(b => {
+        if (b === btn) {
+          b.className = "expense-tab-btn px-2 py-1 bg-tertiary text-dark-obsidian text-[10px] font-semibold transition-all hover:brightness-110 flex items-center gap-1 shrink-0";
+          const badge = b.querySelector('span');
+          if (badge) {
+            badge.className = "bg-dark-obsidian/15 text-dark-obsidian text-[9px] px-1 py-px font-bold";
+          }
+        } else {
+          b.className = "expense-tab-btn px-2 py-1 border border-secondary/35 text-secondary hover:text-on-surface text-[10px] transition-all flex items-center gap-1 shrink-0";
+          const badge = b.querySelector('span');
+          if (badge) {
+            badge.className = "bg-secondary/15 text-secondary text-[9px] px-1 py-px font-bold";
+          }
+        }
+      });
+      
+      // Re-render table
+      renderExpensesTable();
+    });
+  });
+
+  // Initial render
+  renderStaffRoster();
+  renderPayrollHistory();
   renderGlobalFilters('overview');
 
 });
