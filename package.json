@@ -1,0 +1,18 @@
+{
+  "name": "amalfi-resort-system",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "install:all": "npm --prefix amalfi-hub install && npm --prefix amalfi-web install && npm --prefix amalfi-admin install && npm --prefix amalfi-mobile-admin install",
+    "check:static": "node --check app.js && node --check dev-server.mjs && node --check guest-web/app.js && node --check guest-web/dev-server.mjs && node --check mobile-admin/app.js && node --check mobile-admin/dev-server.mjs",
+    "build": "npm run check:static && npm --prefix amalfi-hub run build && npm --prefix amalfi-web run build && npm --prefix amalfi-admin run build && npm --prefix amalfi-mobile-admin run build",
+    "dev:hub": "npm --prefix amalfi-hub run dev",
+    "dev:guest": "npm --prefix guest-web run dev",
+    "dev:web": "npm --prefix guest-web run dev",
+    "dev:web-react-reference": "npm --prefix amalfi-web run dev",
+    "dev:admin": "node dev-server.mjs",
+    "dev:admin-react-reference": "npm --prefix amalfi-admin run dev",
+    "dev:mobile": "npm --prefix mobile-admin run dev",
+    "dev:mobile-react-reference": "npm --prefix amalfi-mobile-admin run dev"
+  }
+}

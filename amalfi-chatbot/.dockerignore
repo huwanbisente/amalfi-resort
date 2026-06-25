@@ -1,0 +1,23 @@
+.venv
+.env
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Test and tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage/
+tests/coverage/
+pytest-cache-files-*/
+
+# Local runtime artifacts
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+data/logs/

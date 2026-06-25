@@ -1,0 +1,20 @@
+# Production Hub API
+FROM node:24-alpine
+RUN apk add --no-cache sqlite
+
+WORKDIR /app
+
+# Copy package files separately for better caching
+COPY package.json package-lock.json* ./
+
+# Install only production dependencies from the lockfile
+RUN npm ci --omit=dev --silent
+
+# Copy all files from the project folder
+COPY . .
+
+# Expose the API port
+EXPOSE 3001
+
+# Start command for the API
+CMD ["node", "server.js"]

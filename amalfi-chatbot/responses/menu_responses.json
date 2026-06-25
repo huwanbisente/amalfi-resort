@@ -1,0 +1,103 @@
+{
+  "_meta": {
+    "description": "Amalfi Resort Chatbot - Menu Response Templates",
+    "instructions": "Edit wording here freely. Placeholders pull live data from the Hub knowledge API at runtime. Quick reply labels should match handler keywords in webhooks.py.",
+    "last_updated": "2026-05-01"
+  },
+  "main_menu": {
+    "greeting_template": "Mabuhay! Welcome to *Amalfi Resort*.\n\nHi {first_name}! How can we help you today?\n\nTap a menu option below or type MENU anytime.",
+    "greeting_no_name": "Mabuhay! Welcome to *Amalfi Resort*.\n\nHow can we help you today?\n\nTap a menu option below or type MENU anytime.",
+    "quick_replies": [
+      "Resort Info",
+      "Stay Options",
+      "Day Tour & Camping",
+      "Rentals & Add-ons",
+      "Rules & Policies",
+      "Payment Inquiry",
+      "How to Get Here",
+      "Contact & Socials",
+      "Talk to Guest Services",
+      "Book Now"
+    ]
+  },
+  "stay_options": {
+    "template": "*Stay Options*\n\nBrowse our overnight accommodations, room rates, and booking options.\n\nIf you already know your dates, the fastest path is Book Now. If you want help choosing a setup, guest services can assist.",
+    "quick_replies": ["Rooms & Rates", "Book Now", "Talk to Guest Services", "BACK"]
+  },
+  "day_tour_and_camping": {
+    "template": "*Day Tour & Camping*\n\nThis section covers day tour details and tent pitching options.\n\nChoose a submenu below to view rates, schedules, and camping details.",
+    "quick_replies": ["Day Tours", "Tent Pitching", "Book Now", "BACK"]
+  },
+  "rentals_and_add_ons": {
+    "template": "*Rentals & Add-ons*\n\nThis section covers kitchen rental, resort amenities, and add-on services that can complete your stay.",
+    "quick_replies": ["Kitchen Rental", "Amenities", "Payment Inquiry", "BACK"]
+  },
+  "resort_info": {
+    "template": "*Amalfi Resort*\n\n{about_description}\n\nLocation: {location}\n\nCheck-in: 1PM | Check-out: 11AM\nNo corkage fee on food and drinks.\n\nHighlights:\n- Beachfront stay in Zambales\n- Family-friendly accommodations\n- 24/7 CCTV\n- WiFi available",
+    "quick_replies": ["Rooms & Rates", "How to Get Here", "BACK"]
+  },
+  "rooms_and_rates": {
+    "intro_message": "*Our Accommodations*\nHere are our available sanctuary spaces:",
+    "outro_message": "Which unit catches your eye?",
+    "quick_replies": ["Book Now", "Rules & Policies", "BACK"]
+  },
+  "day_tours": {
+    "template": "*Day Tours*\n\nHours: {day_tour_schedule}\nEntrance Fee: PHP {day_tour_entrance_fee}/head\n\nCottage Rates:\n{day_tour_cottages}\n\n{day_tour_notes}\n\nLarge Groups:\n- Events/50+ pax allowed\n- Free karaoke for groups of 50+",
+    "quick_replies": ["Amenities", "Book Now", "BACK"]
+  },
+  "kitchen_rental": {
+    "template": "*Kitchen Equipment Rental*\n\n{kitchen_description}\n\nPackage Includes (PHP {kitchen_price}):\n{kitchen_items}\n\n{kitchen_policy}\n\nYou are welcome to bring your own cooking ware and utensils.",
+    "quick_replies": ["Amenities", "Book Now", "BACK"]
+  },
+  "tent_pitching": {
+    "template": "*Tent Pitching*\n\n{tent_description}\n\nRate: PHP {tent_price} {tent_unit}\nSlots: {tent_slots} available\n\n{tent_notes}",
+    "quick_replies": ["Day Tours", "Book Now", "BACK"]
+  },
+  "amenities": {
+    "template": "*Resort Amenities*\n\nFacilities:\n{facilities_list}\n\nAdd-ons:\n{addons_list}\n\nATV Adventure:\n- 30 minutes: PHP 800\n- 1 hour: PHP 1,500",
+    "quick_replies": ["Day Tours", "Book Now", "BACK"]
+  },
+  "rules_and_policies": {
+    "template": "*Rules & Policies*\n\nDownpayment: {downpayment_percent}% required to confirm booking\n\nCheck-in: 1PM | Check-out: 11AM\nRoom Extension: PHP 500/hr, subject to availability\n\nCancellation & Rebooking:\n{cancellation_policy}\n\nKids: {free_kids_per_villa} children aged 5 and below are free per Villa\nPets: 1 small dog allowed except Owner's Villa. Must be potty trained and wearing a diaper.\nQuiet hours after 11PM\nNo smoking indoors",
+    "quick_replies": ["Book Now", "BACK"]
+  },
+  "payment_inquiry": {
+    "template": "*Payment Inquiry*\n\nFor payment concerns, please send your booking reference, name, amount paid, payment date/time, and proof of payment screenshot if available.\n\nOur guest services team will review and follow up as soon as possible.",
+    "quick_replies": ["Talk to Guest Services", "Book Now", "BACK"]
+  },
+  "directions": {
+    "template": "*Amalfi Resort Location*\n\n{location}\n\nFrom Manila: around 3-4 hours via NLEX, SCTEX, Subic, then San Felipe.\nLandmark: Ask locals for Amalfi Resort, Liwliwa.",
+    "map_button_label": "Open in Google Maps",
+    "quick_replies": ["Contact & Socials", "BACK"]
+  },
+  "contact_and_socials": {
+    "template": "*Reach Us*\n\nGuest Services: 09205311462\nWebsite: {official_website}\nFacebook: {facebook}\nInstagram: {instagram}\nAirbnb Owner's Villa: {airbnb}\n\nYou can also message us directly on Facebook for personal inquiries.",
+    "quick_replies": ["Talk to Guest Services", "Book Now", "BACK"]
+  },
+  "human_handoff": {
+    "template": "Hang tight. We have notified our guest services team. A real human from Amalfi Resort will assist you as soon as possible.\n\nIn the meantime, type MENU to browse rooms, rates, amenities, and booking details.",
+    "quick_replies": ["MENU", "Book Now"]
+  },
+  "book_now": {
+    "message": "Ready to book your Amalfi Resort stay?\nChoose your unit, pick your dates, and secure your reservation on our booking site.",
+    "button_label": "Visit Booking Site"
+  },
+  "session_limit_reached": {
+    "message": "You can still explore everything using MENU.\n\nFor personal assistance, message us on Facebook or complete your booking directly on our website.\n{facebook}",
+    "button_label": "Book at Amalfi Resort",
+    "followup_message": "Tap MENU anytime to browse rooms, rates, amenities, and more.",
+    "followup_quick_replies": ["MENU"]
+  },
+  "ai_fallback": {
+    "quick_replies": ["MENU", "Book Now"]
+  },
+  "out_of_scope": {
+    "template": "I can help with Amalfi Resort rooms, rates, availability, day tours, amenities, policies, directions, payments, and booking questions. Please type MENU to browse our resort options.",
+    "quick_replies": ["MENU", "Book Now"]
+  },
+  "receipt_acknowledgement": {
+    "template": "Thanks for sending your receipt. Our team will verify your payment and update your booking status within 24 hours.",
+    "template_tagalog": "Salamat sa pag-send ng inyong receipt. I-ve-verify ng aming team ang payment at i-update ang booking status sa loob ng 24 oras.",
+    "template_taglish": "Salamat for sending your receipt. I-verify ng team namin ang payment and we will update your booking status within 24 hours."
+  }
+}

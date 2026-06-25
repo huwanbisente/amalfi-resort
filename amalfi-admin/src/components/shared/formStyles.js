@@ -1,0 +1,12 @@
+export const fieldLabelClass = 'mb-1 block text-[0.54rem] font-black uppercase tracking-[0.13em] text-muted-foreground';
+export const inputClass = 'h-9 rounded-lg border-[#d8c9b3]/80 bg-[#fffdf8]/82 text-[0.78rem] font-semibold text-foreground shadow-[0_6px_14px_rgba(19,33,31,0.03)]';
+export const moneyInputClass = 'h-9 rounded-lg border-[#d8c9b3]/80 bg-[#fffdf8]/82 pl-8 text-[0.78rem] font-black text-foreground shadow-[0_6px_14px_rgba(19,33,31,0.03)]';
+export const selectClass = 'h-9 w-full appearance-none rounded-lg border border-[#d8c9b3]/80 bg-[#fffdf8]/82 px-9 pr-8 text-[0.78rem] font-semibold text-foreground shadow-[0_6px_14px_rgba(19,33,31,0.03)] outline-none transition focus:border-primary focus:ring-1 focus:ring-primary';
+export const textareaClass = 'min-h-16 w-full rounded-lg border border-[#d8c9b3]/80 bg-[#fffdf8]/82 px-3 py-2 text-[0.78rem] font-semibold text-foreground shadow-[0_6px_14px_rgba(19,33,31,0.03)] outline-none transition focus:border-primary focus:ring-1 focus:ring-primary';
+export const tallTextareaClass = 'min-h-20 w-full rounded-lg border border-[#d8c9b3]/80 bg-[#fffdf8]/82 px-3 py-2 text-[0.78rem] font-semibold text-foreground shadow-[0_6px_14px_rgba(19,33,31,0.03)] outline-none transition focus:border-primary focus:ring-1 focus:ring-primary';
+export const helperTextClass = 'mt-1 text-[0.66rem] font-bold leading-snug text-muted-foreground';
+export const readOnlyFieldClass = 'flex h-9 items-center rounded-lg border border-[#d8c9b3]/70 bg-[#f7eedf]/52 px-3 text-[0.78rem] font-black text-foreground';
+export const editorGridClass = 'grid gap-3 xl:grid-cols-[minmax(0,1fr)_minmax(250px,280px)] xl:items-start';
+export const formGridClass = 'grid gap-2.5 md:grid-cols-2';
+export const twoColClass = formGridClass;
+export const alertDangerClass = 'rounded-xl border border-destructive/20 bg-destructive/5 px-3 py-2 text-xs font-black text-destructive';

@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css?v=1.0.2">
+  <link rel="stylesheet" href="style.css?v=1.0.3">
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -87,12 +87,12 @@
 <body class="bg-background text-on-surface antialiased font-body-md select-none">
 
   <!-- Header Nav -->
-  <header class="fixed top-0 left-0 right-0 z-50 transition duration-300 border-b border-outline backdrop-blur-md bg-background bg-opacity-40">
+  <header class="fixed top-0 left-0 right-0 z-50 transition duration-300 backdrop-blur-md bg-background bg-opacity-40">
     <div class="max-w-[1760px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 h-24 flex items-center justify-between">
       <!-- Brand Logo -->
       <a href="#" class="flex items-center gap-2 sm:gap-4 no-underline">
         <div class="w-10 h-10 sm:w-12 sm:h-12 select-none flex items-center justify-center shrink-0">
-          <img src="../amalfi_logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
+          <img src="/api/v1/assets/logo/resort-logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
         </div>
         <div class="flex flex-col">
           <h1 class="font-display-lg text-lg sm:text-xl md:text-2xl text-on-surface font-semibold tracking-wide leading-tight whitespace-nowrap">Amalfi Resort</h1>
@@ -138,7 +138,7 @@
     <!-- Sidebar Header / Brand -->
     <div class="flex items-center gap-3 mt-8 mb-12 pb-6 border-b border-outline">
       <div class="w-10 h-10 select-none flex items-center justify-center">
-        <img src="../amalfi_logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
+        <img src="/api/v1/assets/logo/resort-logo.png" alt="Amalfi Logo" class="w-full h-full object-contain dark:brightness-110 dark:contrast-110" style="mix-blend-mode: screen;">
       </div>
       <div class="flex flex-col text-left">
         <span class="font-display-lg text-base text-on-surface font-semibold tracking-wide leading-none">Amalfi Resort</span>
@@ -173,7 +173,7 @@
   </div>
 
   <!-- Hero & Availability Section (Asymmetrical Grid) -->
-  <section class="relative min-h-screen flex flex-col justify-center items-center pt-32 pb-24 bg-[url('../amalfi_backdrop.png')] bg-cover bg-center border-b border-outline">
+  <section class="relative min-h-screen flex flex-col justify-center items-center pt-32 pb-24 bg-[url('/api/v1/assets/hero/hero-bg.png')] bg-cover bg-center">
     <!-- Theme-aware backdrop overlay -->
     <div class="absolute inset-0 bg-background bg-opacity-70 dark:bg-opacity-80 z-0"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background z-0"></div>
@@ -273,22 +273,22 @@
       <div class="lg:col-span-7 w-full collage-media-wrapper">
         <div class="collage-container">
           <figure class="collage-tile tile-main">
-            <img src="../amalfi_pool.png" alt="Amalfi Pool Walkway" />
+            <img src="/api/v1/assets/facilities/swimming_pool.jfif" alt="Amalfi Pool Walkway" />
           </figure>
           <figure class="collage-tile tile-sunset">
-            <img src="../amalfi_terrace.png" alt="Amalfi Sunset Terrace" />
+            <img src="/api/v1/assets/facilities/beachfront.jfif" alt="Amalfi Sunset Terrace" />
           </figure>
           <figure class="collage-tile tile-pool">
-            <img src="../amalfi_yacht.png" alt="Amalfi Riva Yacht" />
+            <img src="/api/v1/assets/rooms/capri_vista.png" alt="Amalfi Riva Yacht" />
           </figure>
           <figure class="collage-tile tile-courtyard">
-            <img src="../amalfi_gardens.png" alt="Amalfi Gardens Walkway" />
+            <img src="/api/v1/assets/facilities/special_events.jfif" alt="Amalfi Gardens Walkway" />
           </figure>
           <figure class="collage-tile tile-wide">
-            <img src="../amalfi_backdrop.png" alt="Amalfi Cliffside Coast" />
+            <img src="/api/v1/assets/banner/amalfi_banner.png" alt="Amalfi Cliffside Coast" />
           </figure>
           <figure class="collage-tile tile-bottom">
-            <img src="../amalfi_bedroom.png" alt="Amalfi Suite Bedroom" />
+            <img src="/api/v1/assets/rooms/sirenuse_suite.png" alt="Amalfi Suite Bedroom" />
           </figure>
         </div>
       </div>
@@ -388,7 +388,7 @@
               Reserve your own shaded pool cabana for the duration of your stay with towel service and refreshments.
             </p>
           </div>
-          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱2,000 / Stay</div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">PHP 2,000 / Stay</div>
         </div>
 
         <!-- Card 2 -->
@@ -400,7 +400,7 @@
               Enjoy unlimited soft drinks, juices, coffee, and beer from the resort bar throughout the day.
             </p>
           </div>
-          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱1,500 / Day</div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">PHP 1,500 / Day</div>
         </div>
 
         <!-- Card 3 -->
@@ -412,7 +412,7 @@
               Door-to-door transfer service from the airport or seaport to the resort and back on check-out.
             </p>
           </div>
-          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱500 / Trip</div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">PHP 500 / Trip</div>
         </div>
 
         <!-- Card 4 -->
@@ -424,7 +424,7 @@
               60-minute relaxing Swedish or hot-stone massage delivered to your villa by our certified therapists.
             </p>
           </div>
-          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">₱2,000 / Session</div>
+          <div class="font-label-caps font-bold text-tertiary tracking-widest mt-4 uppercase mono-input">PHP 2,000 / Session</div>
         </div>
       </div>
     </div>
@@ -445,7 +445,7 @@
         <!-- Kicker -->
         <div class="font-label-caps text-[9px] tracking-[0.2em] uppercase text-tertiary font-bold mb-2">Exclusive Reservation</div>
         <h2 id="modal-villa-name" class="font-display-lg text-3xl font-bold text-on-surface mb-2">Amalfi Vista Suite</h2>
-        <div id="modal-villa-rate" class="font-mono-data text-xs text-tertiary mb-6">$8,278.57 / Night</div>
+        <div id="modal-villa-rate" class="font-mono-data text-xs text-tertiary mb-6">PHP 8,278.57 / Night</div>
         
         <form id="booking-form" onsubmit="return false;" class="flex-1 flex flex-col">
           
@@ -490,7 +490,7 @@
                 <input type="checkbox" value="cabana" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
                 <div class="flex-1">
                   <div class="text-xs font-bold text-on-surface">Private Pool Cabana</div>
-                  <div class="text-[10px] text-on-surface-variant mt-0.5">Exclusive shaded cabana with towel service for the full stay (+₱2,000)</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">Exclusive shaded cabana with towel service for the full stay (+ PHP 2,000)</div>
                 </div>
               </label>
 
@@ -499,7 +499,7 @@
                 <input type="checkbox" value="drinks" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
                 <div class="flex-1">
                   <div class="text-xs font-bold text-on-surface">All-Day Drinks Package</div>
-                  <div class="text-[10px] text-on-surface-variant mt-0.5">Unlimited soft drinks, juices, coffee & beer from the resort bar (+₱1,500)</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">Unlimited soft drinks, juices, coffee & beer from the resort bar (+ PHP 1,500)</div>
                 </div>
               </label>
 
@@ -508,7 +508,7 @@
                 <input type="checkbox" value="shuttle" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
                 <div class="flex-1">
                   <div class="text-xs font-bold text-on-surface">Airport / Port Shuttle</div>
-                  <div class="text-[10px] text-on-surface-variant mt-0.5">Round-trip transfer from airport or seaport to the resort (+₱500)</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">Round-trip transfer from airport or seaport to the resort (+ PHP 500)</div>
                 </div>
               </label>
 
@@ -517,7 +517,7 @@
                 <input type="checkbox" value="massage" class="addon-cb rounded-none text-tertiary bg-surface-container border-outline focus:ring-0 h-4 w-4">
                 <div class="flex-1">
                   <div class="text-xs font-bold text-on-surface">In-Room Massage</div>
-                  <div class="text-[10px] text-on-surface-variant mt-0.5">60-min Swedish or hot-stone massage in your villa by certified therapists (+₱2,000)</div>
+                  <div class="text-[10px] text-on-surface-variant mt-0.5">60-min Swedish or hot-stone massage in your villa by certified therapists (+ PHP 2,000)</div>
                 </div>
               </label>
             </div>
@@ -538,7 +538,7 @@
             <h3 class="font-label-caps text-xs uppercase tracking-widest text-on-surface font-bold border-b border-outline pb-2">Step 3: Secure Deposit</h3>
             
             <p class="text-xs text-on-surface-variant leading-relaxed">
-              Please transfer a minimum 50% deposit via Gcash or Bank Transfer to hold this elite villa booking. Upload a clear screenshot of the transaction below.
+              Please transfer a minimum 50% deposit via GCash or bank transfer to hold this elite villa booking. Upload a clear screenshot of the transaction below.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -564,7 +564,7 @@
 
                 <div class="flex flex-col gap-1">
                   <label for="ref-no" class="font-label-caps text-[9px] uppercase tracking-widest text-on-surface-variant font-bold">Transaction Reference #</label>
-                  <input type="text" id="ref-no" placeholder="Gcash Ref or Bank Trx ID" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 focus:border-opacity-100 transition duration-300" required>
+                  <input type="text" id="ref-no" placeholder="GCash ref or bank transaction ID" class="w-full bg-transparent border-0 border-b border-outline text-on-surface text-xs py-2 px-0 focus:border-tertiary focus:ring-0 focus:border-opacity-100 transition duration-300" required>
                 </div>
               </div>
             </div>
@@ -610,7 +610,7 @@
         <div class="flex-1 flex flex-col gap-4">
           <div class="flex justify-between text-xs text-on-surface-variant">
             <span>Nightly Rate:</span>
-            <span id="summary-base-rate" class="mono-input text-on-surface font-semibold">$8,278.57 / Night</span>
+            <span id="summary-base-rate" class="mono-input text-on-surface font-semibold">PHP 8,278.57 / Night</span>
           </div>
 
           <div class="flex justify-between text-xs text-on-surface-variant">
@@ -620,7 +620,7 @@
 
           <div class="flex justify-between text-xs text-on-surface-variant border-b border-outline pb-3">
             <span>Lodging Subtotal:</span>
-            <span id="summary-base-total" class="mono-input text-on-surface font-semibold">$8,278.57</span>
+            <span id="summary-base-total" class="mono-input text-on-surface font-semibold">PHP 8,278.57</span>
           </div>
 
           <!-- Addons items -->
@@ -635,10 +635,10 @@
           <div class="mt-auto pt-6 flex flex-col gap-2">
             <div class="flex justify-between items-end">
               <span class="text-xs uppercase tracking-widest text-on-surface-variant font-bold">Estimated Charges</span>
-              <span id="summary-total" class="text-2xl font-mono font-bold text-tertiary">$8,278.57</span>
+              <span id="summary-total" class="text-xl md:text-2xl font-mono font-bold text-tertiary whitespace-nowrap text-right shrink-0">PHP 8,278.57</span>
             </div>
             <div class="text-[9px] text-on-surface-variant italic leading-normal mt-2">
-              * Charges will be calculated in USD. Balance due does not include security deposit or localized VAT.
+              * Charges are calculated in Philippine pesos. Balance due does not include security deposit or applicable local taxes.
             </div>
           </div>
         </div>

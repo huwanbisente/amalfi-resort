@@ -1,0 +1,209 @@
+# =============================================================================
+# AMALFI RESORT - MASTER KNOWLEDGE BASE
+# =============================================================================
+# Source of truth for the Amalfi hub API, guest site, admin panel, and mobile admin panel.
+# Edit here first, then regenerate generated/knowledge-base.json when needed.
+# =============================================================================
+
+resort_name: "Amalfi Resort"
+resort_identity: "Amalfi Resort: a private luxury villa sanctuary"
+location: "Amalfi Resort"
+official_website: "www.amalfi-resort.local"
+status: "Luxury Private Villa Resort"
+contact_phone: ""
+
+about:
+  headline: "Private villas, curated stays, and discreet resort operations"
+  description: >
+    Amalfi Resort is a luxury villa resort experience built around private stays,
+    concierge-level service, curated amenities, and quiet operational precision.
+    The resort offers six named villas with premium add-ons such as cabana service,
+    drink packages, shuttle coordination, in-room massage, dinner buffet packages,
+    and custom guest preparation.
+  inquiry_link: ""
+  map_link: ""
+  highlights:
+    - "Six named luxury villas with private booking workflows"
+    - "Premium guest-preparation and amenity packages"
+    - "Front-desk, ledger, accounting, and operations visibility"
+    - "Designed for high-touch resort management and booking coordination"
+
+check_in_out:
+  check_in_time: "2:00 PM"
+  check_out_time: "11:00 AM"
+  early_check_in:
+    available: true
+    subject_to_availability: true
+    not_applicable_during: "Back-to-back bookings and blocked maintenance periods"
+  late_check_out:
+    available: true
+    subject_to_availability: true
+    not_applicable_during: "Back-to-back bookings and blocked maintenance periods"
+  room_extension:
+    price_php: 2500
+    unit: "per approved early check-in or late check-out request"
+    notes: "Subject to villa availability and manager approval."
+
+accommodations:
+  - name: "Amalfi Suite"
+    marketing_name: "Villa 1 - Amalfi Suite"
+    image: "/api/v1/assets/rooms/amalfi_suite.png"
+    type: villa
+    units: 1
+    max_capacity_pax: 4
+    unit_labels:
+      - "Villa 1 (Amalfi Suite)"
+    rates:
+      - min_pax: 1
+        max_pax: 4
+        price_php: 8278.57
+    features:
+      - "Medium sized luxury villa"
+      - "Premium suite setup for private resort stays"
+      - "Concierge-ready guest preparation"
+      - "Optional cabana, drinks, shuttle, massage, and dining add-ons"
+
+  - name: "Positano Vista"
+    marketing_name: "Villa 2 - Positano Vista"
+    image: "/api/v1/assets/rooms/positano_vista.png"
+    type: villa
+    units: 1
+    max_capacity_pax: 4
+    unit_labels:
+      - "Villa 2 (Positano Vista)"
+    rates:
+      - min_pax: 1
+        max_pax: 4
+        price_php: 9500
+    features:
+      - "Medium sized luxury villa"
+      - "Scenic villa profile for premium stays"
+      - "Amenity and service-package support"
+      - "Ideal for private leisure itineraries"
+
+  - name: "Ravello Suite"
+    marketing_name: "Villa 3 - Ravello Suite"
+    image: "/api/v1/assets/rooms/ravello_suite.png"
+    type: villa
+    units: 1
+    max_capacity_pax: 4
+    unit_labels:
+      - "Villa 3 (Ravello Suite)"
+    rates:
+      - min_pax: 1
+        max_pax: 4
+        price_php: 8750
+    features:
+      - "Medium sized luxury villa"
+      - "Quiet suite profile for curated guest stays"
+      - "Private itinerary and amenity preparation"
+      - "Integrated ledger and booking lifecycle support"
+
+  - name: "Capri Vista"
+    marketing_name: "Villa 4 - Capri Vista"
+    image: "/api/v1/assets/rooms/capri_vista.png"
+    type: villa
+    units: 1
+    max_capacity_pax: 4
+    unit_labels:
+      - "Villa 4 (Capri Vista)"
+    rates:
+      - min_pax: 1
+        max_pax: 4
+        price_php: 8800
+    features:
+      - "Medium sized luxury villa"
+      - "Premium view-oriented villa positioning"
+      - "Maintenance and room-status tracking support"
+      - "Guest-service add-ons available"
+
+  - name: "Sirenuse Suite"
+    marketing_name: "Villa 5 - Sirenuse Suite"
+    image: "/api/v1/assets/rooms/sirenuse_suite.png"
+    type: villa
+    units: 1
+    max_capacity_pax: 8
+    unit_labels:
+      - "Villa 5 (Sirenuse Suite)"
+    rates:
+      - min_pax: 1
+        max_pax: 8
+        price_php: 19080
+    features:
+      - "Large luxury villa"
+      - "Designed for larger private groups"
+      - "Premium amenity and dining package support"
+      - "Concierge-level arrival preparation"
+
+  - name: "Sunset Pavilion"
+    marketing_name: "Villa 6 - Sunset Pavilion"
+    image: "/api/v1/assets/rooms/sunset_pavilion.png"
+    type: villa
+    units: 1
+    max_capacity_pax: 6
+    unit_labels:
+      - "Villa 6 (Sunset Pavilion)"
+    rates:
+      - min_pax: 1
+        max_pax: 6
+        price_php: 10525
+    features:
+      - "Large luxury villa"
+      - "Private pavilion profile for high-touch stays"
+      - "Premium arrival, drinks, dining, and massage add-ons"
+      - "Best suited for sunset-focused private resort experiences"
+
+special_bookings:
+  day_tour:
+    image: "/api/v1/assets/special_bookings/day_tour.jfif"
+    description: "Day-use access and private amenity reservations for Amalfi Resort."
+    schedule: "Manager approval required"
+    pax_fee_php: 350
+    max_capacity_pax: 50
+    slots_available: 2
+    notes: "Use for day access, cabana, pool, or amenity-led reservations."
+    cottage_fees:
+      - pax_range: "Private cabana package"
+        price_php: 2000
+    freebies:
+      - "Resort access subject to approval"
+  tent_pitching:
+    image: "/api/v1/assets/special_bookings/tent_pitching.png"
+    description: "Placeholder special booking category retained for compatibility."
+    schedule: "Manager approval required"
+    base_fee_php: 0
+    notes: "Rename or disable if Amalfi will not offer this category."
+
+addons:
+  - code: "cabana"
+    name: "Private Pool Cabana"
+    price_php: 2000
+  - code: "drinks"
+    name: "All-Day Drinks Package"
+    price_php: 1500
+  - code: "shuttle"
+    name: "Airport / Port Shuttle"
+    price_php: 500
+  - code: "massage"
+    name: "In-Room Massage Session"
+    price_php: 2000
+  - code: "buffet"
+    name: "Dinner Buffet Package"
+    price_php: 1200
+
+payment:
+  methods:
+    - code: "GCASH"
+      label: "GCash"
+      qr_image: "/api/v1/assets/payment/gcash.png"
+      notes: "Placeholder only. Replace with Amalfi official QR before accepting live payments."
+    - code: "BANK"
+      label: "Bank Transfer"
+      qr_image: "/api/v1/assets/payment/bank.png"
+      notes: "Placeholder only. Replace with Amalfi official bank details before accepting live payments."
+
+contact:
+  phone: ""
+  facebook: ""
+  instagram: ""
+  email: ""

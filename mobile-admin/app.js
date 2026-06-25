@@ -1,4 +1,117 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const API_BASE = '/api/v1';
+  let backendOnline = false;
+
+  async function apiFetch(path, options = {}) {
+    const response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || data.message || 'Amalfi backend request failed.');
+    return data;
+  }
+
+  const villaNameByRoomType = {
+    "Amalfi Suite": "Amalfi Suite",
+    "Positano Vista": "Positano Vista",
+    "Ravello Suite": "Ravello Suite",
+    "Capri Vista": "Capri Vista",
+    "Sirenuse Suite": "Sirenuse Suite",
+    "Sunset Pavilion": "Sunset Pavilion"
+  };
+
+  const villaIdByRoomType = {
+    "Amalfi Suite": "Villa 1",
+    "Positano Vista": "Villa 2",
+    "Ravello Suite": "Villa 3",
+    "Capri Vista": "Villa 4",
+    "Sirenuse Suite": "Villa 5",
+    "Sunset Pavilion": "Villa 6"
+  };
+
+  function formatMoney(value) {
+    return Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatDateRange(checkIn, checkOut) {
+    if (!checkIn || !checkOut) return 'Dates pending';
+    return `${checkIn.slice(5)} - ${checkOut.slice(5)}`;
+  }
+
+  function mapBackendBooking(row) {
+    const status = String(row.status || '').toUpperCase();
+    const payment = String(row.payment_status || '').toUpperCase();
+    const roomType = row.room_type || 'Amalfi Suite';
+    let bookingStatus = 'Confirmed';
+    if (status === 'PENDING_VERIFICATION') bookingStatus = 'Pending Verification';
+    if (status === 'CHECKED_IN') bookingStatus = 'Checked In';
+    if (status === 'CHECKED_OUT') bookingStatus = 'Checked Out';
+    if (status === 'PAYMENT_REJECTED' || status === 'CANCELLED') bookingStatus = 'Cancelled';
+
+    let paymentStatus = payment || 'UNPAID';
+    if (payment === 'PAID' || payment === 'FULL') paymentStatus = 'PAID';
+    if (payment === 'PAYMENT_REVIEW' || status === 'PENDING_VERIFICATION') paymentStatus = 'PENDING_VERIFICATION';
+    if (status === 'PAYMENT_REJECTED') paymentStatus = 'REJECTED';
+
+    return {
+      id: row.booking_ref,
+      bookingRef: row.booking_ref,
+      guest: row.full_name,
+      villa: villaIdByRoomType[roomType] || row.unit_id || roomType,
+      villaName: villaNameByRoomType[roomType] || roomType,
+      dates: formatDateRange(row.check_in, row.check_out),
+      checkIn: row.check_in,
+      checkOut: row.check_out,
+      created: row.created_at ? new Date(row.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '',
+      bookingStatus,
+      paymentStatus,
+      baseRate: Number(row.total_price || 0),
+      folio: formatMoney(row.total_price || 0),
+      isBlockout: false,
+      refNo: row.booking_ref
+    };
+  }
+
+  async function syncBackendState() {
+    try {
+      const data = await apiFetch('/admin/amalfi/bootstrap');
+      backendOnline = true;
+
+      if (Array.isArray(data.reservations)) {
+        reservations = data.reservations.map(mapBackendBooking);
+        localStorage.setItem('amalfi_reservations', JSON.stringify(reservations));
+      }
+      if (Array.isArray(data.requests)) {
+        requests = data.requests.map(req => ({
+          id: req.id,
+          category: req.category,
+          title: req.title,
+          details: req.details,
+          status: String(req.status || 'Pending').toUpperCase(),
+          guest: req.guest || 'Guest'
+        }));
+        localStorage.setItem('amalfi_requests', JSON.stringify(requests));
+      }
+      if (data.villaStatuses) {
+        villaStatuses = data.villaStatuses;
+        localStorage.setItem('amalfi_villa_statuses', JSON.stringify(villaStatuses));
+      }
+      if (Array.isArray(data.products)) {
+        localStorage.setItem('amalfi_products_v2', JSON.stringify(data.products));
+      }
+      if (Array.isArray(data.posSales)) {
+        localStorage.setItem('amalfi_pos_sales_v2', JSON.stringify(data.posSales));
+      }
+    } catch (err) {
+      backendOnline = false;
+      console.warn('Using local mobile-admin data:', err.message);
+    }
+  }
+
   // Mobile Theme Toggle Management
   const themeToggleBtn = document.getElementById('mobile-theme-toggle');
   const themeIcon = document.getElementById('mobile-theme-icon');
@@ -261,8 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Refreshes data displays
-  function refreshData() {
+  async function refreshData() {
     reloadLocalStorage();
+    await syncBackendState();
     renderMovementsTab();
     renderVerificationTab();
     renderLedgerTab();
@@ -350,11 +464,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function approveRequest(reqId) {
+  async function approveRequest(reqId) {
     const list = JSON.parse(localStorage.getItem('amalfi_requests')) || [];
     const index = list.findIndex(r => r.id === reqId);
     if (index !== -1) {
       list[index].status = 'CONFIRMED';
+      if (backendOnline) {
+        try {
+          await apiFetch('/admin/amalfi/service-requests', {
+            method: 'POST',
+            body: JSON.stringify(list[index])
+          });
+        } catch (err) {
+          console.warn('Backend service request approval failed:', err.message);
+        }
+      }
       localStorage.setItem('amalfi_requests', JSON.stringify(list));
       refreshData();
     }
@@ -426,10 +550,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function processVerification(resId, action) {
+  async function processVerification(resId, action) {
     const list = JSON.parse(localStorage.getItem('amalfi_reservations')) || [];
     const index = list.findIndex(r => r.id === resId);
     if (index !== -1) {
+      const bookingRef = list[index].bookingRef || list[index].id;
+      if (backendOnline && bookingRef) {
+        try {
+          await apiFetch('/admin/verify', {
+            method: 'POST',
+            body: JSON.stringify({
+              booking_ref: bookingRef,
+              decision: action,
+              notes: action === 'approve' ? 'Verified from Amalfi mobile admin.' : 'Rejected from Amalfi mobile admin.',
+              admin_id: 'amalfi-mobile-admin'
+            })
+          });
+        } catch (err) {
+          console.warn('Backend verification failed:', err.message);
+        }
+      }
       if (action === 'approve') {
         list[index].bookingStatus = 'Confirmed';
         list[index].paymentStatus = 'PAID';
@@ -877,16 +1017,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function updateRoomStatus(room, status) {
+  async function updateRoomStatus(room, status) {
     const statuses = JSON.parse(localStorage.getItem('amalfi_villa_statuses')) || {};
     statuses[room] = status;
+    if (backendOnline) {
+      try {
+        await apiFetch(`/admin/amalfi/villa-statuses/${encodeURIComponent(room)}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status })
+        });
+      } catch (err) {
+        console.warn('Backend villa status update failed:', err.message);
+      }
+    }
     localStorage.setItem('amalfi_villa_statuses', JSON.stringify(statuses));
     refreshData();
   }
 
 
   // 5. Manual Booking Form Submission
-  manualBookingForm.addEventListener('submit', (e) => {
+  manualBookingForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const fullName = document.getElementById('manual-guest-name').value;
@@ -938,6 +1088,30 @@ document.addEventListener('DOMContentLoaded', () => {
       folio: cost.toLocaleString(undefined, { minimumFractionDigits: 2 }),
       isBlockout: false
     };
+
+    if (backendOnline) {
+      try {
+        const created = await apiFetch('/admin/amalfi/manual-booking', {
+          method: 'POST',
+          body: JSON.stringify({
+            villa_id: villaId,
+            room_type: villaNames[villaId],
+            full_name: fullName,
+            check_in: checkIn,
+            check_out: checkOut,
+            guests: 1,
+            total_price: cost
+          })
+        });
+        if (created.booking_ref) {
+          newReservation.id = created.booking_ref;
+          newReservation.bookingRef = created.booking_ref;
+          newReservation.refNo = created.booking_ref;
+        }
+      } catch (err) {
+        console.warn('Backend manual booking failed:', err.message);
+      }
+    }
 
     currentReservations.push(newReservation);
     localStorage.setItem('amalfi_reservations', JSON.stringify(currentReservations));
@@ -1236,11 +1410,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Confirm checkout
-  posConfirmCheckout.addEventListener('click', () => {
+  posConfirmCheckout.addEventListener('click', async () => {
     if (posCart.length === 0) return;
 
     const total = posCart.reduce((s, c) => s + c.product.price * c.qty, 0);
-    const items = posCart.map(c => ({ name: c.product.name, price: c.product.price, qty: c.qty }));
+    const items = posCart.map(c => ({ id: c.product.id, name: c.product.name, price: c.product.price, qty: c.qty }));
     const saleId = 'msale-' + Date.now();
     const today = new Date().toISOString().split('T')[0];
 
@@ -1286,6 +1460,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Save sale record
+    if (backendOnline) {
+      try {
+        const saved = await apiFetch('/admin/amalfi/pos-sales', {
+          method: 'POST',
+          body: JSON.stringify(newSale)
+        });
+        if (saved.sale?.id) newSale.id = saved.sale.id;
+      } catch (err) {
+        console.warn('Backend POS sale failed:', err.message);
+      }
+    }
+
     const sales = JSON.parse(localStorage.getItem('amalfi_pos_sales_v2')) || [];
     sales.push(newSale);
     localStorage.setItem('amalfi_pos_sales_v2', JSON.stringify(sales));

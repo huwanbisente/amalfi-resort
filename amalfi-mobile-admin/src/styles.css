@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  color: #13211f;
+  --desk-canvas: #f4efe6;
+  --desk-surface: #fffdf8;
+  --desk-ink: #13211f;
+  --desk-muted: #69776f;
+  --desk-line: rgba(216, 201, 179, 0.72);
+  --desk-line-strong: rgba(198, 146, 63, 0.34);
+  --desk-paper: rgba(255, 253, 248, 0.94);
+  --desk-soft: #f8f2e8;
+  --desk-green: #0a6b5f;
+  --desk-green-deep: #08443f;
+  --desk-gold: #c6923f;
+  --desk-red: #c84a4a;
+  --desk-blue: #236f7c;
+  --desk-night: #092a28;
+  --desk-radius: 22px;
+  --desk-shadow: 0 20px 48px rgba(19, 33, 31, 0.075);
+  --desk-shadow-resort: 0 24px 60px rgba(19, 33, 31, 0.11);
+  --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", "JetBrains Mono", "Cascadia Mono", monospace;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(198, 146, 63, 0.12), transparent 30%),
+    linear-gradient(180deg, #f4efe6 0%, #f8f2e8 50%, #f4efe6 100%);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--desk-canvas);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(10, 107, 95, 0.22);
+  outline-offset: 3px;
+}
+
+.spin-icon {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

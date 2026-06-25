@@ -10,6 +10,148 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: "Villa 6", name: "Sunset Pavilion", category: "Large Luxury Villa", nightlyRate: 10525 }
   ];
 
+  const API_BASE = '/api/v1';
+  const OPERATIONAL_START_DATE = new Date("2026-06-18");
+  let backendOnline = false;
+
+  function apiFetch(path, options = {}) {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    return fetch(`${API_BASE}${path}`, { ...options, headers }).then(async response => {
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error || payload.message || `Request failed: ${response.status}`);
+      }
+      return payload;
+    });
+  }
+
+  function pushBackend(path, payload, options = {}) {
+    if (!backendOnline && options.skipWhenOffline !== false) return;
+    apiFetch(path, {
+      method: options.method || 'POST',
+      body: payload !== undefined ? JSON.stringify(payload) : undefined
+    }).catch(err => console.warn(`Amalfi backend sync skipped for ${path}:`, err.message));
+  }
+
+  function toLocalDate(value) {
+    if (!value) return null;
+    const date = new Date(`${String(value).slice(0, 10)}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function daysBetween(start, end) {
+    if (!start || !end) return 1;
+    return Math.max(1, Math.round((end - start) / (1000 * 60 * 60 * 24)));
+  }
+
+  function formatBackendDateRange(checkIn, checkOut) {
+    const start = toLocalDate(checkIn);
+    const end = toLocalDate(checkOut);
+    if (!start || !end) return 'Dates pending';
+    const startText = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    const endText = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    return `${startText} - ${endText}`;
+  }
+
+  function humanizeBackendStatus(status) {
+    const normalized = String(status || '').toUpperCase();
+    if (normalized === 'CHECKED_IN') return 'Checked In';
+    if (normalized === 'CHECKED_OUT') return 'Checked Out';
+    if (normalized === 'PENDING_VERIFICATION') return 'Pending Verification';
+    if (normalized === 'CONFIRMED' || normalized === 'VERIFIED') return 'Confirmed';
+    if (normalized === 'CANCELLED') return 'Cancelled';
+    if (normalized === 'REJECTED' || normalized === 'PAYMENT_REJECTED') return 'Rejected';
+    return status || 'Confirmed';
+  }
+
+  function humanizePaymentStatus(status, balance, total) {
+    const normalized = String(status || '').toUpperCase();
+    if (normalized.includes('PENDING')) return 'PENDING';
+    if (normalized === 'FULL' || Number(balance || 0) <= 0) return 'FULL';
+    if (Number(balance || 0) < Number(total || 0)) return 'PARTIAL';
+    return normalized || 'UNPAID';
+  }
+
+  function mapBackendReservation(row) {
+    const checkIn = toLocalDate(row.check_in);
+    const checkOut = toLocalDate(row.check_out);
+    const villa = villas.find(v => v.name === row.room_type || v.id === row.unit_id) || villas.find(v => row.unit_id && String(row.unit_id).toLowerCase().includes(v.name.toLowerCase().split(' ')[0]));
+    const total = Number(row.total_price || 0);
+    const duration = daysBetween(checkIn, checkOut);
+    const startOffset = checkIn ? Math.max(0, Math.round((checkIn - OPERATIONAL_START_DATE) / (1000 * 60 * 60 * 24))) : 0;
+    return {
+      id: row.booking_ref || row.id || `booking-${Date.now()}`,
+      bookingRef: row.booking_ref,
+      guest: row.full_name || row.guest || 'Guest',
+      villa: villa?.id || row.unit_id || row.room_type || 'Villa',
+      villaName: villa?.name || row.room_type || row.unit_id || 'Amalfi Villa',
+      dates: formatBackendDateRange(row.check_in, row.check_out),
+      created: row.created_at ? new Date(row.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '',
+      bookingStatus: humanizeBackendStatus(row.status),
+      paymentStatus: humanizePaymentStatus(row.payment_status || row.status, row.balance, total),
+      baseRate: total,
+      addonWine: false,
+      addonYacht: false,
+      addonSpa: false,
+      addonChef: false,
+      posCharges: [],
+      folio: total.toLocaleString('en-US', { minimumFractionDigits: 2 }),
+      startOffset,
+      duration,
+      isBlockout: false,
+      checkIn: row.check_in,
+      checkOut: row.check_out
+    };
+  }
+
+  function backendStatusFromUi(status) {
+    const normalized = String(status || '').toLowerCase();
+    if (normalized.includes('checked in')) return 'CHECKED_IN';
+    if (normalized.includes('checked out')) return 'CHECKED_OUT';
+    if (normalized.includes('cancel')) return 'CANCELLED';
+    if (normalized.includes('pending')) return 'PENDING_VERIFICATION';
+    if (normalized.includes('reject')) return 'REJECTED';
+    return 'CONFIRMED';
+  }
+
+  function backendPaymentStatusFromUi(status) {
+    const normalized = String(status || '').toUpperCase();
+    if (normalized === 'FULL' || normalized === 'PAID') return 'FULL';
+    if (normalized === 'PARTIAL') return 'PARTIAL';
+    if (normalized.includes('PENDING')) return 'PENDING_VERIFICATION';
+    if (normalized.includes('REJECT')) return 'REJECTED';
+    return 'UNPAID';
+  }
+
+  function workflowFromBookingStatus(status) {
+    const normalized = String(status || '').toLowerCase();
+    if (normalized.includes('checked in')) return 'checkin';
+    if (normalized.includes('checked out')) return 'checkout';
+    return 'edit';
+  }
+
+  function buildBackendBookingPayload({ guest, villaName, room, checkinVal, checkoutVal, bookingStatus, paymentStatus, baseRate, folio }) {
+    const total = parseFloat(String(folio || baseRate || '0').replace(/,/g, '')) || Number(baseRate || 0);
+    return {
+      full_name: guest,
+      guest_name: guest,
+      room_type: villaName,
+      villa_id: room,
+      check_in: checkinVal,
+      check_out: checkoutVal,
+      guests: 1,
+      total_price: total,
+      lodging_total: total,
+      status: backendStatusFromUi(bookingStatus),
+      payment_status: backendPaymentStatusFromUi(paymentStatus),
+      booking_source: 'Amalfi Desktop Admin',
+      notes: 'Updated from Amalfi desktop admin.'
+    };
+  }
+
   const DEFAULT_RESERVATIONS = [
     {
       id: "loren",
@@ -354,12 +496,108 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('amalfi_pos_sales_v2', JSON.stringify(posSales));
   }
 
+  function refreshAdminViews() {
+    if (typeof renderLedgerTable === 'function') renderLedgerTable();
+    if (typeof renderGanttChart === 'function') renderGanttChart();
+    if (typeof renderSpecialBookings === 'function') renderSpecialBookings();
+    if (typeof renderServiceRequests === 'function') renderServiceRequests();
+    if (typeof window.renderMaintenanceBlockouts === 'function') window.renderMaintenanceBlockouts();
+    if (typeof updateOverviewKPIs === 'function') updateOverviewKPIs();
+    if (typeof updateOverviewRoster === 'function') updateOverviewRoster();
+    if (typeof window.renderPosTerminal === 'function') window.renderPosTerminal();
+    if (typeof window.renderProductCatalogTable === 'function') window.renderProductCatalogTable();
+    if (typeof renderExpensesTable === 'function') renderExpensesTable();
+    if (typeof renderStaffRoster === 'function') renderStaffRoster();
+    if (typeof renderPayrollHistory === 'function') renderPayrollHistory();
+    if (typeof updatePLStatement === 'function') updatePLStatement();
+    if (typeof applyFilters === 'function') applyFilters();
+  }
+
+  async function syncBackendState() {
+    try {
+      const data = await apiFetch('/admin/amalfi/bootstrap');
+      backendOnline = true;
+
+      const localBlockouts = reservations.filter(res => res.isBlockout);
+      if (Array.isArray(data.reservations)) {
+        reservations = [...data.reservations.map(mapBackendReservation), ...localBlockouts];
+        saveReservations();
+      }
+      if (Array.isArray(data.products)) {
+        products = data.products;
+        saveProducts();
+      }
+      if (Array.isArray(data.expenses)) {
+        expenses = data.expenses;
+        saveExpenses();
+      }
+      if (Array.isArray(data.staff)) {
+        staff = data.staff;
+        saveStaff();
+      }
+      if (Array.isArray(data.payrollRuns)) {
+        const expandedRuns = [];
+        data.payrollRuns.forEach(run => {
+          const details = Array.isArray(run.details) ? run.details : [];
+          if (details.length) {
+            details.forEach(item => expandedRuns.push({
+              id: `${run.id}-${item.employeeId || item.id || item.employeeName}`,
+              month: run.payrollMonth,
+              employeeId: item.employeeId || item.id,
+              employeeName: item.employeeName || item.name,
+              position: item.position,
+              grossPay: Number(item.grossPay || item.basicSalary || 0),
+              sssDeduction: Number(item.sssDeduction || item.sss || 0),
+              philhealthDeduction: Number(item.philhealthDeduction || item.philhealth || 0),
+              hdmfDeduction: Number(item.hdmfDeduction || item.hdmf || 0),
+              withholdingTax: Number(item.withholdingTax || item.withholding || 0),
+              netPay: Number(item.netPay || 0),
+              dateProcessed: run.runDate
+            }));
+          } else {
+            expandedRuns.push({
+              id: run.id,
+              month: run.payrollMonth,
+              employeeId: run.id,
+              employeeName: `${run.staffCount || 0} staff`,
+              position: 'Payroll run',
+              grossPay: Number(run.grossPay || 0),
+              sssDeduction: 0,
+              philhealthDeduction: 0,
+              hdmfDeduction: 0,
+              withholdingTax: Number(run.deductions || 0),
+              netPay: Number(run.netPay || 0),
+              dateProcessed: run.runDate
+            });
+          }
+        });
+        payrollRuns = expandedRuns;
+        savePayrollRuns();
+      }
+      if (Array.isArray(data.posSales)) {
+        posSales = data.posSales;
+        savePosSales();
+      }
+      if (Array.isArray(data.requests)) {
+        serviceRequests = data.requests;
+      }
+      if (Array.isArray(data.specialBookings)) {
+        specialBookings = data.specialBookings;
+      }
+
+      refreshAdminViews();
+    } catch (err) {
+      backendOnline = false;
+      console.warn('Amalfi backend is unavailable; desktop admin is using local data.', err.message);
+    }
+  }
+
   let ganttStartDate = new Date("2026-06-18");
   const operationalStartDate = new Date("2026-06-18");
   let currentLedgerTab = 'active';
   let activeExpenseTab = 'all';
 
-  const specialBookings = [
+  let specialBookings = [
     {
       id: "SB-401",
       guest: "George Clooney",
@@ -397,6 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
       status: "Scheduled"
     }
   ];
+  let serviceRequests = [];
   
   // DOM Elements
   const sidebar = document.getElementById('stitch-sidebar');
@@ -757,6 +996,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       
       specialBookings.push(newBooking);
+      pushBackend('/admin/amalfi/special-bookings', newBooking);
       renderSpecialBookings();
       
       // Close modal
@@ -789,18 +1029,20 @@ document.addEventListener('DOMContentLoaded', () => {
         severityClass = "text-alert-orange border-alert-orange/30";
       }
 
-      // Create and prepend row to Maintenance panel
-      const tr = document.createElement('tr');
-      tr.className = "border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer";
-      tr.innerHTML = `
-        <td class="py-4 pr-4 font-mono-data">${ticketId}</td>
-        <td class="py-4 px-4 font-label-caps text-tertiary">${location}</td>
-        <td class="py-4 px-4">${desc}</td>
-        <td class="py-4 px-4"><span class="font-semibold text-xs border px-2 py-0.5 ${severityClass}">${severity}</span></td>
-        <td class="py-4 pl-4 text-right"><span class="text-xs font-label-caps text-on-surface-variant">Pending</span></td>
-      `;
-
-      ticketsTableBody.insertBefore(tr, ticketsTableBody.firstChild);
+      const request = {
+        id: ticketId,
+        reservationId: '',
+        guest: 'Operations',
+        villa: location,
+        category: 'Maintenance',
+        title: desc,
+        details: desc,
+        status: 'Pending',
+        priority: severity
+      };
+      serviceRequests.unshift(request);
+      pushBackend('/admin/amalfi/service-requests', request);
+      renderServiceRequests();
       
       // Update Overview Ticket Count Badge
       if (ticketBadge) {
@@ -817,9 +1059,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function renderServiceRequests() {
+    if (!ticketsTableBody) return;
+    ticketsTableBody.innerHTML = '';
+    if (!serviceRequests.length) {
+      ticketsTableBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-xs text-on-surface-variant italic">No maintenance tickets logged.</td></tr>';
+      return;
+    }
+    serviceRequests.forEach(req => {
+      const severity = req.priority || 'Normal';
+      let severityClass = "text-secondary-fixed-dim border-secondary/30";
+      if (String(severity).toUpperCase() === "HIGH") severityClass = "text-alert-red border-alert-red/30";
+      else if (String(severity).toUpperCase() === "MEDIUM") severityClass = "text-alert-orange border-alert-orange/30";
+
+      const tr = document.createElement('tr');
+      tr.className = "border-b border-secondary/10 hover:bg-surface-variant/30 transition-all cursor-pointer";
+      tr.innerHTML = `
+        <td class="py-4 pr-4 font-mono-data">${req.id}</td>
+        <td class="py-4 px-4 font-label-caps text-tertiary">${req.villa || req.category || 'Resort'}</td>
+        <td class="py-4 px-4">${req.details || req.title || ''}</td>
+        <td class="py-4 px-4"><span class="font-semibold text-xs border px-2 py-0.5 ${severityClass}">${String(severity).toUpperCase()}</span></td>
+        <td class="py-4 pl-4 text-right"><span class="text-xs font-label-caps text-on-surface-variant">${req.status || 'Pending'}</span></td>
+      `;
+      ticketsTableBody.appendChild(tr);
+    });
+  }
+
   // 5. Receipt Verification Workflow & Operator State Sync
   if (btnApproveSlip) {
-    btnApproveSlip.addEventListener('click', () => {
+    btnApproveSlip.addEventListener('click', async () => {
+      const pendingBackendRes = reservations.find(r => !r.isBlockout && (r.bookingRef || r.id) && (r.paymentStatus === 'PENDING' || r.paymentStatus === 'PENDING_VERIFICATION' || r.bookingStatus === 'Pending Verification'));
+      const harringtonRes = reservations.find(r => r.id === 'harrington');
+      const targetRes = pendingBackendRes || harringtonRes;
+      if (backendOnline && targetRes && (targetRes.bookingRef || targetRes.id) && targetRes.id !== 'harrington') {
+        try {
+          await apiFetch('/admin/verify', {
+            method: 'POST',
+            body: JSON.stringify({
+              booking_ref: targetRes.bookingRef || targetRes.id,
+              decision: 'approve',
+              admin_id: 'amalfi-desktop'
+            })
+          });
+          await syncBackendState();
+        } catch (err) {
+          alert(`Backend verification failed: ${err.message}`);
+          return;
+        }
+      }
       // 5a. Update verifications cards list
       if (verificationCardHarrington) {
         verificationCardHarrington.className = "bg-surface/30 opacity-60 border-l-2 border-mint-active p-3 flex flex-col gap-2 cursor-not-allowed";
@@ -840,7 +1127,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (verificationBadgeSidebar) verificationBadgeSidebar.style.display = 'none';
 
       // 5c. Update Harrington's reservation state directly
-      const harringtonRes = reservations.find(r => r.id === 'harrington');
       if (harringtonRes) {
         harringtonRes.bookingStatus = "Checked In";
         harringtonRes.paymentStatus = "PARTIAL";
@@ -890,6 +1176,42 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       alert("Harrington CS slip verified. Villa 6 room assigned. Ledger updated to OPEN.");
+    });
+  }
+
+  if (btnRejectSlip) {
+    btnRejectSlip.addEventListener('click', async () => {
+      const pendingBackendRes = reservations.find(r => !r.isBlockout && (r.bookingRef || r.id) && (r.paymentStatus === 'PENDING' || r.paymentStatus === 'PENDING_VERIFICATION' || r.bookingStatus === 'Pending Verification'));
+      if (backendOnline && pendingBackendRes) {
+        try {
+          await apiFetch('/admin/verify', {
+            method: 'POST',
+            body: JSON.stringify({
+              booking_ref: pendingBackendRes.bookingRef || pendingBackendRes.id,
+              decision: 'reject',
+              admin_id: 'amalfi-desktop'
+            })
+          });
+          await syncBackendState();
+        } catch (err) {
+          alert(`Backend rejection failed: ${err.message}`);
+          return;
+        }
+      }
+      if (pendingBackendRes) {
+        pendingBackendRes.bookingStatus = 'Cancelled';
+        pendingBackendRes.paymentStatus = 'REJECTED';
+        saveReservations();
+      }
+      if (verificationCardHarrington) {
+        verificationCardHarrington.className = "bg-surface/30 opacity-60 border-l-2 border-alert-red p-3 flex flex-col gap-2 cursor-not-allowed";
+      }
+      if (verificationBadgeOverview) verificationBadgeOverview.textContent = "0";
+      if (verificationBadgeSidebar) verificationBadgeSidebar.style.display = 'none';
+      renderLedgerTable();
+      renderGanttChart();
+      applyFilters();
+      alert("Payment proof rejected. Booking ledger updated.");
     });
   }
 
@@ -1302,7 +1624,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Edit Booking Submit
   if (editBookingForm) {
-    editBookingForm.addEventListener('submit', (e) => {
+    editBookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const rowId = document.getElementById('edit-booking-row-id').value;
@@ -1354,6 +1676,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join(', ') || "Amalfi Suite";
       }
       
+      let savedReservation = null;
+      let isNewBackendBooking = false;
+      const backendPayload = buildBackendBookingPayload({
+        guest,
+        villaName,
+        room,
+        checkinVal,
+        checkoutVal,
+        bookingStatus,
+        paymentStatus,
+        baseRate,
+        folio
+      });
+
       if (rowId) {
         // Edit Mode
         const res = reservations.find(r => r.id === rowId);
@@ -1380,6 +1716,7 @@ document.addEventListener('DOMContentLoaded', () => {
           res.startOffset = startOffset;
           res.duration = duration;
           res.isBlockout = isBlockout;
+          savedReservation = res;
         }
       } else {
         // Add Mode
@@ -1411,8 +1748,37 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         updateFolio(newRes);
         reservations.push(newRes);
+        savedReservation = newRes;
+        isNewBackendBooking = true;
       }
       saveReservations();
+      if (backendOnline && savedReservation && !savedReservation.isBlockout) {
+        try {
+          if (isNewBackendBooking) {
+            const createdBooking = await apiFetch('/admin/amalfi/manual-booking', {
+              method: 'POST',
+              body: JSON.stringify(backendPayload)
+            });
+            if (createdBooking.booking?.booking_ref || createdBooking.booking_ref) {
+              savedReservation.id = createdBooking.booking?.booking_ref || createdBooking.booking_ref;
+              savedReservation.bookingRef = savedReservation.id;
+              saveReservations();
+            }
+          } else if (savedReservation.bookingRef || savedReservation.id) {
+            await apiFetch(`/admin/bookings/${encodeURIComponent(savedReservation.bookingRef || savedReservation.id)}/change-set`, {
+              method: 'POST',
+              body: JSON.stringify({
+                workflow: workflowFromBookingStatus(bookingStatus),
+                booking: backendPayload,
+                admin_id: 'amalfi-desktop'
+              })
+            });
+          }
+          await syncBackendState();
+        } catch (err) {
+          alert(`Backend booking sync failed: ${err.message}`);
+        }
+      }
       
       // Re-render
       renderLedgerTable();
@@ -1432,13 +1798,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Delete/Release Booking
   if (btnDeleteBooking) {
-    btnDeleteBooking.addEventListener('click', (e) => {
+    btnDeleteBooking.addEventListener('click', async (e) => {
       e.preventDefault();
       const rowId = document.getElementById('edit-booking-row-id').value;
       const idx = reservations.findIndex(r => r.id === rowId);
       if (idx !== -1) {
+        const removedReservation = reservations[idx];
+        if (backendOnline && !removedReservation.isBlockout && (removedReservation.bookingRef || removedReservation.id)) {
+          try {
+            await apiFetch(`/admin/bookings/${encodeURIComponent(removedReservation.bookingRef || removedReservation.id)}`, {
+              method: 'DELETE',
+              body: JSON.stringify({ admin_id: 'amalfi-desktop' })
+            });
+          } catch (err) {
+            alert(`Backend booking delete failed: ${err.message}`);
+            return;
+          }
+        }
         reservations.splice(idx, 1);
         saveReservations();
+        if (backendOnline) await syncBackendState();
         renderLedgerTable();
         renderGanttChart();
         renderMaintenanceBlockouts();
@@ -4370,6 +4749,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderLedgerTable();
   renderGanttChart();
   renderSpecialBookings();
+  renderServiceRequests();
   renderMaintenanceBlockouts();
 
   // Initialize Overview Hub components
@@ -4895,17 +5275,19 @@ document.addEventListener('DOMContentLoaded', () => {
       saveReservations();
 
       // Log transaction as room POS sale
-      posSales.push({
+      const roomSale = {
         id: "sale-" + Date.now(),
         date: new Date().toISOString().split('T')[0],
         guest: res.guest,
         villa: res.villa,
-        items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
+        items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, qty: item.qty })),
         total: total,
         checkoutType: "room",
         resId: res.id
-      });
+      };
+      posSales.push(roomSale);
       savePosSales();
+      pushBackend('/admin/amalfi/pos-sales', roomSale);
 
       alert(`Successfully billed â‚±${total.toLocaleString('en-US', { minimumFractionDigits: 2 })} to ${res.guest} (${res.villa}) folio.`);
 
@@ -4913,17 +5295,19 @@ document.addEventListener('DOMContentLoaded', () => {
       // Direct Walk-in Sale
       const method = document.getElementById('pos-payment-method-select').value;
       
-      posSales.push({
+      const directSale = {
         id: "sale-" + Date.now(),
         date: new Date().toISOString().split('T')[0],
         guest: "Walk-in Guest",
         villa: "N/A",
-        items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
+        items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, qty: item.qty })),
         total: total,
         checkoutType: "direct",
         paymentMethod: method
-      });
+      };
+      posSales.push(directSale);
       savePosSales();
+      pushBackend('/admin/amalfi/pos-sales', directSale);
 
       alert(`Direct sale of â‚±${total.toLocaleString('en-US', { minimumFractionDigits: 2 })} completed successfully via ${method}.`);
     }
@@ -4962,6 +5346,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       products.push(newProd);
       saveProducts();
+      pushBackend('/admin/amalfi/products', newProd);
       addProductForm.reset();
 
       renderProductCatalogTable();
@@ -4975,6 +5360,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirm("Are you sure you want to delete this product from the catalog?")) {
       products = products.filter(p => p.id !== productId);
       saveProducts();
+      pushBackend(`/admin/amalfi/products/${encodeURIComponent(productId)}`, undefined, { method: 'DELETE' });
       renderProductCatalogTable();
       renderPosTerminal();
     }
@@ -5040,10 +5426,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const grossRevenue = roomsBase + fbRevenues + yachtRevenues + spaRevenues + otherRevenues;
 
-    // COGS = F&B food/beverage restocking costs
+    // COGS = direct F&B, utility/fuel, and spa/wellness consumables
     const cogsFood = sumExpBySubcat('Food Inventory Restocking');
     const cogsBeverage = sumExpBySubcat('Beverage Restocking');
-    const totalCOGS = cogsFood + cogsBeverage;
+    const cogsWine = cogsFood + cogsBeverage;
+    const cogsFuel = sumExpBySubcat('Generator Fuel') + sumExpBySubcat('Kitchen Gas / LPG');
+    const cogsSpa = sumExpBySubcat('Spa Supplies') + sumExpBySubcat('Wellness Materials');
+    const totalCOGS = cogsWine + cogsFuel + cogsSpa;
 
     const grossProfit = grossRevenue - totalCOGS;
 
@@ -5581,6 +5970,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       expenses.push(newExpense);
       saveExpenses();
+      pushBackend('/admin/amalfi/expenses', newExpense);
 
       document.getElementById('exp-input-vendor').value = '';
       document.getElementById('exp-input-desc').value   = '';
@@ -5746,6 +6136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const newStaff = { id: 'staff-' + Date.now(), name, position, department: dept, basicSalary: salary, isActive: true };
       staff.push(newStaff);
       saveStaff();
+      pushBackend('/admin/amalfi/staff', newStaff);
       addStaffForm.reset();
       renderStaffRoster();
     });
@@ -5755,6 +6146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirm('Remove this staff member from the roster?')) {
       staff = staff.map(s => s.id === staffId ? { ...s, isActive: false } : s);
       saveStaff();
+      const inactiveStaff = staff.find(s => s.id === staffId);
+      if (inactiveStaff) pushBackend('/admin/amalfi/staff', inactiveStaff);
       renderStaffRoster();
     }
   };
@@ -5775,6 +6168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (activeStaff.length === 0) { alert('No active staff in the roster.'); return; }
 
       let grossTotal = 0, netTotal = 0, deductionTotal = 0;
+      const payrollDetails = [];
 
       activeStaff.forEach(s => {
         const d = computeDeductions(s.basicSalary);
@@ -5783,15 +6177,26 @@ document.addEventListener('DOMContentLoaded', () => {
         netTotal += netPay;
         deductionTotal += d.sss + d.philhealth + d.hdmf + d.withholding;
 
-        payrollRuns.push({
+        const runDetail = {
           id: 'pr-' + Date.now() + '-' + s.id,
           month: monthInput, employeeId: s.id, employeeName: s.name, position: s.position,
           grossPay: s.basicSalary, sssDeduction: d.sss, philhealthDeduction: d.philhealth,
           hdmfDeduction: d.hdmf, withholdingTax: d.withholding, netPay,
           dateProcessed: new Date().toISOString().split('T')[0]
-        });
+        };
+        payrollRuns.push(runDetail);
+        payrollDetails.push(runDetail);
       });
       savePayrollRuns();
+      pushBackend('/admin/amalfi/payroll-runs', {
+        id: 'payroll-' + Date.now(),
+        payrollMonth: monthInput,
+        grossPay: grossTotal,
+        deductions: deductionTotal,
+        netPay: netTotal,
+        staffCount: activeStaff.length,
+        details: payrollDetails
+      });
 
       // Auto-post to expenses
       const payDate = monthInput + '-01';
@@ -5810,6 +6215,10 @@ document.addEventListener('DOMContentLoaded', () => {
         category: 'fixed', amount: deductionTotal, paymentMethod: 'Bank Transfer', recurrence: 'Monthly'
       });
       saveExpenses();
+      expenses
+        .filter(exp => exp.date === payDate && String(exp.id).startsWith('exp-pr-'))
+        .slice(-2)
+        .forEach(exp => pushBackend('/admin/amalfi/expenses', exp));
 
       renderPayrollHistory();
       renderStaffRoster();
@@ -5867,5 +6276,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderStaffRoster();
   renderPayrollHistory();
   renderGlobalFilters('overview');
+  syncBackendState();
 
 });

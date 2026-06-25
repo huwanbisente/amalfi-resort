@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Amalfi Admin Desk UI Variations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #13211f;
+      --muted: #62716b;
+      --green: #0a6b5f;
+      --deep: #08443f;
+      --gold: #c6923f;
+      --paper: #fffdf8;
+      --sand: #f4efe6;
+      --line: #d8c9b3;
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #2f3734;
+      color: var(--ink);
+      padding: 28px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(280px, 1fr));
+      gap: 22px;
+      align-items: start;
+      min-width: 1480px;
+    }
+
+    .variant {
+      display: grid;
+      gap: 12px;
+    }
+
+    .variant-title {
+      color: #fffdf8;
+      font-weight: 900;
+      letter-spacing: .01em;
+    }
+
+    .variant-title span {
+      display: block;
+      margin-top: 3px;
+      color: #d8c9b3;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .phone {
+      width: 290px;
+      height: 620px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.28);
+      background: var(--sand);
+      box-shadow: 0 24px 50px rgba(0,0,0,.28);
+      position: relative;
+    }
+
+    .top {
+      height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px;
+      background:
+        linear-gradient(90deg, rgba(255,253,248,.92), rgba(255,253,248,.62), rgba(10,107,95,.22)),
+        linear-gradient(135deg, #dff8f3, #f7ead4 38%, #79cfc4);
+      border-bottom: 1px solid rgba(198,146,63,.32);
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: white;
+      color: var(--gold);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 21px;
+      font-weight: 900;
+      border: 1px solid rgba(198,146,63,.55);
+      box-shadow: 0 10px 24px rgba(19,33,31,.12);
+    }
+
+    .brand {
+      min-width: 0;
+      flex: 1;
+      line-height: 1.05;
+      font-weight: 900;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      letter-spacing: .18em;
+      color: var(--deep);
+    }
+
+    .sync {
+      border: 1px solid rgba(255,255,255,.9);
+      background: rgba(255,255,255,.74);
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--deep);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 12px 24px rgba(19,33,31,.08);
+    }
+
+    .content {
+      height: calc(100% - 78px - 72px);
+      overflow: hidden;
+      padding: 14px;
+    }
+
+    .bottom {
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: 72px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      padding: 9px 10px;
+      border-top: 1px solid rgba(198,146,63,.32);
+      background: rgba(255,253,248,.94);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 5px;
+      border-radius: 17px;
+      color: #596a64;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .nav svg, .icon svg { width: 16px; height: 16px; stroke-width: 2.2; }
+
+    .active {
+      background: var(--deep);
+      color: #fff8ec;
+      box-shadow: 0 10px 22px rgba(8,68,63,.25), inset 0 1px 0 rgba(255,255,255,.16);
+    }
+
+    .hero {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,253,248,.9);
+      border: 1px solid rgba(198,146,63,.28);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.82), 0 16px 36px rgba(19,33,31,.08);
+    }
+
+    .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 {
+      margin-top: 8px;
+      font-size: 23px;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin-top: 11px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+      font-weight: 700;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      min-height: 74px;
+      padding: 13px;
+      border-radius: 17px;
+      background: rgba(255,253,248,.68);
+      border: 1px solid rgba(216,201,179,.8);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+    }
+
+    .metric small {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 8px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #50605b;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 21px;
+      line-height: 1;
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: #4b5b56;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .tool {
+      min-height: 132px;
+      padding: 15px;
+      border-radius: 18px;
+      border: 1px solid rgba(155,111,53,.44);
+      background: var(--paper);
+      box-shadow: 0 16px 34px rgba(19,33,31,.08), inset 0 1px 0 rgba(255,255,255,.82);
+    }
+
+    .icon {
+      color: var(--green);
+      margin-bottom: 13px;
+    }
+
+    .tool strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .tool span {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .tool em {
+      display: block;
+      margin-top: 16px;
+      font-style: normal;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 8px;
+      letter-spacing: .18em;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .b .phone {
+      background: radial-gradient(circle at top, rgba(198,146,63,.18), transparent 38%), #071f1d;
+      color: #fff8ec;
+    }
+
+    .b .top {
+      background: linear-gradient(135deg, #092a28, #0a6b5f);
+      border-bottom-color: rgba(244,215,159,.26);
+    }
+
+    .b .brand small, .b .sync { color: #f4d79f; }
+    .b .sync { background: rgba(255,255,255,.08); border-color: rgba(244,215,159,.24); }
+    .b .hero, .b .metric, .b .tool {
+      background: rgba(255,248,236,.075);
+      border-color: rgba(244,215,159,.28);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 40px rgba(0,0,0,.18);
+    }
+    .b p, .b .metric span, .b .tool span { color: rgba(255,248,236,.68); }
+    .b .metric small { color: rgba(255,248,236,.6); }
+    .b .metric strong { color: #f4d79f; }
+    .b .bottom { background: rgba(7,31,29,.92); border-top-color: rgba(244,215,159,.22); }
+    .b .nav { color: rgba(255,248,236,.6); }
+    .b .active { background: #f4d79f; color: #092a28; }
+
+    .c .phone {
+      background: linear-gradient(180deg, #dff8f3 0, #fffdf8 38%, #f4efe6 100%);
+    }
+
+    .c .content { padding: 12px; }
+    .c .hero, .c .metric, .c .tool {
+      background: rgba(255,255,255,.54);
+      border-color: rgba(255,255,255,.74);
+      box-shadow: 0 18px 36px rgba(10,107,95,.10), inset 0 1px 0 rgba(255,255,255,.9);
+      backdrop-filter: blur(14px);
+    }
+    .c .tools { grid-template-columns: 1fr; }
+    .c .tool {
+      min-height: 94px;
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: start;
+      gap: 10px;
+    }
+    .c .icon { margin: 0; }
+    .c .tool em { margin-top: 0; align-self: center; }
+
+    .d .phone { background: #f8f2e8; }
+    .d .top { height: 68px; padding: 10px 12px; }
+    .d .content { height: calc(100% - 68px - 72px); padding: 10px; }
+    .d .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 13px;
+      border-radius: 16px;
+    }
+    .d .hero p { display: none; }
+    .d h1 { margin-top: 3px; font-size: 20px; }
+    .d .metrics {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .d .metric {
+      min-height: 66px;
+      padding: 9px;
+      border-radius: 14px;
+    }
+    .d .metric small { font-size: 7px; letter-spacing: .08em; }
+    .d .metric strong { font-size: 17px; }
+    .d .metric span { display: none; }
+    .d .tools {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .d .tool {
+      min-height: 74px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 26px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border-radius: 15px;
+    }
+    .d .icon, .d .tool em { margin: 0; }
+    .d .tool span { margin-top: 4px; font-size: 10px; }
+
+    .e .phone {
+      background: linear-gradient(180deg, #ede2d1, #fffaf0);
+    }
+    .e .top {
+      background:
+        linear-gradient(90deg, rgba(255,250,240,.98), rgba(237,226,209,.86)),
+        #e4cfab;
+      border-bottom: 2px solid #9b6f35;
+    }
+    .e .hero {
+      border: 2px solid rgba(155,111,53,.72);
+      box-shadow: inset 0 1px 0 #fff, inset 0 0 0 1px rgba(255,246,220,.75), 0 22px 44px rgba(93,61,24,.16);
+    }
+    .e .metrics {
+      border: 1px solid rgba(155,111,53,.35);
+      border-radius: 19px;
+      overflow: hidden;
+      gap: 0;
+      background: rgba(255,253,248,.72);
+    }
+    .e .metric {
+      border: 0;
+      border-radius: 0;
+      border-right: 1px solid rgba(155,111,53,.18);
+      border-bottom: 1px solid rgba(155,111,53,.18);
+      background: transparent;
+    }
+    .e .tools { grid-template-columns: 1fr; }
+    .e .tool {
+      min-height: 100px;
+      border: 2px solid rgba(155,111,53,.56);
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+    }
+    .e .tool em { grid-column: 2; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <section class="variant a">
+      <div class="variant-title">A. Section Cards <span>Closest to current, more polished and balanced.</span></div>
+      <div class="phone">
+        <div class="top"><div class="logo">B</div><div class="brand">Amalfi Admin Desk<small>GUESTS</small></div><button class="sync">Sync</button></div>
+        <div class="content">
+          <div class="hero"><div class="label">Guest Movement</div><h1>Guests</h1><p>Focused movement tools for arrivals, in-house guests, and due-outs.</p></div>
+          <div class="metrics">
+            <div class="metric"><small>Arrivals</small><strong>21</strong><span>Need check-in</span></div>
+            <div class="metric"><small>In House</small><strong style="color:#b17720">26</strong><span>Currently staying</span></div>
+            <div class="metric"><small>Due Out</small><strong style="color:#d3143d">5</strong><span>Ready for checkout</span></div>
+            <div class="metric"><small>Receivables</small><strong>â‚±897k</strong><span>Open balances</span></div>
+          </div>
+          <div class="tools">
+            <div class="tool"><div class="icon">â–£</div><strong>Movement Desk</strong><span>Arrivals, in-house, and due-out guest cards.</span><em>26 active</em></div>
+            <div class="tool"><div class="icon">â–¤</div><strong>Ledger Search</strong><span>Find a booking, open edits, or record payment.</span><em>Lookup</em></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="nav">âŒ‚<span>Today</span></div><div class="nav active">â–£<span>Guests</span></div><div class="nav">ï¼‹<span>Bookings</span></div><div class="nav">â‚±<span>Money</span></div><div class="nav">âŒ˜<span>Tools</span></div></div>
+      </div>
+    </section>
+
+    <section class="variant b">
+      <div class="variant-title">B. Night Ops <span>Dark command surface for staff on active duty.</span></div>
+      <div class="phone">
+        <div class="top"><div class="logo">B</div><div class="brand">Amalfi Admin Desk<small>GUESTS</small></div><button class="sync">Sync</button></div>
+        <div class="content">
+          <div class="hero"><div class="label">Guest Movement</div><h1>Guests</h1><p>High-contrast movement board for fast check-in and checkout decisions.</p></div>
+          <div class="metrics">
+            <div class="metric"><small>Arrivals</small><strong>21</strong><span>Need check-in</span></div>
+            <div class="metric"><small>In House</small><strong>26</strong><span>Currently staying</span></div>
+            <div class="metric"><small>Due Out</small><strong>5</strong><span>Ready out</span></div>
+            <div class="metric"><small>Due</small><strong>â‚±897k</strong><span>Open balances</span></div>
+          </div>
+          <div class="tools">
+            <div class="tool"><div class="icon">â–£</div><strong>Movement Desk</strong><span>Open arrival lanes and guest actions.</span><em>Active</em></div>
+            <div class="tool"><div class="icon">â–¤</div><strong>Ledger Search</strong><span>Search guest, balance, or reference.</span><em>Lookup</em></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="nav">âŒ‚<span>Today</span></div><div class="nav active">â–£<span>Guests</span></div><div class="nav">ï¼‹<span>Bookings</span></div><div class="nav">â‚±<span>Money</span></div><div class="nav">âŒ˜<span>Tools</span></div></div>
+      </div>
+    </section>
+
+    <section class="variant c">
+      <div class="variant-title">C. Glass Resort <span>Airier, softer, easier for light daily operations.</span></div>
+      <div class="phone">
+        <div class="top"><div class="logo">B</div><div class="brand">Amalfi Admin Desk<small>GUESTS</small></div><button class="sync">Sync</button></div>
+        <div class="content">
+          <div class="hero"><div class="label">Guest Movement</div><h1>Guests</h1><p>Calm section home with translucent cards and clear next steps.</p></div>
+          <div class="metrics">
+            <div class="metric"><small>Arrivals</small><strong>21</strong><span>Need check-in</span></div>
+            <div class="metric"><small>In House</small><strong>26</strong><span>Currently staying</span></div>
+            <div class="metric"><small>Due Out</small><strong>5</strong><span>Ready for checkout</span></div>
+            <div class="metric"><small>Due</small><strong>â‚±897k</strong><span>Open balances</span></div>
+          </div>
+          <div class="tools">
+            <div class="tool"><div class="icon">â–£</div><div><strong>Movement Desk</strong><span>Arrivals and guest movement lanes.</span></div><em>Open</em></div>
+            <div class="tool"><div class="icon">â–¤</div><div><strong>Ledger Search</strong><span>Fast lookup and payment entry.</span></div><em>Search</em></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="nav">âŒ‚<span>Today</span></div><div class="nav active">â–£<span>Guests</span></div><div class="nav">ï¼‹<span>Bookings</span></div><div class="nav">â‚±<span>Money</span></div><div class="nav">âŒ˜<span>Tools</span></div></div>
+      </div>
+    </section>
+
+    <section class="variant d">
+      <div class="variant-title">D. Dense Operator <span>Most efficient. Less pretty, fastest scanning.</span></div>
+      <div class="phone">
+        <div class="top"><div class="logo">B</div><div class="brand">Amalfi Admin Desk<small>GUESTS</small></div><button class="sync">Sync</button></div>
+        <div class="content">
+          <div class="hero"><div><div class="label">Guest Movement</div><h1>Guests</h1></div><button class="sync">Open</button></div>
+          <div class="metrics">
+            <div class="metric"><small>Arr</small><strong>21</strong><span></span></div>
+            <div class="metric"><small>Stay</small><strong>26</strong><span></span></div>
+            <div class="metric"><small>Out</small><strong>5</strong><span></span></div>
+            <div class="metric"><small>Due</small><strong>897k</strong><span></span></div>
+          </div>
+          <div class="tools">
+            <div class="tool"><div class="icon">â–£</div><div><strong>Movement Desk</strong><span>Arrivals, in-house, due-out lanes</span></div><em>26</em></div>
+            <div class="tool"><div class="icon">â–¤</div><div><strong>Ledger Search</strong><span>Guest, ref, balance lookup</span></div><em>Go</em></div>
+            <div class="tool"><div class="icon">â‚±</div><div><strong>Record Pay</strong><span>Jump to payment entry</span></div><em>Due</em></div>
+            <div class="tool"><div class="icon">âœ“</div><div><strong>Check-in Queue</strong><span>Guests arriving today</span></div><em>21</em></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="nav">âŒ‚<span>Today</span></div><div class="nav active">â–£<span>Guests</span></div><div class="nav">ï¼‹<span>Bookings</span></div><div class="nav">â‚±<span>Money</span></div><div class="nav">âŒ˜<span>Tools</span></div></div>
+      </div>
+    </section>
+
+    <section class="variant e">
+      <div class="variant-title">E. Ledger Luxe <span>More premium framed admin surface, strongest brand feel.</span></div>
+      <div class="phone">
+        <div class="top"><div class="logo">B</div><div class="brand">Amalfi Admin Desk<small>GUESTS</small></div><button class="sync">Sync</button></div>
+        <div class="content">
+          <div class="hero"><div class="label">Guest Movement</div><h1>Guests</h1><p>Embossed section home for movement work, lookup, and payments.</p></div>
+          <div class="metrics">
+            <div class="metric"><small>Arrivals</small><strong>21</strong><span>Need check-in</span></div>
+            <div class="metric"><small>In House</small><strong>26</strong><span>Currently staying</span></div>
+            <div class="metric"><small>Due Out</small><strong>5</strong><span>Ready checkout</span></div>
+            <div class="metric"><small>Due</small><strong>â‚±897k</strong><span>Open balance</span></div>
+          </div>
+          <div class="tools">
+            <div class="tool"><div class="icon">â–£</div><div><strong>Movement Desk</strong><span>Guest movement cards with strong action framing.</span><em>26 active movements</em></div></div>
+            <div class="tool"><div class="icon">â–¤</div><div><strong>Ledger Search</strong><span>Find booking, payment state, and light edits.</span><em>Guest lookup</em></div></div>
+          </div>
+        </div>
+        <div class="bottom"><div class="nav">âŒ‚<span>Today</span></div><div class="nav active">â–£<span>Guests</span></div><div class="nav">ï¼‹<span>Bookings</span></div><div class="nav">â‚±<span>Money</span></div><div class="nav">âŒ˜<span>Tools</span></div></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

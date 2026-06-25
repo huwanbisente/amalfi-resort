@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    color-scheme: light;
+    --bg-main: #fef9f0;
+    --bg-secondary: #f2ede4;
+    --bg-card: #fffdf8;
+    --bg-card-soft: #f8f3ea;
+    --text-primary: #1d1c16;
+    --text-muted: #3e4946;
+    --text-soft: #6f7976;
+    --line-soft: #bec9c5;
+    --line-strong: #6f7976;
+    --accent-gold: #c6923f;
+    --accent-green: #0a6b5f;
+    --accent-blue: #005147;
+    --accent-sky: #85d5c6;
+    --accent-violet: #7c3aed;
+    --accent-amber: #805600;
+    --accent-red: #ba1a1a;
+    --shadow-soft: 0 12px 32px rgba(8, 68, 63, 0.04);
+    --shadow-lift: 0 22px 58px rgba(8, 68, 63, 0.08);
+    --hero-scrim: linear-gradient(to bottom, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.04) 48%, rgba(8, 68, 63, 0.46) 100%);
+    --surface-glass: rgba(255, 253, 248, 0.75);
+    --input-bg: #fffdf8;
+    --input-fg: #1d1c16;
+    --modal-scrim: rgba(8, 68, 63, 0.54);
+    --radius-card: 16px;
+    --radius-panel: 22px;
+    --bg-main-legacy: #fef9f0;
+    --bg-secondary-legacy: #f2ede4;
+    --font-heading: 'Noto Serif', Georgia, serif;
+    --font-body: 'DM Sans', 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'JetBrains Mono', 'Cascadia Mono', monospace;
+    --amalfi-canvas: #fef9f0;
+    --amalfi-surface: #fffdf8;
+    --amalfi-surface-soft: #f8f3ea;
+    --amalfi-ink: #1d1c16;
+    --amalfi-muted: #3e4946;
+    --amalfi-line: #bec9c5;
+    --amalfi-line-strong: #6f7976;
+    --amalfi-emerald: #0a6b5f;
+    --amalfi-emerald-deep: #005147;
+    --amalfi-emerald-soft: #a1f2e2;
+    --amalfi-gold: #c6923f;
+    --amalfi-coral: #ba1a1a;
+    --amalfi-lagoon: #85d5c6;
+    --amalfi-sand: #f2ede4;
+    --amalfi-night: #00201c;
+    --amalfi-radius-md: 16px;
+    --amalfi-radius-lg: 22px;
+    --amalfi-radius-xl: 28px;
+    --amalfi-shadow-sm: 0 8px 24px rgba(8, 68, 63, 0.04);
+    --amalfi-shadow-md: 0 18px 44px rgba(8, 68, 63, 0.075);
+    --amalfi-shadow-resort: 0 28px 72px rgba(8, 68, 63, 0.115);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+.amalfi-app {
+    min-height: 100vh;
+    background:
+        linear-gradient(180deg, rgba(255, 253, 248, 0.72), rgba(248, 242, 232, 0.94) 48%, var(--bg-main)),
+        var(--bg-main);
+    color: var(--text-primary);
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.amalfi-app.theme-dark {
+    color-scheme: dark;
+    --bg-main: #081312;
+    --bg-secondary: #0f1f1d;
+    --bg-card: #132623;
+    --bg-card-soft: #10201d;
+    --text-primary: #f6fbf8;
+    --text-muted: #9fb0aa;
+    --text-soft: #748982;
+    --line-soft: rgba(235, 247, 242, 0.09);
+    --line-strong: rgba(235, 247, 242, 0.16);
+    --accent-gold: #d2b783;
+    --accent-green: #34d399;
+    --accent-blue: #60a5fa;
+    --accent-sky: #38bdf8;
+    --accent-violet: #a78bfa;
+    --accent-amber: #fbbf24;
+    --accent-red: #fb7185;
+    --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.34);
+    --shadow-lift: 0 28px 76px rgba(0, 0, 0, 0.46);
+    --hero-scrim: linear-gradient(90deg, rgba(4, 15, 18, 0.82), rgba(5, 21, 25, 0.46) 48%, rgba(3, 13, 17, 0.74));
+    --surface-glass: rgba(12, 30, 28, 0.78);
+    --input-bg: #10201d;
+    --input-fg: #f6fbf8;
+    --modal-scrim: rgba(0, 8, 9, 0.72);
+}
+
+.amalfi-section-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+    background-image:
+        radial-gradient(circle at 3% 10%, rgba(10, 107, 95, 0.085), transparent 26%),
+        radial-gradient(circle at 96% 82%, rgba(198, 146, 63, 0.12), transparent 34%),
+        radial-gradient(ellipse at 95% 38%, rgba(133, 213, 198, 0.32), transparent 38%),
+        radial-gradient(ellipse at 6% 78%, rgba(133, 213, 198, 0.20), transparent 34%),
+        linear-gradient(115deg, transparent 38%, rgba(133, 213, 198, 0.12) 58%, rgba(255, 253, 248, 0) 86%),
+        url("data:image/svg+xml,%3Csvg width='1120' height='720' viewBox='0 0 1120 720' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230a6b5f' stroke-opacity='.23' stroke-width='2.2'%3E%3Cpath d='M65 682c59-154 143-248 252-282 86-27 161-18 253-88 70-53 123-133 160-239'/%3E%3Cpath d='M10 596c111-111 234-171 369-181 137-10 255 24 407-45 102-46 187-116 258-211'/%3E%3Cpath d='M455 710c-7-101 8-185 44-253 39-73 107-133 204-178 92-43 197-65 316-68'/%3E%3Cpath d='M770 720c-39-105-45-191-18-259 30-77 100-129 209-154'/%3E%3Cpath d='M-50 680c165-29 306-22 423 21 86 32 176 39 270 21'/%3E%3C/g%3E%3Cg fill='none' stroke='%23c6923f' stroke-opacity='.22' stroke-width='1.8'%3E%3Cpath d='M0 536c112 25 237 28 374 8 156-23 291-70 405-141 99-61 224-84 376-68'/%3E%3Cpath d='M0 618c134 16 269 12 404-9 142-23 274-64 397-121 112-53 235-72 367-59'/%3E%3Cpath d='M-20 404c161 56 315 72 462 48 126-21 248-66 366-136'/%3E%3C/g%3E%3Cg fill='%230a6b5f' fill-opacity='.13'%3E%3Cpath d='M96 299c44-65 82-110 114-135 29-22 61-38 98-49-21 43-51 82-89 116-37 34-78 57-123 68z'/%3E%3Cpath d='M138 399c63-46 118-72 163-78 37-5 75 1 113 18-40 27-85 45-137 54-50 8-97 10-139 6z'/%3E%3Cpath d='M969 92c-71 31-123 65-156 102-29 32-48 72-59 119 50-22 93-52 129-90 36-38 65-82 86-131z'/%3E%3Cpath d='M914 372c-59 10-103 27-134 51-30 24-52 58-66 102 51-7 96-23 135-48 38-25 60-60 65-105z'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: cover, cover, cover, cover, cover, clamp(760px, 68vw, 1120px) auto;
+    background-position: center, center, center, center, center, left -120px top -12px;
+}
+
+.amalfi-section-bg--right {
+    transform: scaleX(-1);
+}
+
+.amalfi-section-bg--soft {
+    opacity: 0.96;
+}
+
+.amalfi-section-bg--ocean {
+    opacity: 0.98;
+    background-image:
+        linear-gradient(90deg, rgba(255, 253, 248, 0.30), rgba(255, 253, 248, 0.02) 48%, rgba(255, 253, 248, 0.38)),
+        radial-gradient(circle at 82% 70%, rgba(133, 213, 198, 0.23), transparent 38%),
+        radial-gradient(ellipse at 8% 24%, rgba(133, 213, 198, 0.24), transparent 32%),
+        linear-gradient(245deg, transparent 36%, rgba(10, 107, 95, 0.10) 68%, rgba(255, 253, 248, 0) 100%),
+        url("data:image/svg+xml,%3Csvg width='1200' height='700' viewBox='0 0 1200 700' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230a6b5f' stroke-opacity='.22' stroke-width='2.2'%3E%3Cpath d='M20 552c116-82 250-109 402-78 126 25 236 60 374 43 144-17 275-75 392-174'/%3E%3Cpath d='M0 625c145-57 288-73 428-46 133 25 257 56 403 33 136-21 263-76 382-163'/%3E%3Cpath d='M830 695c-28-110-23-199 15-268 40-74 117-128 231-160'/%3E%3Cpath d='M976 692c-13-86 0-153 38-201 37-46 94-80 169-100'/%3E%3Cpath d='M-80 482c168 38 317 44 447 18 113-23 220-61 321-115'/%3E%3C/g%3E%3Cg fill='none' stroke='%23c6923f' stroke-opacity='.24' stroke-width='1.8'%3E%3Cpath d='M0 486c147 36 298 47 451 30 144-16 278-55 402-115 113-55 241-76 383-58'/%3E%3Cpath d='M-40 602c173 6 329-12 469-54 119-36 242-55 369-56'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: cover, cover, cover, cover, clamp(820px, 72vw, 1200px) auto;
+    background-position: center, center, center, center, right -150px bottom -42px;
+}
+
+.amalfi-section-bg--text-left {
+    transform: none;
+    background-position: center, center, center, center, center, left -180px top 42px;
+}
+
+.amalfi-section-bg--text-right {
+    transform: none;
+    background-position: center, center, center, center, center, right -180px top 42px;
+}
+
+.amalfi-section-bg--text-right.amalfi-section-bg--ocean {
+    background-position: center, center, center, center, right -190px top 34px;
+}
+
+.amalfi-section-bg--heading-left {
+    transform: none;
+    background-position: center, center, center, center, center, left -180px top 54px;
+}
+
+.amalfi-section-bg--ocean.amalfi-section-bg--heading-left {
+    background-position: center, center, center, center, left -190px top 54px;
+}
+
+@media (max-width: 767px) {
+    .amalfi-section-bg {
+        opacity: 1;
+        background-size: cover, cover, cover, cover, cover, 860px auto;
+        background-position: center, center, center, center, center, left -360px top 10px;
+    }
+
+    .amalfi-section-bg--soft {
+        opacity: 1;
+    }
+
+    .amalfi-section-bg--ocean {
+        opacity: 1;
+        background-size: cover, cover, cover, cover, 900px auto;
+        background-position: center, center, center, center, right -370px top 8px;
+    }
+
+    .amalfi-section-bg--text-left {
+        background-position: center, center, center, center, center, left -360px top 12px;
+    }
+
+    .amalfi-section-bg--text-right,
+    .amalfi-section-bg--text-right.amalfi-section-bg--ocean {
+        background-position: center, center, center, center, right -372px top 10px;
+    }
+
+    .amalfi-section-bg--heading-left {
+        background-position: center, center, center, center, center, left -350px top -6px;
+    }
+
+    .amalfi-section-bg--ocean.amalfi-section-bg--heading-left {
+        background-position: center, center, center, center, left -360px top -6px;
+    }
+}

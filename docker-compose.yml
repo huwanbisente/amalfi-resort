@@ -1,0 +1,109 @@
+services:
+  # [1] Amalfi Hub API (Node / server.js)
+  hub-api:
+    build:
+      context: ./amalfi-hub
+      dockerfile: Dockerfile
+    container_name: amalfi-hub-api
+    working_dir: /app
+    command: node server.js
+    ports:
+      - "3101:3001"
+    volumes:
+      - ./amalfi-hub:/app
+      - ./amalfi-system/intelligence:/intelligence:ro
+      - ./amalfi-system/runtime/hub:/runtime/hub
+      - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - INTELLIGENCE_PATH=/intelligence
+      - RUNTIME_PATH=/runtime
+      - DATABASE_PATH=/runtime/hub/database.sqlite
+      - TZ=Asia/Manila
+    restart: unless-stopped
+
+  # [2] Guest Site (Vite / amalfi-web)
+  guest-site:
+    build:
+      context: ./amalfi-web
+      dockerfile: Dockerfile
+    container_name: amalfi-guest-site
+    working_dir: /app
+    command: npm run dev -- --host
+    ports:
+      - "5273:5273"
+    volumes:
+      - ./amalfi-web:/app
+      - /app/node_modules
+    depends_on:
+      - hub-api
+    restart: unless-stopped
+
+  # [3] Admin Hub (Vite / amalfi-admin)
+  admin-hub:
+    build:
+      context: ./amalfi-admin
+      dockerfile: Dockerfile
+    container_name: amalfi-admin-hub
+    working_dir: /app
+    command: npm run dev -- --host
+    ports:
+      - "5274:5274"
+    volumes:
+      - ./amalfi-admin:/app
+      - /app/node_modules
+    environment:
+      - VITE_HUB_ADMIN_TOKEN=${HUB_ADMIN_TOKEN}
+    depends_on:
+      - hub-api
+    restart: unless-stopped
+
+  # [3.5] Admin Desk (Vite / amalfi-mobile-admin)
+  admin-desk:
+    build:
+      context: ./amalfi-mobile-admin
+      dockerfile: Dockerfile
+    container_name: amalfi-admin-desk
+    working_dir: /app
+    command: npm run dev -- --host
+    ports:
+      - "5275:5275"
+    volumes:
+      - ./amalfi-mobile-admin:/app
+      - /app/node_modules
+    environment:
+      - VITE_HUB_ADMIN_TOKEN=${HUB_ADMIN_TOKEN}
+    depends_on:
+      - hub-api
+    restart: unless-stopped
+
+  # [4] Chatbot (Python / uvicorn)
+  chatbot:
+    build:
+      context: ./amalfi-chatbot
+      dockerfile: Dockerfile
+    container_name: amalfi-chatbot
+    working_dir: /app
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    ports:
+      - "8101:8001"
+    volumes:
+      - ./amalfi-chatbot:/app
+      - ./amalfi-system/intelligence:/intelligence:ro
+      - ./amalfi-system/runtime/chatbot:/runtime/chatbot
+    env_file:
+      - .env
+    environment:
+      - HUB_URL=http://hub-api:3001
+      - RUNTIME_PATH=/runtime
+      - CHATBOT_STATE_DB=/runtime/chatbot/chatbot_state.sqlite
+      - CHATBOT_LOG_FILE=/runtime/chatbot/logs/chat_archive.csv
+      - TZ=Asia/Manila
+    restart: unless-stopped
+
+networks:
+  default:
+    name: amalfi-network

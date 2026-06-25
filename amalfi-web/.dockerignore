@@ -1,0 +1,14 @@
+# Protection: Never bake databases into the production image
+*.sqlite
+*.sqlite-journal
+*.db
+backend.sqlite
+database.sqlite
+
+# Ignore local node_modules
+node_modules
+npm-debug.log
+
+# Ignore git
+.git
+.gitignore

@@ -103,15 +103,66 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('amalfi_reservations', JSON.stringify(DEFAULT_RESERVATIONS));
   }
 
+  const API_BASE = '/api/v1';
+  const formatPeso = (amount, options = {}) => {
+    const value = Number(amount || 0);
+    return `PHP ${value.toLocaleString('en-PH', {
+      minimumFractionDigits: options.compact ? 0 : 2,
+      maximumFractionDigits: options.compact ? 0 : 2
+    })}`;
+  };
+
+  const VILLA_IMAGE_BY_NAME = {
+    "Amalfi Suite": "/api/v1/assets/rooms/amalfi_suite.png",
+    "Positano Vista": "/api/v1/assets/rooms/positano_vista.png",
+    "Ravello Suite": "/api/v1/assets/rooms/ravello_suite.png",
+    "Capri Vista": "/api/v1/assets/rooms/capri_vista.png",
+    "Sirenuse Suite": "/api/v1/assets/rooms/sirenuse_suite.png",
+    "Sunset Pavilion": "/api/v1/assets/rooms/sunset_pavilion.png"
+  };
+
   // Villa Data
-  const villas = [
-    { id: "Villa 1", name: "Amalfi Suite", category: "Medium Sized Luxury Villa", nightlyRate: 8278.57, cap: 4, image: "../amalfi_pool.png" },
-    { id: "Villa 2", name: "Positano Vista", category: "Medium Sized Luxury Villa", nightlyRate: 9500, cap: 4, image: "../amalfi_terrace.png" },
-    { id: "Villa 3", name: "Ravello Suite", category: "Medium Sized Luxury Villa", nightlyRate: 8750, cap: 4, image: "../amalfi_gardens.png" },
-    { id: "Villa 4", name: "Capri Vista", category: "Medium Sized Luxury Villa", nightlyRate: 8800, cap: 4, image: "../amalfi_yacht.png" },
-    { id: "Villa 5", name: "Sirenuse Suite", category: "Large Luxury Villa", nightlyRate: 19080, cap: 8, image: "../amalfi_bedroom.png" },
-    { id: "Villa 6", name: "Sunset Pavilion", category: "Large Luxury Villa", nightlyRate: 10525, cap: 6, image: "../amalfi_bathroom.png" }
+  let villas = [
+    { id: "Villa 1", name: "Amalfi Suite", category: "Medium Sized Luxury Villa", nightlyRate: 8278.57, cap: 4, image: VILLA_IMAGE_BY_NAME["Amalfi Suite"] },
+    { id: "Villa 2", name: "Positano Vista", category: "Medium Sized Luxury Villa", nightlyRate: 9500, cap: 4, image: VILLA_IMAGE_BY_NAME["Positano Vista"] },
+    { id: "Villa 3", name: "Ravello Suite", category: "Medium Sized Luxury Villa", nightlyRate: 8750, cap: 4, image: VILLA_IMAGE_BY_NAME["Ravello Suite"] },
+    { id: "Villa 4", name: "Capri Vista", category: "Medium Sized Luxury Villa", nightlyRate: 8800, cap: 4, image: VILLA_IMAGE_BY_NAME["Capri Vista"] },
+    { id: "Villa 5", name: "Sirenuse Suite", category: "Large Luxury Villa", nightlyRate: 19080, cap: 8, image: VILLA_IMAGE_BY_NAME["Sirenuse Suite"] },
+    { id: "Villa 6", name: "Sunset Pavilion", category: "Large Luxury Villa", nightlyRate: 10525, cap: 6, image: VILLA_IMAGE_BY_NAME["Sunset Pavilion"] }
   ];
+
+  async function loadVillasFromBackend() {
+    try {
+      const response = await fetch(`${API_BASE}/public/amalfi/villas`);
+      if (!response.ok) throw new Error('Villa API unavailable');
+      const data = await response.json();
+      if (!Array.isArray(data.villas) || data.villas.length === 0) return;
+      villas = data.villas.map((villa) => ({
+        id: villa.id,
+        unitId: villa.unitId,
+        roomType: villa.roomType || villa.name,
+        name: villa.name,
+        category: villa.category,
+        nightlyRate: Number(villa.nightlyRate || 0),
+        cap: Number(villa.cap || 1),
+        image: VILLA_IMAGE_BY_NAME[villa.name] || villa.image || "/api/v1/assets/hero/hero-bg.png"
+      }));
+      renderVillas();
+    } catch (err) {
+      console.warn('Using local Amalfi villa data:', err.message);
+    }
+  }
+
+  async function submitBookingToBackend(payload) {
+    const response = await fetch(`${API_BASE}/public/amalfi/book`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'Booking could not be submitted.');
+    return data;
+  }
 
   // DOM Elements
   const checkinInput = document.getElementById('checkin');
@@ -181,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="h-72 overflow-hidden relative img-zoom-container">
           <img src="${villa.image}" alt="${villa.name}" class="w-full h-full object-cover">
           <div class="absolute top-4 right-4 bg-background bg-opacity-80 text-[10px] tracking-widest text-tertiary font-bold px-3.5 py-1.5 border border-tertiary border-opacity-30">
-            $${villa.nightlyRate.toLocaleString()}/NIGHT
+            ${formatPeso(villa.nightlyRate)} / NIGHT
           </div>
         </div>
         <div class="p-8 flex-1 flex flex-col">
@@ -234,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Set title
     modalVillaName.textContent = selectedVilla.name;
-    modalVillaRate.textContent = `$${selectedVilla.nightlyRate.toLocaleString()} / Night`;
+    modalVillaRate.textContent = `${formatPeso(selectedVilla.nightlyRate)} / Night`;
 
     // Reset steps
     step1.classList.remove('hidden');
@@ -275,8 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let addonsTotal = 0;
     
     summaryNights.textContent = `${nightsCount} ${nightsCount === 1 ? 'Night' : 'Nights'}`;
-    summaryBaseRate.textContent = `$${selectedVilla.nightlyRate.toLocaleString()}`;
-    summaryBaseTotal.textContent = `$${baseTotal.toLocaleString()}`;
+    summaryBaseRate.textContent = `${formatPeso(selectedVilla.nightlyRate)} / Night`;
+    summaryBaseTotal.textContent = formatPeso(baseTotal);
     
     // Calculate addons
     summaryAddonsList.innerHTML = '';
@@ -289,13 +340,13 @@ document.addEventListener('DOMContentLoaded', () => {
       item.className = 'flex justify-between text-xs text-stitch-muted py-1';
       item.innerHTML = `
         <span>+ ${addon.label}</span>
-        <span class="mono-input font-semibold text-stitch-platinum">$${addon.price.toLocaleString()}</span>
+        <span class="mono-input font-semibold text-stitch-platinum">${formatPeso(addon.price, { compact: true })}</span>
       `;
       summaryAddonsList.appendChild(item);
     });
 
     const grandTotal = baseTotal + addonsTotal;
-    summaryTotal.textContent = `$${grandTotal.toLocaleString()}`;
+    summaryTotal.textContent = formatPeso(grandTotal);
   }
 
   // Listen for addon checkbox changes
@@ -330,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Submit Booking
-  submitBookingBtn.addEventListener('click', () => {
+  submitBookingBtn.addEventListener('click', async () => {
     if (!refNoInput.value.trim()) {
       alert("Please enter the payment reference number.");
       return;
@@ -354,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const grandTotal = baseTotal + addonsTotal;
+    const depositAmount = Math.round((grandTotal * 0.5) * 100) / 100;
 
     // Create new reservation record
     const refId = "ALF-" + Math.floor(1000 + Math.random() * 9000);
@@ -378,18 +430,46 @@ document.addEventListener('DOMContentLoaded', () => {
       folio: grandTotal.toLocaleString(undefined, { minimumFractionDigits: 2 }),
       isBlockout: false,
       refNo: refNoInput.value,
-      receiptMockUrl: "../amalfi_backdrop.png" // placeholder simulated upload
+      receiptMockUrl: "/api/v1/assets/hero/hero-bg.png" // placeholder simulated upload
     };
 
-    currentReservations.push(newReservation);
-    localStorage.setItem('amalfi_reservations', JSON.stringify(currentReservations));
+    submitBookingBtn.disabled = true;
+    submitBookingBtn.textContent = 'Submitting...';
+
+    try {
+      const created = await submitBookingToBackend({
+        villa_id: selectedVilla.id,
+        unit_id: selectedVilla.unitId,
+        room_type: selectedVilla.roomType || selectedVilla.name,
+        full_name: guestNameInput.value.trim(),
+        email: guestEmailInput.value.trim(),
+        phone: guestPhoneInput.value.trim(),
+        check_in: checkinInput.value,
+        check_out: checkoutInput.value,
+        guests: Number(guestCountInput.value || guestsSelect.value || 1),
+        total_price: grandTotal,
+        balance: grandTotal - depositAmount,
+        payment_reference: refNoInput.value.trim(),
+        addons: activeAddons
+      });
+      newReservation.id = String(created.booking_ref || refId).toLowerCase();
+      newReservation.refNo = refNoInput.value;
+      currentReservations.push(newReservation);
+      localStorage.setItem('amalfi_reservations', JSON.stringify(currentReservations));
+      document.getElementById('success-ref-no').textContent = created.booking_ref || refId;
+    } catch (err) {
+      console.warn('Backend booking failed, saving local fallback:', err.message);
+      currentReservations.push(newReservation);
+      localStorage.setItem('amalfi_reservations', JSON.stringify(currentReservations));
+      document.getElementById('success-ref-no').textContent = refId;
+    } finally {
+      submitBookingBtn.disabled = false;
+      submitBookingBtn.textContent = 'Submit Reservation';
+    }
 
     // Show Success Step
     step3.classList.add('hidden');
     stepSuccess.classList.remove('hidden');
-    
-    // Set success text details
-    document.getElementById('success-ref-no').textContent = refId;
   });
 
   // Date Formatting Helper
@@ -457,4 +537,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize
   renderVillas();
+  loadVillasFromBackend();
 });

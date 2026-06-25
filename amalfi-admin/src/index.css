@@ -1,0 +1,272 @@
+/* Amalfi Admin Tailwind foundation */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: 42 46% 96%;
+    --foreground: 203 42% 10%;
+    --card: 44 60% 99%;
+    --card-foreground: 203 42% 10%;
+    --popover: 44 60% 99%;
+    --popover-foreground: 203 42% 10%;
+    --primary: 171 73% 22%;
+    --primary-foreground: 48 100% 99%;
+    --secondary: 39 48% 90%;
+    --secondary-foreground: 170 44% 17%;
+    --muted: 40 32% 91%;
+    --muted-foreground: 176 10% 42%;
+    --accent: 38 58% 58%;
+    --accent-foreground: 203 42% 10%;
+    --destructive: 354 70% 54%;
+    --destructive-foreground: 48 100% 99%;
+    --border: 35 45% 82%;
+    --input: 35 45% 82%;
+    --ring: 171 73% 22%;
+    --radius: 1.1rem;
+
+    --bg-main: #f4efe6;
+    --bg-card: #fffdf8;
+    --text-primary: #13211f;
+    --text-muted: #69776f;
+
+
+    --sidebar-bg: #092a28;
+    --sidebar-fg: #fff8e8;
+    --sidebar-muted: rgba(255, 248, 232, 0.58);
+    --sidebar-accent: rgba(255, 248, 232, 0.08);
+    --sidebar-active: #d0a85f;
+
+
+    --accent-emerald: #0a6b5f;
+    --accent-gold: #c6923f;
+    --accent-red: #c84a4a;
+    --accent-blue: #266c83;
+    --accent-slate: #475a56;
+    --accent-info: #eef8f5;
+    --border-info: #cfe7df;
+    --text-info: #0a5d52;
+
+
+    --font-body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+    --font-ui: var(--font-body);
+    --font-display: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+    --font-data: 'JetBrains Mono', 'Cascadia Mono', 'SFMono-Regular', Consolas, monospace;
+    --admin-canvas: #f4efe6;
+    --admin-surface: #fffdf8;
+    --admin-ink: #13211f;
+    --admin-muted: #69776f;
+    --admin-emerald: #0a6b5f;
+    --admin-lagoon: #236f7c;
+    --admin-gold: #c6923f;
+    --admin-sand: #eee2cf;
+    --admin-night: #092a28;
+    --admin-coral: #c84a4a;
+    --admin-line: rgba(216, 201, 179, 0.72);
+    --admin-radius-lg: 22px;
+    --admin-shadow-soft: 0 14px 34px rgba(19, 33, 31, 0.07);
+    --admin-shadow-resort: 0 24px 60px rgba(19, 33, 31, 0.11);
+    --type-page-title: 2.05rem;
+    --type-section-title: 1.08rem;
+    --type-card-title: 0.95rem;
+    --type-body: 0.875rem;
+    --type-label: 0.7rem;
+    --line-title: 1.08;
+    --line-section: 1.22;
+    --line-body: 1.45;
+    --line-label: 1.25;
+    --radius-premium: 14px;
+    --radius-soft: 8px;
+    --border-subtle: 1px solid rgba(216, 201, 179, 0.72);
+    --shadow-premium: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+:root {
+    --amalfi-canvas: #f4efe6;
+    --amalfi-surface: #fffdf8;
+    --amalfi-surface-soft: #f8f2e8;
+    --amalfi-ink: #13211f;
+    --amalfi-muted: #69776f;
+    --amalfi-line: rgba(216, 201, 179, 0.72);
+    --amalfi-line-strong: rgba(198, 146, 63, 0.34);
+    --amalfi-emerald: #0a6b5f;
+    --amalfi-emerald-deep: #08443f;
+    --amalfi-emerald-soft: #e8f5f0;
+    --amalfi-gold: #c6923f;
+    --amalfi-navy: #101b2b;
+    --amalfi-brass-soft: rgba(198, 146, 63, 0.14);
+    --amalfi-danger-soft: rgba(200, 74, 74, 0.09);
+    --amalfi-radius-md: 16px;
+    --amalfi-radius-lg: 22px;
+    --amalfi-radius-xl: 28px;
+    --amalfi-shadow-sm: 0 10px 26px rgba(19, 33, 31, 0.045);
+    --amalfi-shadow-md: 0 20px 48px rgba(19, 33, 31, 0.075);
+}
+
+tbody tr {
+    transition: background 0.16s ease;
+}
+
+tbody tr:hover {
+    background: rgba(247, 238, 223, 0.45);
+}
+
+input,
+select,
+textarea {
+    accent-color: var(--amalfi-emerald);
+}
+
+input[type="range"] {
+    accent-color: var(--amalfi-emerald);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    font-size: 93.75%;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: var(--font-body);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+th {
+    background: #f7eedf;
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 0.56rem;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(216, 201, 179, 0.68);
+}
+
+td {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(216, 201, 179, 0.52);
+    white-space: nowrap;
+}
+
+@media print {
+
+    body * {
+        visibility: hidden !important;
+    }
+
+
+    .printable-invoice, .printable-invoice *,
+    .official-report-preview, .official-report-preview *,
+    .print-only, .print-only * {
+        visibility: visible !important;
+    }
+
+
+    .printable-invoice, .official-report-preview, .print-only {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 40px !important;
+        background: white !important;
+        box-shadow: none !important;
+    }
+
+
+    body { background: white !important; }
+    #root { background: transparent !important; }
+
+    @page { margin: 1cm; size: auto; }
+}
+
+@media print {
+
+    .no-print,
+    .no-print,
+    html,
+    body,
+    #root,
+    div,
+    section,
+    main,
+    article,
+    table,
+    tr,
+    td,
+    th,
+    h1,
+    h2,
+    h3,
+    p,
+    span {
+        background: white !important;
+        color: black !important;
+        overflow: visible !important;
+        height: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        filter: none !important;
+        backdrop-filter: none !important;
+        transform: none !important;
+        animation: none !important;
+    }
+
+    table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    th, td {
+        border: 1px solid #ddd !important;
+        padding: 8px !important;
+        font-size: 8pt !important;
+        color: black !important;
+    }
+
+
+
+
+    div, main, section {
+        background: white !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border-color: #eee !important;
+    }
+
+    .financial-report-preview-shell {
+        position: static !important;
+        inset: auto !important;
+        background: white !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    .financial-report-paper {
+        padding: 10mm !important;
+        background: white !important;
+    }
+}
